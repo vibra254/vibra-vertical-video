@@ -60,6 +60,9 @@ function VibraApp() {
   const [muted, setMuted] = useState(true)
 
   const fileRef = useRef<HTMLInputElement>(null)
+  const recordRef = useRef<HTMLInputElement>(null)
+  const imageRef = useRef<HTMLInputElement>(null)
+  const [uploadMenuOpen, setUploadMenuOpen] = useState(false)
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   
 const sendAiMessage = async () => {
@@ -447,7 +450,7 @@ const sendAiMessage = async () => {
     }}>
       <span onClick={() => setPage('home')} style={{cursor:'pointer', color:page==='home'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Home size={23}/><b>Home</b></span>
       <span onClick={() => setPage('discover')} style={{cursor:'pointer', color:page==='discover'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Search size={23}/><b>Explore</b></span>
-      <span onClick={() => fileRef.current?.click()} style={{background:'#ff0050', color:'#fff', width:54, height:44, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:10, cursor:'pointer'}}><Plus size={30}/></span>
+      <span onClick={() => setUploadMenuOpen(true)} style={{background:'#ff0050', color:'#fff', width:54, height:44, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:10, cursor:'pointer'}}><Plus size={30}/></span>
       <span onClick={() => setPage('ai')} style={{cursor:'pointer', color:'#b52cff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Bot size={24}/><b>VIBRA AI</b></span>
       <span onClick={() => setPage('inbox')} style={{cursor:'pointer', color:page==='inbox'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Inbox size={23}/><b>Inbox</b></span>
       <span onClick={() => setPage('me')} style={{cursor:'pointer', color:page==='me'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><User size={23}/><b>Me</b></span>
@@ -585,13 +588,14 @@ if (page === 'ai') {
   if (page === 'me') {
     return (
       <div style={{ background: '#000', minHeight: '100vh', color: '#fff', fontFamily: 'sans-serif', padding: '20px 16px 100px', maxWidth: 500, margin: '0 auto' }}>
+        <input ref={imageRef} type="file" accept="image/*" onChange={changePhoto} style={{ display: 'none' }} />
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span onClick={() => setPage('home')} style={{ fontSize: 24 }}>←</span>
           <b>{userHandle}</b><span>⋯</span>
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 28 }}>
-          <div onClick={() => fileRef.current?.click()} style={{
+          <div onClick={() => imageRef.current?.click()} style={{
             width: 115, height: 115, borderRadius: '50%', background: '#333',
             margin: 'auto', display: 'flex', alignItems: 'center',
             justifyContent: 'center', fontSize: 50, overflow: 'hidden',
@@ -600,7 +604,7 @@ if (page === 'ai') {
             {dp ? <img src={dp} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
           </div>
           <p style={{ color: '#aaa', fontSize: 13 }}>Bonyeza picha kubadilisha</p>
-          <button onClick={() => fileRef.current?.click()} style={{
+          <button onClick={() => imageRef.current?.click()} style={{
             background: '#ff2d55', color: '#fff', border: 0,
             padding: '12px 25px', borderRadius: 25, fontWeight: 800,
           }}>Change DP - Badilisha Picha</button>
@@ -689,8 +693,8 @@ if (page === 'ai') {
       background: '#000', color: '#fff', fontFamily: 'sans-serif',
       height: '100dvh', overflowY: 'auto', scrollSnapType: 'y mandatory',
     }}>
-      <input ref={fileRef} type="file" accept="video/*"
-        onChange={uploadVideo} style={{ display: 'none' }} />
+      <input ref={fileRef} type="file" accept="video/*" onChange={uploadVideo} style={{ display: 'none' }} />
+      <input ref={recordRef} type="file" accept="video/*" capture="environment" onChange={uploadVideo} style={{ display: 'none' }} />
 
       <div style={{
         position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)',
@@ -845,6 +849,35 @@ if (page === 'ai') {
       )}
 
       {bottomNav}
+
+      {uploadMenuOpen && (
+        <div onClick={() => setUploadMenuOpen(false)} style={{
+          position: 'fixed', inset: 0, zIndex: 120, background: '#000b',
+          display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+        }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            width: '100%', maxWidth: 500, background: '#171717',
+            color: '#fff', borderRadius: '20px 20px 0 0', padding: 22,
+            paddingBottom: 'max(22px, env(safe-area-inset-bottom))',
+          }}>
+            <h3 style={{ textAlign: 'center', marginTop: 4 }}>＋ Create on VIBRA</h3>
+            <button onClick={() => { setUploadMenuOpen(false); recordRef.current?.click() }} style={{
+              width: '100%', padding: 16, marginTop: 10, border: 0,
+              borderRadius: 12, background: '#ff2d55', color: '#fff',
+              fontSize: 16, fontWeight: 800,
+            }}>🎥 Record video</button>
+            <button onClick={() => { setUploadMenuOpen(false); fileRef.current?.click() }} style={{
+              width: '100%', padding: 16, marginTop: 10, border: '1px solid #555',
+              borderRadius: 12, background: '#292929', color: '#fff',
+              fontSize: 16, fontWeight: 800,
+            }}>🖼️ Choose from Gallery</button>
+            <button onClick={() => setUploadMenuOpen(false)} style={{
+              width: '100%', padding: 13, marginTop: 10, border: 0,
+              background: 'transparent', color: '#aaa', fontSize: 15,
+            }}>Cancel</button>
+          </div>
+        </div>
+      )}
 
       {activeVideo !== null && (
         <div style={{
