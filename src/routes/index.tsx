@@ -44,7 +44,16 @@ function VibraApp() {
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({})
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
   const [followedIds, setFollowedIds] = useState<string[]>([])
-  const [dp, setDp] = useState(() => localStorage.getItem('vibra_dp') || '')
+  const [dp, setDp] = useState('')
+
+  // Read browser-only profile data after hydration to keep server rendering safe.
+  useEffect(() => {
+    try {
+      setDp(window.localStorage.getItem('vibra_dp') || '')
+    } catch {
+      setDp('')
+    }
+  }, [])
   const [userName] = useState('Mr vibra')
   const [userHandle] = useState('@hamadoski')
   const [activeVideo, setActiveVideo] = useState<string | null>(null)
