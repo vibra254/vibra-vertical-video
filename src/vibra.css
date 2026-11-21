@@ -434,3 +434,50 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .auth-submit { width:100%; margin-top:18px; min-height:46px; justify-content:center; }
 .auth-forgot { margin-top:14px; }
 .auth-card .text-field { width:100%; }
+
+
+/* VIBRA WORLDWIDE official Midnight / Electric Blue / White theme */
+:root {
+  --vibra-overlay-text: #FFFFFF;
+  --vibra-muted-text: #AAB7C8;
+  --vibra-control-fill: rgba(8,13,24,.62);
+  --vibra-control-border: rgba(0,221,245,.24);
+  --vibra-header-fill: rgba(8,13,24,.78);
+  --vibra-seek-accent: #00DDF5;
+  --vibra-seek-track: rgba(255,255,255,.38);
+}
+body { background:#080D18; color:#FFFFFF; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline-color:#00DDF5; }
+::selection { background:#00DDF5; color:#080D18; }
+.app-shell { background:radial-gradient(ellipse at 56% 0%,rgba(0,221,245,.10),transparent 44%),#080D18; }
+.brand { color:#FFFFFF; }
+.brand span { color:#00DDF5; }
+.rail-link.selected { background:linear-gradient(100deg,rgba(0,221,245,.17),rgba(0,120,190,.10)); box-shadow:inset 2px 0 #00DDF5; }
+.rail-link.selected svg, .online-dot { color:#00DDF5; }
+.online-dot { background:#00DDF5; box-shadow:0 0 12px rgba(0,221,245,.65); }
+.rail-link.create-link { border-color:rgba(0,221,245,.42); color:#8AF3FF; }
+.page-heading .heading-period, .text-link, .quick-card button { color:#00DDF5; }
+.tip-banner { background:linear-gradient(110deg,rgba(0,221,245,.12),rgba(0,110,180,.10)); border-color:rgba(0,221,245,.2); }
+.tip-banner > svg, .feed-tab.active span { color:#00DDF5; background:#00DDF5; }
+.feed-tab.active { color:#FFFFFF; }
+.icon-button.is-active { color:#00DDF5; }
+.mood-card { background:linear-gradient(142deg,#10283A,#101827 70%); }
+.mood-card > span, .rail-footer span { color:#00DDF5; }
+.mood-orbit { border-color:rgba(0,221,245,.5); box-shadow:0 0 0 12px rgba(0,221,245,.06),0 0 0 28px rgba(0,221,245,.04); }
+.search-wrap:focus-within { border-color:rgba(0,221,245,.65); }
+.search-tags button:hover { border-color:rgba(0,221,245,.55); color:#8AF3FF; }
+.feature-panel { background:radial-gradient(ellipse at 95% 2%,rgba(0,221,245,.16),transparent 42%),linear-gradient(150deg,#142236,#0D1523 62%); }
+.profile-follow { background:#00DDF5; color:#06131B; }
+.profile-follow.following { color:#FFFFFF; background:#142033; border:1px solid rgba(0,221,245,.45); }
+.action-follow-badge { background:#00DDF5; color:#06131B; }
+.action-follow-badge:hover { background:#8AF3FF; }
+.action-follow-badge.following { background:#142033; border-color:#00DDF5; color:#FFFFFF; }
+.video-seek-range { background:#00DDF5; }
+.video-seek-thumb:focus-visible { outline-color:#00DDF5; }
+.social-badge:hover, .account-chip:hover { border-color:#00DDF5; }
+.auth-tabs button.chosen, .auth-submit { background:#00DDF5; border-color:#00DDF5; color:#06131B; }
+.auth-error { color:#FFB4B4; }
+@media (max-width:760px) {
+  .home-feed-shell .mobile-header { background:rgba(8,13,24,.58); }
+  .home-feed-shell .tip-banner { border-color:rgba(0,221,245,.25); }
+}
