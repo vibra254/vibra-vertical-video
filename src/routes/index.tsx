@@ -41,7 +41,7 @@ function VibraApp() {
   const [loadingVideos, setLoadingVideos] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [likedIds, setLikedIds] = useState<string[]>([])
-  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({})
+  const [serverLikes, setServerLikes] = useState<Record<string, number>>({})
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
   const [followedIds, setFollowedIds] = useState<string[]>([])
   const [savedIds, setSavedIds] = useState<string[]>(() => JSON.parse(localStorage.getItem('vibra_saved') || '[]'))
@@ -154,45 +154,70 @@ const sendAiMessage = async () => {
     loadVideos()
   }, [userId])
 
-  // Pakua likes na comments.
-  useEffect(() => {
-    if (!userId) return
+  // Pakua likes na comment counts kutoka Supabase kwa watumiaji wote.
+  const loadServerLikes = async () => {
+    const { data, error } = await supabase
+      .from('vibra_likes')
+      .select('video_id,user_email')
 
-    async function loadActivity() {
-      const { data: likes } = await supabase
-        .from('vibra_likes')
-        .select('video_id,user_email')
-
-      if (likes) {
-        const counts: Record<string, number> = {}
-        const mine: string[] = []
-
-        likes.forEach((like: any) => {
-          const id = String(like.video_id)
-          counts[id] = (counts[id] || 0) + 1
-          if (like.user_email === userId) mine.push(id)
-        })
-
-        setLikeCounts(counts)
-        setLikedIds(mine)
-      }
-
-      const { data: allComments } = await supabase
-        .from('vibra_comments')
-        .select('video_id')
-
-      if (allComments) {
-        const counts: Record<string, number> = {}
-        allComments.forEach((comment: any) => {
-          const id = String(comment.video_id)
-          counts[id] = (counts[id] || 0) + 1
-        })
-        setCommentCounts(counts)
-      }
+    if (error) {
+      console.error('Imeshindwa kupakia likes:', error.message)
+      return
     }
 
-    loadActivity()
+    const counts: Record<string, number> = {}
+    const mine: string[] = []
+    ;(data || []).forEach((like: any) => {
+      const id = String(like.video_id)
+      counts[id] = (counts[id] || 0) + 1
+      if (like.user_email === userId) mine.push(id)
+    })
+    setServerLikes(counts)
+    setLikedIds(mine)
+  }
+
+  const loadServerComments = async (clipKey: string) => {
+    if (!clipKey) return
+    setLoadingComments(true)
+    const { data, error } = await supabase
+      .from('vibra_comments')
+      .select('id,video_id,username,text,created_at')
+      .eq('video_id', clipKey)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Imeshindwa kupakia comments:', error.message)
+    } else {
+      setComments((data || []) as Comment[])
+    }
+    setLoadingComments(false)
+  }
+
+  useEffect(() => {
+    if (!userId) return
+    loadServerLikes()
+
+    async function loadCommentCounts() {
+      const { data, error } = await supabase
+        .from('vibra_comments')
+        .select('video_id')
+      if (error) {
+        console.error('Imeshindwa kupakia comment counts:', error.message)
+        return
+      }
+      const counts: Record<string, number> = {}
+      ;(data || []).forEach((comment: any) => {
+        const id = String(comment.video_id)
+        counts[id] = (counts[id] || 0) + 1
+      })
+      setCommentCounts(counts)
+    }
+    loadCommentCounts()
   }, [userId])
+
+  useEffect(() => {
+    if (activeVideo) loadServerComments(activeVideo)
+  }, [activeVideo])
 
   // Video inachezwa ikiwa imeonekana kwenye skrini.
   useEffect(() => {
@@ -256,17 +281,16 @@ const sendAiMessage = async () => {
   }
 
   const toggleLike = async (id: string) => {
-    if (workingLikeIds.includes(id)) return
+    if (workingLikeIds.includes(id) || !userId) return
 
     const alreadyLiked = likedIds.includes(id)
     setLikedIds(previous =>
       alreadyLiked ? previous.filter(item => item !== id) : [...previous, id]
     )
-    setLikeCounts(previous => ({
+    setServerLikes(previous => ({
       ...previous,
       [id]: Math.max(0, (previous[id] || 0) + (alreadyLiked ? -1 : 1)),
     }))
-    if (!userId) return
     setWorkingLikeIds(previous => [...previous, id])
 
     try {
@@ -276,48 +300,26 @@ const sendAiMessage = async () => {
           .delete()
           .eq('video_id', id)
           .eq('user_email', userId)
-
         if (error) throw error
       } else {
         const { error } = await supabase
           .from('vibra_likes')
           .insert({ video_id: id, user_email: userId })
-
         if (error) throw error
       }
+      await loadServerLikes()
     } catch (error: any) {
-      setLikedIds(previous =>
-        alreadyLiked ? [...previous, id] : previous.filter(item => item !== id)
-      )
-      setLikeCounts(previous => ({
-        ...previous,
-        [id]: Math.max(0, (previous[id] || 0) + (alreadyLiked ? 1 : -1)),
-      }))
+      await loadServerLikes()
       alert(error?.message || 'Like haijahifadhiwa.')
     } finally {
       setWorkingLikeIds(previous => previous.filter(item => item !== id))
     }
   }
 
-  const openComments = async (id: string) => {
+  const openComments = (id: string) => {
     setActiveVideo(id)
     setComments([])
     setCommentText('')
-    setLoadingComments(true)
-
-    const { data, error } = await supabase
-      .from('vibra_comments')
-      .select('id,video_id,username,text,created_at')
-      .eq('video_id', id)
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      alert(error.message)
-    } else {
-      setComments((data || []) as Comment[])
-    }
-
-    setLoadingComments(false)
   }
 
   const addComment = async () => {
@@ -344,12 +346,13 @@ const sendAiMessage = async () => {
     if (error) {
       alert(error.message)
     } else {
-      setComments(previous => [data as Comment, ...previous])
-      setCommentCounts(previous => ({
-        ...previous,
-        [activeVideo]: (previous[activeVideo] || 0) + 1,
-      }))
       setCommentText('')
+      await loadServerComments(activeVideo)
+      const { count } = await supabase
+        .from('vibra_comments')
+        .select('*', { count: 'exact', head: true })
+        .eq('video_id', activeVideo)
+      if (count !== null) setCommentCounts(previous => ({ ...previous, [activeVideo]: count }))
     }
 
     setSendingComment(false)
@@ -835,7 +838,7 @@ if (page === 'ai') {
 
               <button type="button" aria-label="Like video" onClick={e => { e.preventDefault(); e.stopPropagation(); void toggleLike(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                 <span style={{ fontSize: 32, lineHeight: 1 }}>{likedIds.includes(v.id) ? '❤️' : '🤍'}</span>
-                <small>{likeCounts[v.id] || 0}</small>
+                <small>{serverLikes[v.id] || 0}</small>
               </button>
 
               <button type="button" aria-label="Fungua comments" onClick={e => { e.preventDefault(); e.stopPropagation(); void openComments(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
