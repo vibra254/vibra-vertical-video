@@ -256,11 +256,9 @@ const sendAiMessage = async () => {
   }
 
   const toggleLike = async (id: string) => {
-    if (!userId || workingLikeIds.includes(id)) return
+    if (workingLikeIds.includes(id)) return
 
-    setWorkingLikeIds(previous => [...previous, id])
     const alreadyLiked = likedIds.includes(id)
-
     setLikedIds(previous =>
       alreadyLiked ? previous.filter(item => item !== id) : [...previous, id]
     )
@@ -268,6 +266,8 @@ const sendAiMessage = async () => {
       ...previous,
       [id]: Math.max(0, (previous[id] || 0) + (alreadyLiked ? -1 : 1)),
     }))
+    if (!userId) return
+    setWorkingLikeIds(previous => [...previous, id])
 
     try {
       if (alreadyLiked) {
@@ -321,7 +321,11 @@ const sendAiMessage = async () => {
   }
 
   const addComment = async () => {
-    if (!userId || !activeVideo || !commentText.trim()) return
+    if (!activeVideo || !commentText.trim()) return
+    if (!userId) {
+      alert('Subiri akaunti iunganishwe kisha ujaribu kutuma comment.')
+      return
+    }
 
     setSendingComment(true)
 
@@ -822,20 +826,17 @@ if (page === 'ai') {
               </div>
 
               {v.user_id !== userId && (
-                <div onClick={() => setFollowedIds(previous =>
-                  previous.includes(v.user_id || '')
-                    ? previous.filter(id => id !== v.user_id)
-                    : [...previous, v.user_id || '']
-                )} style={{
+                <button type="button" aria-label="Follow creator" onClick={e => { e.preventDefault(); e.stopPropagation(); setFollowedIds(previous => previous.includes(v.user_id || '') ? previous.filter(id => id !== v.user_id) : [...previous, v.user_id || '']) }} style={{
                   background: followedIds.includes(v.user_id || '') ? '#555' : '#ff2d55',
-                  borderRadius: '50%', padding: '2px 7px', marginTop: -25,
-                }}>{followedIds.includes(v.user_id || '') ? '✓' : '+'}</div>
+                  border: 0, color: '#fff', borderRadius: '50%', padding: '2px 7px', marginTop: -25,
+                  pointerEvents: 'auto', touchAction: 'manipulation',
+                }}>{followedIds.includes(v.user_id || '') ? '✓' : '+'}</button>
               )}
 
-              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); toggleLike(v.id) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleLike(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>
-                <div style={{ fontSize: 32 }}>{likedIds.includes(v.id) ? '❤️' : '🤍'}</div>
+              <button type="button" aria-label="Like video" onClick={e => { e.preventDefault(); e.stopPropagation(); void toggleLike(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                <span style={{ fontSize: 32, lineHeight: 1 }}>{likedIds.includes(v.id) ? '❤️' : '🤍'}</span>
                 <small>{likeCounts[v.id] || 0}</small>
-              </div>
+              </button>
 
               <button type="button" aria-label="Fungua comments" onClick={e => { e.preventDefault(); e.stopPropagation(); void openComments(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                 <span style={{ fontSize: 30, lineHeight: 1 }}>💬</span>
@@ -847,7 +848,7 @@ if (page === 'ai') {
                 <small>{savedIds.includes(v.id) ? 'Saved' : 'Save'}</small>
               </div>
 
-              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); shareVideo(v) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') shareVideo(v) }} style={{ fontSize: 30, cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>↗️</div>
+              <button type="button" aria-label="Share video" onClick={e => { e.preventDefault(); e.stopPropagation(); void shareVideo(v) }} style={{ fontSize: 30, cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0 }}>↗️</button>
             </div>
 
             <div style={{
