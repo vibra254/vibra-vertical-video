@@ -54,7 +54,7 @@ function VibraApp() {
   const [commentText, setCommentText] = useState('')
   const [loadingComments, setLoadingComments] = useState(false)
   const [sendingComment, setSendingComment] = useState(false)
-  const [workingLike, setWorkingLike] = useState<string | null>(null)
+  const [workingLikeIds, setWorkingLikeIds] = useState<string[]>([])
   const [search, setSearch] = useState('')
   const [progress, setProgress] = useState<Record<string, number>>({})
   const [durations, setDurations] = useState<Record<string, number>>({})
@@ -256,9 +256,9 @@ const sendAiMessage = async () => {
   }
 
   const toggleLike = async (id: string) => {
-    if (!userId || workingLike !== null) return
+    if (!userId || workingLikeIds.includes(id)) return
 
-    setWorkingLike(id)
+    setWorkingLikeIds(previous => [...previous, id])
     const alreadyLiked = likedIds.includes(id)
 
     setLikedIds(previous =>
@@ -295,7 +295,7 @@ const sendAiMessage = async () => {
       }))
       alert(error?.message || 'Like haijahifadhiwa.')
     } finally {
-      setWorkingLike(null)
+      setWorkingLikeIds(previous => previous.filter(item => item !== id))
     }
   }
 
