@@ -44,6 +44,7 @@ function VibraApp() {
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({})
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
   const [followedIds, setFollowedIds] = useState<string[]>([])
+  const [savedIds, setSavedIds] = useState<string[]>(() => JSON.parse(localStorage.getItem('vibra_saved') || '[]'))
   const [dp, setDp] = useState(() => localStorage.getItem('vibra_dp') || '')
   const [userName] = useState('Mr vibra')
   const [userHandle] = useState('@hamadoski')
@@ -234,6 +235,14 @@ const sendAiMessage = async () => {
       }
     })
   }, [activeVideoId, page, videos, muted])
+
+  const toggleSave = (id: string) => {
+    setSavedIds(previous => {
+      const next = previous.includes(id) ? previous.filter(item => item !== id) : [...previous, id]
+      localStorage.setItem('vibra_saved', JSON.stringify(next))
+      return next
+    })
+  }
 
   const toggleSound = (id: string) => {
     const video = videoRefs.current[id]
@@ -625,6 +634,10 @@ if (page === 'ai') {
           <div><b>{likedIds.length}</b><br/><small>Likes</small></div>
         </div>
 
+        <button onClick={() => setPage('saved')} style={{
+          width: '100%', padding: 12, marginBottom: 12, background: '#222',
+          color: '#fff', border: 0, borderRadius: 8,
+        }}>🔖 Saved Videos ({savedIds.length})</button>
         <button onClick={() => setPage('home')} style={{
           width: '100%', padding: 12, background: '#222',
           color: '#fff', border: 0, borderRadius: 8,
@@ -639,6 +652,26 @@ if (page === 'ai') {
             }} />
           ))}
         </div>
+        {bottomNav}
+      </div>
+    )
+  }
+
+  // SAVED VIDEOS
+  if (page === 'saved') {
+    const savedVideos = videos.filter(v => savedIds.includes(v.id))
+    return (
+      <div style={{ background: '#000', minHeight: '100vh', color: '#fff', fontFamily: 'sans-serif', padding: '16px 16px 100px', maxWidth: 500, margin: '0 auto' }}>
+        <h2>🔖 Saved Videos</h2>
+        <button onClick={() => setPage('me')} style={{ background: '#222', color: '#fff', border: 0, padding: 10, borderRadius: 8 }}>← Profile</button>
+        {savedVideos.length === 0 ? <p style={{ color: '#aaa' }}>Bado hujahifadhi video.</p> : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 14 }}>
+            {savedVideos.map(v => <div key={v.id} onClick={() => { setPage('home'); setActiveVideoId(v.id) }}>
+              <video src={v.video_url} muted playsInline style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', background: '#222', borderRadius: 8 }} />
+              <small>{v.username}</small>
+            </div>)}
+          </div>
+        )}
         {bottomNav}
       </div>
     )
@@ -803,6 +836,11 @@ if (page === 'ai') {
               <div onClick={() => openComments(v.id)} style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 30 }}>💬</div>
                 <small>{commentCounts[v.id] || 0}</small>
+              </div>
+
+              <div onClick={() => toggleSave(v.id)} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 30 }}>{savedIds.includes(v.id) ? '🔖' : '🔖'}</div>
+                <small>{savedIds.includes(v.id) ? 'Saved' : 'Save'}</small>
               </div>
 
               <div onClick={() => shareVideo(v)} style={{ fontSize: 30 }}>↗️</div>
