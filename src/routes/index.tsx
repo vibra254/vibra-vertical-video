@@ -22,7 +22,7 @@ type Video = {
 }
 
 type Comment = {
-  id: number
+  id?: number
   video_id: string
   username: string
   text: string
@@ -181,7 +181,7 @@ const sendAiMessage = async () => {
     setLoadingComments(true)
     const { data, error } = await supabase
       .from('vibra_comments')
-      .select('id,video_id,username,text,created_at')
+      .select('video_id,username,text,created_at')
       .eq('video_id', clipKey)
       .order('created_at', { ascending: false })
 
@@ -950,8 +950,8 @@ if (page === 'ai') {
                 <p style={{ color: '#aaa', textAlign: 'center' }}>Inapakia...</p>
               ) : comments.length === 0 ? (
                 <p style={{ color: '#aaa', textAlign: 'center' }}>Hakuna comment bado.</p>
-              ) : comments.map(comment => (
-                <div key={comment.id} style={{ padding: 10, borderBottom: '1px solid #333' }}>
+              ) : comments.map((comment, index) => (
+                <div key={comment.id ?? `${comment.created_at}-${index}`} style={{ padding: 10, borderBottom: '1px solid #333' }}>
                   <b>{comment.username}</b>
                   <p>{comment.text}</p>
                   <small style={{ color: '#888' }}>{new Date(comment.created_at).toLocaleString()}</small>
