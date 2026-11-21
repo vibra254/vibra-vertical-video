@@ -837,10 +837,10 @@ if (page === 'ai') {
                 <small>{likeCounts[v.id] || 0}</small>
               </div>
 
-              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); openComments(v.id) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') openComments(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>
-                <div style={{ fontSize: 30 }}>💬</div>
+              <button type="button" aria-label="Fungua comments" onClick={e => { e.preventDefault(); e.stopPropagation(); void openComments(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                <span style={{ fontSize: 30, lineHeight: 1 }}>💬</span>
                 <small>{commentCounts[v.id] || 0}</small>
-              </div>
+              </button>
 
               <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); toggleSave(v.id) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleSave(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>
                 <div style={{ fontSize: 30 }}>{savedIds.includes(v.id) ? '🔖' : '🔖'}</div>
@@ -924,14 +924,14 @@ if (page === 'ai') {
       {activeVideo !== null && (
         <div style={{
           position: 'fixed', inset: 0, background: '#000b',
-          zIndex: 100, display: 'flex', alignItems: 'flex-end',
+          zIndex: 99999, display: 'flex', alignItems: 'flex-end', pointerEvents: 'auto',
           justifyContent: 'center',
         }}>
           <div style={{
             width: '100%', maxWidth: 500, height: '70vh',
             background: '#171717', borderRadius: '18px 18px 0 0',
             color: '#fff', display: 'flex', flexDirection: 'column',
-            padding: 16,
+            padding: 16, position: 'relative', zIndex: 100000, pointerEvents: 'auto',
           }}>
             <div style={{
               display: 'flex', justifyContent: 'space-between',
