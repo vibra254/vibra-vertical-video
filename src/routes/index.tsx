@@ -455,18 +455,18 @@ const sendAiMessage = async () => {
     <div style={{
       position: 'fixed', bottom: 0, left: '50%',
       transform: 'translateX(-50%)', width: '100%',
-      maxWidth: '500px', background: '#050505',
+      maxWidth: '500px', background: '#080D18',
       display: 'flex', justifyContent: 'space-around',
       alignItems: 'center', padding: '9px 0',
       paddingBottom: 'max(9px, env(safe-area-inset-bottom))',
-      borderTop: '1px solid #292929', zIndex: 50, color: '#fff',
+      borderTop: '1px solid #142033', zIndex: 50, color: '#fff',
     }}>
-      <span onClick={() => setPage('home')} style={{cursor:'pointer', color:page==='home'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Home size={23}/><b>Home</b></span>
-      <span onClick={() => setPage('discover')} style={{cursor:'pointer', color:page==='discover'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Search size={23}/><b>Explore</b></span>
-      <span onClick={() => setUploadMenuOpen(true)} style={{background:'#ff0050', color:'#fff', width:54, height:44, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:10, cursor:'pointer'}}><Plus size={30}/></span>
-      <span onClick={() => setPage('ai')} style={{cursor:'pointer', color:'#b52cff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Bot size={24}/><b>VIBRA AI</b></span>
-      <span onClick={() => setPage('inbox')} style={{cursor:'pointer', color:page==='inbox'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Inbox size={23}/><b>Inbox</b></span>
-      <span onClick={() => setPage('me')} style={{cursor:'pointer', color:page==='me'?'#ff2d78':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><User size={23}/><b>Me</b></span>
+      <span onClick={() => setPage('home')} style={{cursor:'pointer', color:page==='home'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Home size={23}/><b>Home</b></span>
+      <span onClick={() => setPage('discover')} style={{cursor:'pointer', color:page==='discover'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Search size={23}/><b>Explore</b></span>
+      <span onClick={() => setUploadMenuOpen(true)} style={{background:'#00DDF5', color:'#fff', width:54, height:44, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:10, cursor:'pointer'}}><Plus size={30}/></span>
+      <span onClick={() => setPage('ai')} style={{cursor:'pointer', color:'#00DDF5', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Bot size={24}/><b>VIBRA AI</b></span>
+      <span onClick={() => setPage('inbox')} style={{cursor:'pointer', color:page==='inbox'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Inbox size={23}/><b>Inbox</b></span>
+      <span onClick={() => setPage('me')} style={{cursor:'pointer', color:page==='me'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><User size={23}/><b>Me</b></span>
     </div>
   )
 
@@ -477,7 +477,7 @@ const sendAiMessage = async () => {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexDirection: 'column', fontFamily: 'sans-serif',
       }}>
-        <h1 style={{ color: '#ff2d55', fontSize: '48px', margin: 0 }}>VIBRA</h1>
+        <h1 style={{ color: '#00DDF5', fontSize: '48px', margin: 0 }}>VIBRA</h1>
         <p>VIBRA WORLDWIDE</p>
         <p style={{ color: '#aaa' }}>Inaunganisha...</p>
       </div>
@@ -487,7 +487,7 @@ const sendAiMessage = async () => {
   if (authError) {
     return (
       <div style={{ background: '#000', color: '#fff', minHeight: '100vh', padding: 30 }}>
-        <h1 style={{ color: '#ff2d55' }}>VIBRA</h1>
+        <h1 style={{ color: '#00DDF5' }}>VIBRA</h1>
         <p>Imeshindikana kuunganisha akaunti ya muda.</p>
         <p style={{ color: '#aaa' }}>{authError}</p>
         <button onClick={() => window.location.reload()}>Jaribu tena</button>
@@ -498,7 +498,7 @@ const sendAiMessage = async () => {
 if (page === 'ai') {
   return (
     <div style={{
-      background: '#080810',
+      background: '#080D18',
       color: '#fff',
       minHeight: '100vh',
       maxWidth: 500,
@@ -512,17 +512,17 @@ if (page === 'ai') {
         display: 'flex',
         alignItems: 'center',
         gap: 14,
-        borderBottom: '1px solid #292936',
+        borderBottom: '1px solid #142033',
       }}>
         <button onClick={() => setPage('home')}>←</button>
-        <Bot size={28} color="#ff2d78" />
+        <Bot size={28} color="#00DDF5" />
         <div>
           <b>VIBRA AI</b>
           <div style={{ color: '#aaa', fontSize: 12 }}>
             Your smart assistant
           </div>
         </div>
-        <Sparkles color="#ff2d78" />
+        <Sparkles color="#00DDF5" />
       </div>
 
       <div style={{
@@ -533,7 +533,7 @@ if (page === 'ai') {
       }}>
         {aiMessages.length === 0 && (
           <div style={{ textAlign: 'center', marginTop: 70 }}>
-            <Bot size={55} color="#ff2d78" />
+            <Bot size={55} color="#00DDF5" />
             <h2>Karibu VIBRA AI!</h2>
             <p style={{ color: '#aaa' }}>
               Uliza swali lolote. Niko hapa kukusaidia.
@@ -543,7 +543,7 @@ if (page === 'ai') {
 
         {aiMessages.map((message, index) => (
           <div key={index} style={{
-            background: message.role === 'user' ? '#6325a8' : '#20202c',
+            background: message.role === 'user' ? '#007F9E' : '#142033',
             padding: 14,
             borderRadius: 16,
             marginBottom: 12,
@@ -555,7 +555,7 @@ if (page === 'ai') {
           </div>
         ))}
 
-        {aiLoading && <p style={{ color: '#ff2d78' }}>VIBRA AI inafikiria...</p>}
+        {aiLoading && <p style={{ color: '#00DDF5' }}>VIBRA AI inafikiria...</p>}
       </div>
 
       <div style={{
@@ -564,7 +564,7 @@ if (page === 'ai') {
         padding: 12,
         position: 'sticky',
         bottom: 0,
-        background: '#080810',
+        background: '#080D18',
       }}>
         <input
           value={aiInput}
@@ -575,7 +575,7 @@ if (page === 'ai') {
             padding: 14,
             borderRadius: 25,
             border: '1px solid #444',
-            background: '#20202c',
+            background: '#142033',
             color: '#fff',
             outline: 'none',
           }}
@@ -584,7 +584,7 @@ if (page === 'ai') {
           onClick={sendAiMessage}
           disabled={aiLoading || !aiInput.trim()}
           style={{
-            background: '#ff2d78',
+            background: '#00DDF5',
             color: '#fff',
             border: 0,
             borderRadius: 25,
@@ -612,13 +612,13 @@ if (page === 'ai') {
             width: 115, height: 115, borderRadius: '50%', background: '#333',
             margin: 'auto', display: 'flex', alignItems: 'center',
             justifyContent: 'center', fontSize: 50, overflow: 'hidden',
-            border: '3px solid #ff2d55',
+            border: '3px solid #00DDF5',
           }}>
             {dp ? <img src={dp} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
           </div>
           <p style={{ color: '#aaa', fontSize: 13 }}>Bonyeza picha kubadilisha</p>
           <button onClick={() => imageRef.current?.click()} style={{
-            background: '#ff2d55', color: '#fff', border: 0,
+            background: '#00DDF5', color: '#fff', border: 0,
             padding: '12px 25px', borderRadius: 25, fontWeight: 800,
           }}>Change DP - Badilisha Picha</button>
           <br/>
@@ -741,7 +741,7 @@ if (page === 'ai') {
         background: 'linear-gradient(#0009,transparent)',
         pointerEvents: 'none',
       }}>
-        <b style={{ fontSize: 25, color: '#ff2d55' }}>VIBRA</b>
+        <b style={{ fontSize: 25, color: '#00DDF5' }}>VIBRA</b>
         <span style={{ fontWeight: 800 }}>For You</span>
         <span onClick={() => setPage('discover')} style={{ fontSize: 22, pointerEvents: 'auto' }}>🔍</span>
       </div>
@@ -749,14 +749,14 @@ if (page === 'ai') {
       {uploading && (
         <div style={{
           position: 'fixed', top: 65, left: 0, right: 0,
-          zIndex: 80, textAlign: 'center', background: '#ff2d55',
+          zIndex: 80, textAlign: 'center', background: '#00DDF5',
           padding: 10, color: '#fff',
         }}>Inapakia video yako...</div>
       )}
 
       {loadingVideos ? (
         <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-          <h1 style={{ color: '#ff2d55' }}>VIBRA</h1>
+          <h1 style={{ color: '#00DDF5' }}>VIBRA</h1>
           <p>Inapakia video...</p>
         </div>
       ) : videos.length === 0 ? (
@@ -765,11 +765,11 @@ if (page === 'ai') {
           justifyContent: 'center', flexDirection: 'column',
           textAlign: 'center', padding: 30,
         }}>
-          <h1 style={{ color: '#ff2d55', fontSize: 42 }}>VIBRA</h1>
+          <h1 style={{ color: '#00DDF5', fontSize: 42 }}>VIBRA</h1>
           <h3>Karibu VIBRA WORLDWIDE 🌍</h3>
           <p style={{ color: '#aaa' }}>Bado hakuna video. Kuwa wa kwanza kupakia video!</p>
           <button onClick={() => fileRef.current?.click()} style={{
-            background: '#ff2d55', color: '#fff', border: 0,
+            background: '#00DDF5', color: '#fff', border: 0,
             padding: '14px 25px', borderRadius: 25, fontWeight: 800,
           }}>＋ Upload Video</button>
         </div>
@@ -827,7 +827,7 @@ if (page === 'ai') {
 
               {v.user_id !== userId && (
                 <button type="button" aria-label="Follow creator" onClick={e => { e.preventDefault(); e.stopPropagation(); setFollowedIds(previous => previous.includes(v.user_id || '') ? previous.filter(id => id !== v.user_id) : [...previous, v.user_id || '']) }} style={{
-                  background: followedIds.includes(v.user_id || '') ? '#555' : '#ff2d55',
+                  background: followedIds.includes(v.user_id || '') ? '#555' : '#00DDF5',
                   border: 0, color: '#fff', borderRadius: '50%', padding: '2px 7px', marginTop: -25,
                   pointerEvents: 'auto', touchAction: 'manipulation',
                 }}>{followedIds.includes(v.user_id || '') ? '✓' : '+'}</button>
@@ -865,7 +865,7 @@ if (page === 'ai') {
               height: 3, background: '#ffffff55',
             }}>
               <div style={{
-                height: '100%', background: '#ff2d55',
+                height: '100%', background: '#00DDF5',
                 width: `${durations[v.id] ? Math.min(100, (progress[v.id] || 0) / durations[v.id] * 100) : 0}%`,
               }} />
             </div>
@@ -906,12 +906,12 @@ if (page === 'ai') {
             <h3 style={{ textAlign: 'center', marginTop: 4 }}>＋ Create on VIBRA</h3>
             <button onClick={() => { setUploadMenuOpen(false); recordRef.current?.click() }} style={{
               width: '100%', padding: 16, marginTop: 10, border: 0,
-              borderRadius: 12, background: '#ff2d55', color: '#fff',
+              borderRadius: 12, background: '#00DDF5', color: '#fff',
               fontSize: 16, fontWeight: 800,
             }}>🎥 Record video</button>
             <button onClick={() => { setUploadMenuOpen(false); fileRef.current?.click() }} style={{
               width: '100%', padding: 16, marginTop: 10, border: '1px solid #555',
-              borderRadius: 12, background: '#292929', color: '#fff',
+              borderRadius: 12, background: '#142033', color: '#fff',
               fontSize: 16, fontWeight: 800,
             }}>🖼️ Choose from Gallery</button>
             <button onClick={() => setUploadMenuOpen(false)} style={{
@@ -965,12 +965,12 @@ if (page === 'ai') {
                 style={{
                   flex: 1, minWidth: 0, padding: 12,
                   borderRadius: 22, border: '1px solid #444',
-                  background: '#292929', color: '#fff',
+                  background: '#142033', color: '#fff',
                 }}
               />
               <button onClick={addComment} disabled={sendingComment || !commentText.trim()}
                 style={{
-                  background: '#ff2d55', color: '#fff',
+                  background: '#00DDF5', color: '#fff',
                   border: 0, borderRadius: 22, padding: '0 16px',
                 }}>
                 {sendingComment ? '...' : 'Send'}
