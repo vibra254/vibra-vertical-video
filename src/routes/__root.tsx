@@ -1,31 +1,75 @@
-
-import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { useEffect } from 'react'
-
-function RootComponent() {
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .catch((error) => console.error('VIBRA SW:', error))
-    }
-  }, [])
-
-  return <Outlet />
-}
+import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-start'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import * as React from 'react'
+import { DefaultCatchBoundary } from './-components/DefaultCatchBoundary'
+import { NotFound } from './-components/NotFound'
+import appCss from '@/styles/app.css?url'
+import { seo } from '@/utils/seo'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { title: 'VIBRA WORLDWIDE' },
-      { name: 'theme-color', content: '#000000' },
-      { name: 'description', content: 'VIBRA WORLDWIDE - Short Videos for Everyone' },
-      { name: 'mobile-web-app-capable', content: 'yes' },
-      { name: 'apple-mobile-web-app-capable', content: 'yes' },
-      { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+      {
+        charSet: 'utf-8',
+      },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
+      },
+      ...seo({
+        title: 'VIBRA | Watch. Create. Earn.',
+        description:
+          'VIBRA is the next-gen short video platform. Watch viral videos, create content with AI tools, grow your audience and earn money. Join VIBRA Worldwide.',
+      }),
     ],
     links: [
-      { rel: 'manifest', href: '/manifest.webmanifest' },
+      {
+        rel: 'manifest',
+        href: '/manifest.webmanifest',
+      },
+      {
+        rel: 'stylesheet',
+        href: appCss,
+      },
+    ],
+    scripts: [
+      {
+        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXX',
+        async: true,
+        crossOrigin: 'anonymous',
+      },
     ],
   }),
+  errorComponent: (props) => {
+    return (
+      <RootDocument>
+        <DefaultCatchBoundary {...props} />
+      </RootDocument>
+    )
+  },
+  notFoundComponent: () => <NotFound />,
   component: RootComponent,
 })
+
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
+  )
+}
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <TanStackRouterDevtools position="bottom-right" />
+        <Scripts />
+      </body>
+    </html>
+  )
+}
