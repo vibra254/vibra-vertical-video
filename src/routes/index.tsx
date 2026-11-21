@@ -44,8 +44,8 @@ function VibraApp() {
   const [serverLikes, setServerLikes] = useState<Record<string, number>>({})
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
   const [followedIds, setFollowedIds] = useState<string[]>([])
-  const [savedIds, setSavedIds] = useState<string[]>(() => JSON.parse(localStorage.getItem('vibra_saved') || '[]'))
-  const [dp, setDp] = useState(() => localStorage.getItem('vibra_dp') || '')
+  const [savedIds, setSavedIds] = useState<string[]>([])
+  const [dp, setDp] = useState('')
   const [userName] = useState('Mr vibra')
   const [userHandle] = useState('@hamadoski')
   const [activeVideo, setActiveVideo] = useState<string | null>(null)
@@ -65,6 +65,17 @@ function VibraApp() {
   const imageRef = useRef<HTMLInputElement>(null)
   const [uploadMenuOpen, setUploadMenuOpen] = useState(false)
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
+
+  // Soma data za ndani baada ya ukurasa kufunguka (salama kwa server-side rendering).
+  useEffect(() => {
+    try {
+      setSavedIds(JSON.parse(localStorage.getItem('vibra_saved') || '[]'))
+      setDp(localStorage.getItem('vibra_dp') || '')
+    } catch {
+      setSavedIds([])
+      setDp('')
+    }
+  }, [])
   
 const sendAiMessage = async () => {
   const question = aiInput.trim()
@@ -331,7 +342,7 @@ const sendAiMessage = async () => {
 
     setSendingComment(true)
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('vibra_comments')
       .insert({
         video_id: activeVideo,
@@ -340,8 +351,6 @@ const sendAiMessage = async () => {
         avatar: dp || '',
         text: commentText.trim(),
       })
-      .select('id,video_id,username,text,created_at')
-      .single()
 
     if (error) {
       alert(error.message)
