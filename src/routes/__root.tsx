@@ -1,5 +1,4 @@
 import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import * as React from 'react'
 import appCss from '@/styles/app.css?url'
 import { seo } from '@/utils/seo'
@@ -7,13 +6,8 @@ import { seo } from '@/utils/seo'
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      {
-        charSet: 'utf-8',
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ...seo({
         title: 'VIBRA | Watch. Create. Earn.',
         description:
@@ -21,14 +15,8 @@ export const Route = createRootRoute({
       }),
     ],
     links: [
-      {
-        rel: 'manifest',
-        href: '/manifest.webmanifest',
-      },
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
+      { rel: 'manifest', href: '/manifest.webmanifest' },
+      { rel: 'stylesheet', href: appCss },
     ],
     scripts: [
       {
@@ -57,7 +45,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
       </body>
     </html>
