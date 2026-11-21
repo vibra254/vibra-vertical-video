@@ -803,11 +803,15 @@ if (page === 'ai') {
               borderRadius: 25, fontSize: 20,
             }}>{muted ? '🔇' : '🔊'}</div>
 
-            <div style={{
-              position: 'absolute', right: 12, bottom: 115,
-              display: 'flex', flexDirection: 'column',
-              gap: 20, alignItems: 'center',
-            }}>
+            <div
+              onClick={e => e.stopPropagation()}
+              style={{
+                position: 'absolute', right: 12, bottom: 115,
+                zIndex: 50, pointerEvents: 'auto',
+                display: 'flex', flexDirection: 'column',
+                gap: 20, alignItems: 'center',
+                touchAction: 'manipulation',
+              }}>
               <div onClick={() => v.user_id === userId && setPage('me')} style={{
                 width: 48, height: 48, borderRadius: '50%',
                 background: '#333', border: '2px solid white',
@@ -828,22 +832,22 @@ if (page === 'ai') {
                 }}>{followedIds.includes(v.user_id || '') ? '✓' : '+'}</div>
               )}
 
-              <div onClick={() => toggleLike(v.id)} style={{ textAlign: 'center' }}>
+              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); toggleLike(v.id) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleLike(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>
                 <div style={{ fontSize: 32 }}>{likedIds.includes(v.id) ? '❤️' : '🤍'}</div>
                 <small>{likeCounts[v.id] || 0}</small>
               </div>
 
-              <div onClick={() => openComments(v.id)} style={{ textAlign: 'center' }}>
+              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); openComments(v.id) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') openComments(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>
                 <div style={{ fontSize: 30 }}>💬</div>
                 <small>{commentCounts[v.id] || 0}</small>
               </div>
 
-              <div onClick={() => toggleSave(v.id)} style={{ textAlign: 'center' }}>
+              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); toggleSave(v.id) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleSave(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>
                 <div style={{ fontSize: 30 }}>{savedIds.includes(v.id) ? '🔖' : '🔖'}</div>
                 <small>{savedIds.includes(v.id) ? 'Saved' : 'Save'}</small>
               </div>
 
-              <div onClick={() => shareVideo(v)} style={{ fontSize: 30 }}>↗️</div>
+              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); shareVideo(v) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') shareVideo(v) }} style={{ fontSize: 30, cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>↗️</div>
             </div>
 
             <div style={{
