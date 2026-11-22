@@ -90,6 +90,8 @@ function VibraApp() {
   const [progress, setProgress] = useState<Record<string, number>>({})
   const [durations, setDurations] = useState<Record<string, number>>({})
   const [muted, setMuted] = useState(true)
+  const [lyricsVideoId, setLyricsVideoId] = useState<string | null>(null)
+  const [lyricsByVideo, setLyricsByVideo] = useState<Record<string, string>>({})
 
   const fileRef = useRef<HTMLInputElement>(null)
   const recordRef = useRef<HTMLInputElement>(null)
@@ -106,6 +108,7 @@ function VibraApp() {
       setDp(localStorage.getItem('vibra_dp') || '')
       setUserName(localStorage.getItem('vibra_name') || 'Mr vibra')
       setLanguage(localStorage.getItem('vibra_language') || 'sw')
+      setLyricsByVideo(JSON.parse(localStorage.getItem('vibra_lyrics') || '{}'))
     } catch {}
   }, [])
   const toggleLanguage = () => {
@@ -152,7 +155,7 @@ useEffect(()=>{if(userId)loadVideos()},[userId])
 
   // Demo likes na comments zinatunzwa ndani ya app.
 const loadServerLikes=async()=>{}
-const loadServerComments=async(_clipKey:string)=>{setComments([]);setLoadingComments(false)}
+const loadServerComments=async(clipKey:string)=>{try{setComments(JSON.parse(localStorage.getItem('vibra_comments_'+clipKey)||'[]'))}catch{setComments([])}setLoadingComments(false)}
 useEffect(()=>{try{setLikedIds(JSON.parse(localStorage.getItem('vibra_demo_likes')||'[]'))}catch{setLikedIds([])}},[userId])
 
   useEffect(() => {
@@ -233,13 +236,14 @@ const toggleLike=async(id:string)=>{
 }
 const openComments = (id: string) => {
     setActiveVideo(id)
-    setComments([])
     setCommentText('')
+    try { setComments(JSON.parse(localStorage.getItem('vibra_comments_'+id)||'[]')) } catch { setComments([]) }
   }
 
 const addComment=async()=>{
  if(!activeVideo||!commentText.trim())return
- setSendingComment(true);setComments(p=>[...p,{video_id:activeVideo,username:userHandle,text:commentText.trim(),created_at:new Date().toISOString()}])
+ const entry: Comment={video_id:activeVideo,username:userHandle,text:commentText.trim(),created_at:new Date().toISOString()}
+ setSendingComment(true);setComments(p=>{const next=[...p,entry];try{localStorage.setItem('vibra_comments_'+activeVideo,JSON.stringify(next))}catch{}return next})
  setCommentCounts(p=>({...p,[activeVideo]:(p[activeVideo]||0)+1}));setCommentText('');setSendingComment(false)
 }
 // Upload video ya demo kwenye simu hii pekee.
@@ -279,21 +283,37 @@ const changePhoto = (event: ChangeEvent<HTMLInputElement>) => {
   }
 
   const shareVideo = async (video: Video) => {
+    const link = video.video_url
     try {
-      if (navigator.share) {
-        await navigator.share({
-          title: 'VIBRA WORLDWIDE',
-          text: video.caption,
-          url: video.video_url,
-        })
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(link)
+        alert(language === 'sw' ? 'Link ya video imenakiliwa.' : 'Video link copied.')
       } else {
-        await navigator.clipboard.writeText(video.video_url)
-        alert('Link imenakiliwa.')
+        const field = document.createElement('textarea')
+        field.value = link
+        field.style.position = 'fixed'
+        field.style.opacity = '0'
+        document.body.appendChild(field)
+        field.select()
+        const copied = document.execCommand('copy')
+        field.remove()
+        alert(copied ? (language === 'sw' ? 'Link ya video imenakiliwa.' : 'Video link copied.') : (language === 'sw' ? 'Imeshindikana kunakili link.' : 'Could not copy the link.'))
       }
     } catch {
-      // Mtumiaji akifunga share, hakuna hatua inayohitajika.
+      alert(language === 'sw' ? 'Imeshindikana kunakili link.' : 'Could not copy the link.')
     }
   }
+
+  const saveLyrics = (videoId: string) => {
+    const current = lyricsByVideo[videoId] || ''
+    const value = window.prompt(language === 'sw' ? 'Weka maneno ya wimbo (lyrics):' : 'Enter song lyrics:', current)
+    if (value === null) return
+    const next = { ...lyricsByVideo, [videoId]: value.trim() }
+    setLyricsByVideo(next)
+    try { localStorage.setItem('vibra_lyrics', JSON.stringify(next)) } catch {}
+    setLyricsVideoId(videoId)
+  }
+
   const bottomNav = (
     <div style={{
       position: 'fixed', bottom: 0, left: '50%',
@@ -651,14 +671,14 @@ if (page === 'ai') {
                 gap: 20, alignItems: 'center',
                 touchAction: 'manipulation',
               }}>
-              <div onClick={() => v.user_id === userId && setPage('me')} style={{
+              <button type="button" aria-label="Fungua Profile ya @hamadoski" onClick={e => { e.preventDefault(); e.stopPropagation(); setPage('me') }} style={{
                 width: 48, height: 48, borderRadius: '50%',
                 background: '#333', border: '2px solid white',
                 display: 'flex', alignItems: 'center',
                 justifyContent: 'center', overflow: 'hidden',
               }}>
-                {v.avatar ? <img src={v.avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
-              </div>
+                {dp ? <img src={dp} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (v.avatar ? <img src={v.avatar} alt="Creator" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤')}
+              </button>
 
               {v.user_id !== userId && (
                 <button type="button" aria-label="Follow creator" onClick={e => { e.preventDefault(); e.stopPropagation(); toggleFollow(v.user_id || '') }} style={{
@@ -675,7 +695,7 @@ if (page === 'ai') {
 
               <button type="button" aria-label="Fungua comments" onClick={e => { e.preventDefault(); e.stopPropagation(); void openComments(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                 <span style={{ fontSize: 30, lineHeight: 1 }}>💬</span>
-                <small>{commentCounts[v.id] || 0}</small>
+                <small>{commentCounts[v.id] ?? 0}</small>
               </button>
 
               <button type="button" aria-label="Hifadhi video" onClick={e => { e.preventDefault(); e.stopPropagation(); toggleSave(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
@@ -683,8 +703,20 @@ if (page === 'ai') {
                 <small>{savedIds.includes(v.id) ? 'Saved' : 'Save'}</small>
               </button>
 
-              <button type="button" aria-label="Share video" onClick={e => { e.preventDefault(); e.stopPropagation(); void shareVideo(v) }} style={{ fontSize: 30, cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0 }}>↗️</button>
+              <button type="button" aria-label="Share video" onClick={e => { e.preventDefault(); e.stopPropagation(); void shareVideo(v) }} style={{ fontSize: 30, cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0 }}>🔗</button>
+
+              <button type="button" aria-label="Onyesha lyrics" onClick={e => { e.preventDefault(); e.stopPropagation(); setLyricsVideoId(lyricsVideoId === v.id ? null : v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                <span style={{ fontSize: 28, lineHeight: 1 }}>🎵</span>
+                <small>Lyrics</small>
+              </button>
             </div>
+
+            {lyricsVideoId === v.id && (
+              <div style={{ position: 'absolute', left: 12, right: 72, bottom: 175, zIndex: 95, maxHeight: '28vh', overflowY: 'auto', background: '#000c', border: '1px solid #ffffff44', borderRadius: 12, padding: 12, color: '#fff', whiteSpace: 'pre-wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}><b>🎵 Lyrics</b><button type="button" onClick={() => saveLyrics(v.id)} style={{ background: '#00DDF5', color: '#001018', border: 0, borderRadius: 14, padding: '5px 9px', fontWeight: 700 }}>{lyricsByVideo[v.id] ? (language === 'sw' ? 'Hariri' : 'Edit') : (language === 'sw' ? 'Ongeza lyrics' : 'Add lyrics')}</button></div>
+                <div style={{ fontSize: 13, color: '#eee' }}>{lyricsByVideo[v.id] || (language === 'sw' ? 'Bado hakuna lyrics za wimbo huu. Bonyeza “Ongeza lyrics” kuweka maneno ya wimbo.' : 'No lyrics have been added for this video yet. Tap “Add lyrics” to enter them.')}</div>
+              </div>
+            )}
 
             <div style={{
               position: 'absolute', bottom: 100, left: 14, right: 75,
