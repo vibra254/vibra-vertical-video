@@ -182,6 +182,12 @@ useEffect(()=>{try{setLikedIds(JSON.parse(localStorage.getItem('vibra_demo_likes
     return () => observer.disconnect()
   }, [videos, page])
 
+  useEffect(() => {
+    if (page !== 'home' || !activeVideoId) return
+    const target = document.querySelector(`[data-video-id="${activeVideoId}"]`)
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [page, activeVideoId, videos])
+
   // Simamisha video zote isipokuwa iliyo mbele.
   useEffect(() => {
     Object.entries(videoRefs.current).forEach(([id, video]) => {
@@ -300,7 +306,7 @@ const changePhoto = (event: ChangeEvent<HTMLInputElement>) => {
     }}>
       <span onClick={() => setPage('home')} style={{cursor:'pointer', color:page==='home'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Home size={23}/><b>{language==='sw'?'Nyumbani':'Home'}</b></span>
       <span onClick={() => setPage('discover')} style={{cursor:'pointer', color:page==='discover'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Search size={23}/><b>{language==='sw'?'Tafuta':'Explore'}</b></span>
-      <span onClick={() => setUploadMenuOpen(true)} style={{background:'#00DDF5', color:'#fff', width:54, height:44, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:10, cursor:'pointer'}}><Plus size={30}/></span>
+      <span onClick={() => {setPage('home');setUploadMenuOpen(true)}} style={{background:'#00DDF5', color:'#fff', width:54, height:44, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:10, cursor:'pointer'}}><Plus size={30}/></span>
       <span onClick={() => setPage('ai')} style={{cursor:'pointer', color:'#00DDF5', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Bot size={24}/><b>VIBRA AI</b></span>
       <span onClick={() => setPage('inbox')} style={{cursor:'pointer', color:page==='inbox'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><Inbox size={23}/><b>{language==='sw'?'Ujumbe':'Inbox'}</b></span>
       <span onClick={() => setPage('me')} style={{cursor:'pointer', color:page==='me'?'#00DDF5':'#fff', display:'flex', flexDirection:'column', alignItems:'center', gap:3, fontSize:11}}><User size={23}/><b>{language==='sw'?'Wasifu':'Profile'}</b></span>
