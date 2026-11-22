@@ -677,7 +677,7 @@ if (page === 'ai') {
                 display: 'flex', alignItems: 'center',
                 justifyContent: 'center', overflow: 'hidden',
               }}>
-                {dp ? <img src={dp} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (v.avatar ? <img src={v.avatar} alt="Creator" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤')}
+                {v.avatar ? <img src={v.avatar} alt="Creator" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (v.user_id === userId && dp ? <img src={dp} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤')}
               </button>
 
               {v.user_id !== userId && (
