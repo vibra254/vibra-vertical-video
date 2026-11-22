@@ -74,8 +74,8 @@ body{background:#0a0a0a;color:#fff}
 </div>
 
 <script>
-const SUPABASE_URL = "WEKA_HAPA_SUPABASE_URL_YAKO";
-const SUPABASE_KEY = "WEKA_HAPA_SUPABASE_ANON_KEY_YAKO";
+const SUPABASE_URL = "https://wxqimmnubggkfzmiqdka.supabase.co";
+const SUPABASE_KEY = "sb_publishable_dBA5ATYY-IxHw2EPyNVW5Q_Zet5GRcN";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const LANGS = {
@@ -97,14 +97,45 @@ function renderLangBar(){
   document.getElementById('langBar').innerHTML = Object.keys(flags).map(k=>`<button onclick="setLang('${k}')">${flags[k]}</button>`).join('');
 }
 
-async function loginGoogle(){ await supabase.auth.signInWithOAuth({provider:'google'}); }
+async function loginGoogle(){
+  try {
+    const {error}=await supabase.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:window.location.origin}
+    });
+    if(error) alert('Google Login imeshindikana: '+error.message);
+  } catch(e) { alert('Tatizo la Google Login. Hakikisha Google provider imewashwa Supabase.'); }
+}
 async function loginEmail(){
-  const email=document.getElementById('email').value, password=document.getElementById('password').value;
-  let {data,error} = await supabase.auth.signInWithPassword({email,password});
-  if(error){ let r=await supabase.auth.signUp({email,password}); if(r.error) return alert(r.error.message); data=r.data; }
-  // Tengeneza profile kama mpya - @Mr Vibra kwa ajili yako
-  await supabase.from('profiles').upsert({id:data.user.id, username: email.split('@')[0], language: currentLang});
-  checkUser();
+  const email=document.getElementById('email').value.trim().toLowerCase();
+  const password=document.getElementById('password').value;
+  if(!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return alert('Weka email sahihi.');
+  if(password.length<6) return alert('Password iwe na angalau herufi/namba 6.');
+  const btn=document.querySelector('.btn-email');
+  if(btn){btn.disabled=true;btn.textContent='Inasubiri...';}
+  try {
+    let {data,error}=await supabase.auth.signInWithPassword({email,password});
+    if(error && /invalid login credentials/i.test(error.message)){
+      const r=await supabase.auth.signUp({email,password,options:{data:{preferred_language:currentLang}}});
+      if(r.error) throw r.error;
+      data=r.data;
+      if(!data.session){
+        alert('Usajili umepokelewa. Fungua email yako uthibitishe akaunti, kisha urudi hapa uingie.');
+        return;
+      }
+    } else if(error) throw error;
+    if(!data.user) throw new Error('Akaunti haikupatikana. Jaribu tena.');
+    const {error:profileError}=await supabase.from('profiles').upsert(
+      {id:data.user.id,username:email.split('@')[0],language:currentLang},
+      {onConflict:'id'}
+    );
+    if(profileError) console.warn('Profile haijahifadhiwa:',profileError.message);
+    await checkUser();
+  } catch(e) {
+    alert('Imeshindikana kuingia/kusajili: '+(e.message||'Jaribu tena.'));
+  } finally {
+    if(btn){btn.disabled=false;btn.textContent='Ingia / Jisajili';}
+  }
 }
 async function checkUser(){
   const {data:{user}} = await supabase.auth.getUser();
