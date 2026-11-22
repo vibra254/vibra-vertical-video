@@ -37,6 +37,12 @@ function VibraApp() {
   const [userId, setUserId] = useState('')
   const [authReady, setAuthReady] = useState(false)
   const [authError, setAuthError] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [authBusy, setAuthBusy] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
+  const [language, setLanguage] = useState('sw')
   const [videos, setVideos] = useState<Video[]>([])
   const [loadingVideos, setLoadingVideos] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -105,42 +111,103 @@ const sendAiMessage = async () => {
     setAiLoading(false)
   }
 }
-  // Unganisha akaunti ya muda ya mtumiaji.
+  // Angalia session iliyopo bila kuzuia app kwa anonymous login.
   useEffect(() => {
     let mounted = true
-
-    async function startSession() {
-      try {
-        const { data: sessionData, error: sessionError } =
-          await supabase.auth.getSession()
-
-        if (sessionError) throw sessionError
-
-        let currentUser = sessionData.session?.user
-
-        if (!currentUser) {
-          const { data, error } = await supabase.auth.signInAnonymously()
-          if (error) throw error
-          currentUser = data.user
-        }
-
-        if (!currentUser) throw new Error('Imeshindikana kupata akaunti.')
-
-        if (mounted) {
-          setUserId(currentUser.id)
-          setAuthReady(true)
-        }
-      } catch (error: any) {
-        if (mounted) {
-          setAuthError(error?.message || 'Tatizo la kuunganisha Supabase.')
-          setAuthReady(true)
-        }
+    const timer = window.setTimeout(() => {
+      if (mounted) {
+        setAuthError('Muunganisho umechukua muda mrefu. Ingia tena au jaribu upya.')
+        setAuthReady(true)
       }
-    }
+    }, 10000)
 
-    startSession()
-    return () => { mounted = false }
+    supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (error) throw error
+        if (!mounted) return
+        setUserId(data.session?.user?.id || '')
+        setAuthError('')
+        setAuthReady(true)
+      })
+      .catch((error: any) => {
+        if (!mounted) return
+        setAuthError(error?.message || 'Tatizo la kuunganisha Supabase.')
+        setAuthReady(true)
+      })
+      .finally(() => window.clearTimeout(timer))
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return
+      setUserId(session?.user?.id || '')
+      setAuthReady(true)
+      if (session?.user) setAuthError('')
+    })
+
+    return () => {
+      mounted = false
+      window.clearTimeout(timer)
+      listener.subscription.unsubscribe()
+    }
   }, [])
+
+  const submitAuth = async () => {
+    if (!email.trim() || !password) {
+      alert('Weka email na password kwanza.')
+      return
+    }
+    if (password.length < 6) {
+      alert('Password iwe na herufi/namba angalau 6.')
+      return
+    }
+    setAuthBusy(true)
+    setAuthError('')
+    try {
+      if (authMode === 'signup') {
+        const { data, error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { emailRedirectTo: window.location.origin },
+        })
+        if (error) throw error
+        if (data.session?.user) {
+          setUserId(data.session.user.id)
+        } else {
+          alert('Akaunti imetengenezwa. Angalia email yako uthibitishe, kisha ingia.')
+          setAuthMode('login')
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        })
+        if (error) throw error
+        if (data.user) setUserId(data.user.id)
+      }
+    } catch (error: any) {
+      const message = error?.message || 'Imeshindikana kuingia. Jaribu tena.'
+      setAuthError(message)
+      alert('VIBRA LOGIN: ' + message)
+    } finally {
+      setAuthBusy(false)
+    }
+  }
+
+  const loginGoogle = async () => {
+    setAuthBusy(true)
+    setAuthError('')
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin },
+      })
+      if (error) throw error
+    } catch (error: any) {
+      const message = error?.message || 'Google login haipatikani sasa.'
+      setAuthError(message)
+      alert('GOOGLE LOGIN: ' + message + '. Hakikisha Google provider imewashwa Supabase.')
+      setAuthBusy(false)
+    }
+  }
 
   // Pakua video halisi kutoka Supabase.
   const loadVideos = async () => {
@@ -505,13 +572,44 @@ const sendAiMessage = async () => {
     )
   }
 
-  if (authError) {
+  if (!userId) {
+    const sw = language === 'sw'
     return (
-      <div style={{ background: '#000', color: '#fff', minHeight: '100vh', padding: 30 }}>
-        <h1 style={{ color: '#00DDF5' }}>VIBRA</h1>
-        <p>Imeshindikana kuunganisha akaunti ya muda.</p>
-        <p style={{ color: '#aaa' }}>{authError}</p>
-        <button onClick={() => window.location.reload()}>Jaribu tena</button>
+      <div style={{ minHeight: '100dvh', background: '#070B14', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 22, fontFamily: 'Arial,sans-serif' }}>
+        <div style={{ width: '100%', maxWidth: 420 }}>
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <div style={{ fontSize: 48, fontWeight: 900, letterSpacing: 2, color: '#00DDF5' }}>VIBRA</div>
+            <div style={{ color: '#aab4c5', letterSpacing: 3, fontSize: 12 }}>WORLDWIDE</div>
+            <p style={{ color: '#dbe5f5' }}>{sw ? 'Karibu kwenye dunia ya video fupi' : 'Welcome to the world of short videos'}</p>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 18 }}>
+            <button type="button" onClick={() => setLanguage('sw')} style={{ padding: '8px 15px', borderRadius: 20, border: language === 'sw' ? '1px solid #00DDF5' : '1px solid #445', background: language === 'sw' ? '#063744' : '#151d2b', color: '#fff' }}>Kiswahili</button>
+            <button type="button" onClick={() => setLanguage('en')} style={{ padding: '8px 15px', borderRadius: 20, border: language === 'en' ? '1px solid #00DDF5' : '1px solid #445', background: language === 'en' ? '#063744' : '#151d2b', color: '#fff' }}>English</button>
+          </div>
+          <div style={{ background: '#111927', border: '1px solid #263449', borderRadius: 18, padding: 22 }}>
+            <h2 style={{ marginTop: 0, textAlign: 'center' }}>{authMode === 'login' ? (sw ? 'Ingia VIBRA' : 'Login to VIBRA') : (sw ? 'Tengeneza akaunti' : 'Create account')}</h2>
+            <button type="button" disabled={authBusy} onClick={loginGoogle} style={{ width: '100%', padding: 13, borderRadius: 10, border: '1px solid #536176', background: '#fff', color: '#111', fontWeight: 700, marginBottom: 16 }}>
+              G  {sw ? 'Endelea na Google' : 'Continue with Google'}
+            </button>
+            <div style={{ textAlign: 'center', color: '#8190a5', fontSize: 12, margin: '2px 0 14px' }}>— {sw ? 'AU KWA EMAIL' : 'OR WITH EMAIL'} —</div>
+            <label style={{ display: 'block', fontSize: 13, marginBottom: 6 }}>Email</label>
+            <input type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={{ width: '100%', boxSizing: 'border-box', padding: 13, borderRadius: 9, border: '1px solid #39485e', background: '#080f1b', color: '#fff', marginBottom: 13 }} />
+            <label style={{ display: 'block', fontSize: 13, marginBottom: 6 }}>Password</label>
+            <div style={{ display: 'flex', border: '1px solid #39485e', borderRadius: 9, background: '#080f1b', marginBottom: 16 }}>
+              <input type={showPassword ? 'text' : 'password'} autoComplete={authMode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={e => setPassword(e.target.value)} placeholder={sw ? 'Weka password' : 'Enter password'} style={{ flex: 1, minWidth: 0, padding: 13, border: 0, outline: 0, background: 'transparent', color: '#fff' }} />
+              <button type="button" aria-label={showPassword ? 'Ficha password' : 'Onyesha password'} onClick={() => setShowPassword(v => !v)} style={{ border: 0, background: 'transparent', color: '#00DDF5', padding: '0 14px', fontSize: 18 }}>{showPassword ? '🙈' : '👁️'}</button>
+            </div>
+            {authError && <div role="alert" style={{ color: '#ff9b9b', fontSize: 13, marginBottom: 12, overflowWrap: 'anywhere' }}>{authError}</div>}
+            <button type="button" disabled={authBusy} onClick={submitAuth} style={{ width: '100%', padding: 14, borderRadius: 10, border: 0, background: '#00DDF5', color: '#00131a', fontWeight: 900, opacity: authBusy ? .6 : 1 }}>
+              {authBusy ? (sw ? 'Subiri...' : 'Please wait...') : authMode === 'login' ? (sw ? 'Ingia' : 'Login') : (sw ? 'Jisajili' : 'Create account')}
+            </button>
+            <button type="button" disabled={authBusy} onClick={() => { setAuthMode(m => m === 'login' ? 'signup' : 'login'); setAuthError('') }} style={{ width: '100%', marginTop: 13, padding: 10, border: 0, background: 'transparent', color: '#00DDF5' }}>
+              {authMode === 'login' ? (sw ? 'Huna akaunti? Jisajili' : 'No account? Sign up') : (sw ? 'Tayari una akaunti? Ingia' : 'Already registered? Login')}
+            </button>
+            <button type="button" onClick={() => window.location.reload()} style={{ width: '100%', marginTop: 4, padding: 9, border: 0, background: 'transparent', color: '#9aa9bd' }}>{sw ? 'Jaribu kuunganisha tena' : 'Retry connection'}</button>
+          </div>
+          <p style={{ textAlign: 'center', color: '#718096', fontSize: 11, marginTop: 16 }}>VIBRA WORLDWIDE • Watch. Create. Share.</p>
+        </div>
       </div>
     )
   }
