@@ -292,9 +292,12 @@ const sendAiMessage = async () => {
   }
 
   const toggleLike = async (id: string) => {
-    if (workingLikeIds.includes(id) || !userId) return
+    // Hifadhi mabadiliko ya Like kwenye skrini mara moja; usipakie upya
+    // orodha yote baada ya kila tap, kwa sababu inaweza kurudisha moyo mweupe.
+    if (!userId || workingLikeIds.includes(id)) return
 
     const alreadyLiked = likedIds.includes(id)
+    setWorkingLikeIds(previous => [...previous, id])
     setLikedIds(previous =>
       alreadyLiked ? previous.filter(item => item !== id) : [...previous, id]
     )
@@ -302,7 +305,6 @@ const sendAiMessage = async () => {
       ...previous,
       [id]: Math.max(0, (previous[id] || 0) + (alreadyLiked ? -1 : 1)),
     }))
-    setWorkingLikeIds(previous => [...previous, id])
 
     try {
       if (alreadyLiked) {
@@ -318,10 +320,17 @@ const sendAiMessage = async () => {
           .insert({ video_id: id, user_email: userId })
         if (error) throw error
       }
-      await loadServerLikes()
+      // Hali ya Like inabaki kama ilivyo hadi mtumiaji abonyeze tena.
     } catch (error: any) {
-      await loadServerLikes()
-      alert(error?.message || 'Like haijahifadhiwa.')
+      // Rudisha hali ya awali tu ikiwa hifadhi imeshindwa.
+      setLikedIds(previous =>
+        alreadyLiked ? [...previous, id] : previous.filter(item => item !== id)
+      )
+      setServerLikes(previous => ({
+        ...previous,
+        [id]: Math.max(0, (previous[id] || 0) + (alreadyLiked ? 1 : -1)),
+      }))
+      alert(error?.message || 'Like haijahifadhiwa. Tafadhali jaribu tena.')
     } finally {
       setWorkingLikeIds(previous => previous.filter(item => item !== id))
     }
