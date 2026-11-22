@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VIBRA - Your Vibe. Your World.</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#0a0a0a;color:#fff}
@@ -84,13 +83,30 @@ body{background:#0a0a0a;color:#fff}
 <script>
 const SUPABASE_URL = "https://wxqimmnubggkfzmiqdka.supabase.co";
 const SUPABASE_KEY = "sb_publishable_dBA5ATYY-IxHw2EPyNVW5Q_Zet5GRcN";
-const supabase = window.supabase && window.supabase.createClient
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-  : null;
-if(!supabase){
-  const message=document.getElementById('authMessage');
-  if(message) message.textContent='Muunganisho wa huduma umeshindwa kupakia. Washa internet, refresh ukurasa, kisha jaribu tena.';
-}
+let supabase = null;
+const supabaseReady = new Promise((resolve,reject)=>{
+  const load=(url,fallback)=>{
+    const tag=document.createElement('script');
+    tag.src=url;
+    tag.onload=()=>{
+      if(!window.supabase || !window.supabase.createClient){
+        if(fallback) load(fallback,null);
+        else reject(new Error('Supabase library haikupatikana.'));
+        return;
+      }
+      try {
+        supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+        resolve(supabase);
+      } catch(e){ reject(e); }
+    };
+    tag.onerror=()=>{
+      if(fallback) load(fallback,null);
+      else reject(new Error('Imeshindwa kupakia huduma ya login. Angalia internet.'));
+    };
+    document.head.appendChild(tag);
+  };
+  load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','https://unpkg.com/@supabase/supabase-js@2');
+});
 
 const LANGS = {
   sw:{home:"Nyumbani",follow:"Follow",following:"Unafuata",like:"Like",comment:"Comment",share:"Share",post:"Post"},
@@ -125,7 +141,8 @@ function renderLangBar(){
 }
 
 async function loginGoogle(){
-  if(!supabase){authMessage('Huduma ya login haijapakia. Refresh ukurasa ukiwa na internet.');return;}
+  authMessage('Inapakia Google Login...',false);
+  try { await supabaseReady; } catch(e){authMessage(e.message);return;}
   authMessage('');
   try {
     const {error}=await supabase.auth.signInWithOAuth({
@@ -136,7 +153,8 @@ async function loginGoogle(){
   } catch(e) { authMessage('Google Login imeshindikana: '+(e.message||'Hakikisha Google provider imewashwa Supabase.')); }
 }
 async function loginEmail(){
-  if(!supabase){authMessage('Huduma ya login haijapakia. Refresh ukurasa ukiwa na internet.');return;}
+  authMessage('Inapakia huduma ya akaunti...',false);
+  try { await supabaseReady; } catch(e){authMessage(e.message);return;}
   const email=document.getElementById('email').value.trim().toLowerCase();
   const password=document.getElementById('password').value;
   if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){authMessage('Weka email sahihi.');return;}
@@ -169,7 +187,7 @@ async function loginEmail(){
   }
 }
 async function checkUser(){
-  if(!supabase){authMessage('Huduma ya login haijapakia. Refresh ukurasa ukiwa na internet.');return;}
+  if(!supabase) return;
   const {data:{user}} = await supabase.auth.getUser();
   if(!user) return;
   currentUser=user;
@@ -253,10 +271,10 @@ async function postVideo(){
 }
 function showFeed(){ document.getElementById('feed').scrollIntoView(); }
 function showProfile(){ document.getElementById('profileBox').scrollIntoView(); }
-if(supabase){
+supabaseReady.then(()=>{
   checkUser();
   supabase.auth.onAuthStateChange(()=>checkUser());
-}
+}).catch(e=>authMessage(e.message));
 </script>
 </body>
 </html>
