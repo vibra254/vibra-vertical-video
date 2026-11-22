@@ -130,7 +130,7 @@ async function loginGoogle(){
 async function loginEmail(){
   const email=document.getElementById('email').value.trim().toLowerCase();
   const password=document.getElementById('password').value;
-  if(!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return alert('Weka email sahihi.');
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){authMessage('Weka email sahihi.');return;}
   if(password.length<6){authMessage('Password iwe na angalau herufi/namba 6.');return;}
   authMessage('');
   const btn=document.querySelector('.btn-email');
