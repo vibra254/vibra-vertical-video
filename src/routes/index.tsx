@@ -1,7 +1,6 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
-import { supabase } from '../lib/supabase'
 import {
   Home, Search, Plus, Inbox, User, Heart,
   MessageCircle, Share2, Volume2, VolumeX, Bot, Sparkles
@@ -84,214 +83,35 @@ function VibraApp() {
   }, [])
   
 const sendAiMessage = async () => {
-  const question = aiInput.trim()
-  if (!question || aiLoading) return
-
-  setAiMessages(prev => [...prev, { role: 'user', text: question }])
-  setAiInput('')
-  setAiLoading(true)
-
-  try {
-    const { data, error } = await supabase.functions.invoke('Vibra-AI', {
-      body: { message: question }
-    })
-
-    if (error) throw error
-
-    const answer = data?.answer || data?.reply || data?.message
-    if (!answer) throw new Error('AI haijarudisha jibu')
-
-    setAiMessages(prev => [...prev, { role: 'assistant', text: answer }])
-  } catch {
-    setAiMessages(prev => [...prev, {
-      role: 'assistant',
-      text: 'Samahani, VIBRA AI haijaunganishwa vizuri bado. Jaribu tena baadaye.'
-    }])
-  } finally {
-    setAiLoading(false)
-  }
+ const q=aiInput.trim(); if(!q||aiLoading)return
+ setAiMessages(p=>[...p,{role:'user',text:q}]);setAiInput('');setAiLoading(true)
+ window.setTimeout(()=>{setAiMessages(p=>[...p,{role:'assistant',text:'Karibu VIBRA WORLDWIDE! Hii ni demo ya VIBRA AI.'}]);setAiLoading(false)},450)
 }
-  // Angalia session iliyopo bila kuzuia app kwa anonymous login.
-  useEffect(() => {
-    let mounted = true
-    const timer = window.setTimeout(() => {
-      if (mounted) {
-        setAuthError('Muunganisho umechukua muda mrefu. Ingia tena au jaribu upya.')
-        setAuthReady(true)
-      }
-    }, 10000)
+useEffect(()=>{try{const id=localStorage.getItem('vibra_demo_user');if(id)setUserId(id)}catch{}setAuthReady(true)},[])
+const submitAuth=async()=>{
+ if(!email.trim()||!password){alert(language==='sw'?'Weka email na password.':'Enter email and password.');return}
+ if(password.length<4){alert(language==='sw'?'Password iwe na angalau herufi/namba 4.':'Password must be at least 4 characters.');return}
+ setAuthBusy(true);const id='demo-'+email.trim().toLowerCase()
+ try{localStorage.setItem('vibra_demo_user',id);localStorage.setItem('vibra_demo_email',email.trim())}catch{}
+ setUserId(id);setAuthError('');setAuthBusy(false)
+}
+const loginGoogle=async()=>{try{localStorage.setItem('vibra_demo_user','demo-guest')}catch{}setUserId('demo-guest');setAuthError('')}
+// Demo video feed.
+const loadVideos=async()=>{
+ setLoadingVideos(true)
+ setVideos([
+ {id:'demo-flower',user_id:'creator-1',video_url:'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',caption:'Karibu VIBRA WORLDWIDE 🌍✨ #VIBRA #Kenya',username:'VIBRA WORLDWIDE',avatar:null,country:'Kenya',created_at:new Date().toISOString()},
+ {id:'demo-bunny',user_id:'creator-2',video_url:'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',caption:'Furahia video fupi hapa VIBRA! 🎬',username:'VIBRA Creator',avatar:null,country:'Worldwide',created_at:new Date().toISOString()},
+ {id:'demo-elephant',user_id:'creator-3',video_url:'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',caption:'Create • Watch • Share ❤️',username:'VIBRA Studio',avatar:null,country:'Worldwide',created_at:new Date().toISOString()}
+ ])
+ setServerLikes({'demo-flower':128,'demo-bunny':86,'demo-elephant':54});setCommentCounts({'demo-flower':12,'demo-bunny':8,'demo-elephant':5});setLoadingVideos(false)
+}
+useEffect(()=>{if(userId)loadVideos()},[userId])
 
-    supabase.auth.getSession()
-      .then(({ data, error }) => {
-        if (error) throw error
-        if (!mounted) return
-        setUserId(data.session?.user?.id || '')
-        setAuthError('')
-        setAuthReady(true)
-      })
-      .catch((error: any) => {
-        if (!mounted) return
-        setAuthError(error?.message || 'Tatizo la kuunganisha Supabase.')
-        setAuthReady(true)
-      })
-      .finally(() => window.clearTimeout(timer))
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return
-      setUserId(session?.user?.id || '')
-      setAuthReady(true)
-      if (session?.user) setAuthError('')
-    })
-
-    return () => {
-      mounted = false
-      window.clearTimeout(timer)
-      listener.subscription.unsubscribe()
-    }
-  }, [])
-
-  const submitAuth = async () => {
-    if (!email.trim() || !password) {
-      alert('Weka email na password kwanza.')
-      return
-    }
-    if (password.length < 6) {
-      alert('Password iwe na herufi/namba angalau 6.')
-      return
-    }
-    setAuthBusy(true)
-    setAuthError('')
-    try {
-      if (authMode === 'signup') {
-        const { data, error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: { emailRedirectTo: window.location.origin },
-        })
-        if (error) throw error
-        if (data.session?.user) {
-          setUserId(data.session.user.id)
-        } else {
-          alert('Akaunti imetengenezwa. Angalia email yako uthibitishe, kisha ingia.')
-          setAuthMode('login')
-        }
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        })
-        if (error) throw error
-        if (data.user) setUserId(data.user.id)
-      }
-    } catch (error: any) {
-      const message = error?.message || 'Imeshindikana kuingia. Jaribu tena.'
-      setAuthError(message)
-      alert('VIBRA LOGIN: ' + message)
-    } finally {
-      setAuthBusy(false)
-    }
-  }
-
-  const loginGoogle = async () => {
-    setAuthBusy(true)
-    setAuthError('')
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin },
-      })
-      if (error) throw error
-    } catch (error: any) {
-      const message = error?.message || 'Google login haipatikani sasa.'
-      setAuthError(message)
-      alert('GOOGLE LOGIN: ' + message + '. Hakikisha Google provider imewashwa Supabase.')
-      setAuthBusy(false)
-    }
-  }
-
-  // Pakua video halisi kutoka Supabase.
-  const loadVideos = async () => {
-    setLoadingVideos(true)
-
-    const { data, error } = await supabase
-      .from('vibra_videos')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      alert('Video hazijapakiwa: ' + error.message)
-    } else {
-      setVideos((data || []) as Video[])
-    }
-
-    setLoadingVideos(false)
-  }
-
-  useEffect(() => {
-    if (!userId) return
-    loadVideos()
-  }, [userId])
-
-  // Pakua likes na comment counts kutoka Supabase kwa watumiaji wote.
-  const loadServerLikes = async () => {
-    const { data, error } = await supabase
-      .from('vibra_likes')
-      .select('video_id,user_email')
-
-    if (error) {
-      console.error('Imeshindwa kupakia likes:', error.message)
-      return
-    }
-
-    const counts: Record<string, number> = {}
-    const mine: string[] = []
-    ;(data || []).forEach((like: any) => {
-      const id = String(like.video_id)
-      counts[id] = (counts[id] || 0) + 1
-      if (like.user_email === userId) mine.push(id)
-    })
-    setServerLikes(counts)
-    setLikedIds(mine)
-  }
-
-  const loadServerComments = async (clipKey: string) => {
-    if (!clipKey) return
-    setLoadingComments(true)
-    const { data, error } = await supabase
-      .from('vibra_comments')
-      .select('video_id,username,text,created_at')
-      .eq('video_id', clipKey)
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error('Imeshindwa kupakia comments:', error.message)
-    } else {
-      setComments((data || []) as Comment[])
-    }
-    setLoadingComments(false)
-  }
-
-  useEffect(() => {
-    if (!userId) return
-    loadServerLikes()
-
-    async function loadCommentCounts() {
-      const { data, error } = await supabase
-        .from('vibra_comments')
-        .select('video_id')
-      if (error) {
-        console.error('Imeshindwa kupakia comment counts:', error.message)
-        return
-      }
-      const counts: Record<string, number> = {}
-      ;(data || []).forEach((comment: any) => {
-        const id = String(comment.video_id)
-        counts[id] = (counts[id] || 0) + 1
-      })
-      setCommentCounts(counts)
-    }
-    loadCommentCounts()
-  }, [userId])
+  // Demo likes na comments zinatunzwa ndani ya app.
+const loadServerLikes=async()=>{}
+const loadServerComments=async(_clipKey:string)=>{setComments([]);setLoadingComments(false)}
+useEffect(()=>{try{setLikedIds(JSON.parse(localStorage.getItem('vibra_demo_likes')||'[]'))}catch{setLikedIds([])}},[userId])
 
   useEffect(() => {
     if (activeVideo) loadServerComments(activeVideo)
@@ -358,153 +178,32 @@ const sendAiMessage = async () => {
     if (!nextMuted) video.play().catch(() => {})
   }
 
-  const toggleLike = async (id: string) => {
-    // Hifadhi mabadiliko ya Like kwenye skrini mara moja; usipakie upya
-    // orodha yote baada ya kila tap, kwa sababu inaweza kurudisha moyo mweupe.
-    if (!userId || workingLikeIds.includes(id)) return
-
-    const alreadyLiked = likedIds.includes(id)
-    setWorkingLikeIds(previous => [...previous, id])
-    setLikedIds(previous =>
-      alreadyLiked ? previous.filter(item => item !== id) : [...previous, id]
-    )
-    setServerLikes(previous => ({
-      ...previous,
-      [id]: Math.max(0, (previous[id] || 0) + (alreadyLiked ? -1 : 1)),
-    }))
-
-    try {
-      if (alreadyLiked) {
-        const { error } = await supabase
-          .from('vibra_likes')
-          .delete()
-          .eq('video_id', id)
-          .eq('user_email', userId)
-        if (error) throw error
-      } else {
-        const { error } = await supabase
-          .from('vibra_likes')
-          .insert({ video_id: id, user_email: userId })
-        if (error) throw error
-      }
-      // Hali ya Like inabaki kama ilivyo hadi mtumiaji abonyeze tena.
-    } catch (error: any) {
-      // Rudisha hali ya awali tu ikiwa hifadhi imeshindwa.
-      setLikedIds(previous =>
-        alreadyLiked ? [...previous, id] : previous.filter(item => item !== id)
-      )
-      setServerLikes(previous => ({
-        ...previous,
-        [id]: Math.max(0, (previous[id] || 0) + (alreadyLiked ? 1 : -1)),
-      }))
-      alert(error?.message || 'Like haijahifadhiwa. Tafadhali jaribu tena.')
-    } finally {
-      setWorkingLikeIds(previous => previous.filter(item => item !== id))
-    }
-  }
-
-  const openComments = (id: string) => {
+const toggleLike=async(id:string)=>{
+ const was=likedIds.includes(id);const next=was?likedIds.filter(x=>x!==id):[...likedIds,id]
+ setLikedIds(next);setServerLikes(p=>({...p,[id]:Math.max(0,(p[id]||0)+(was?-1:1))}))
+ try{localStorage.setItem('vibra_demo_likes',JSON.stringify(next))}catch{}
+}
+const openComments = (id: string) => {
     setActiveVideo(id)
     setComments([])
     setCommentText('')
   }
 
-  const addComment = async () => {
-    if (!activeVideo || !commentText.trim()) return
-    if (!userId) {
-      alert('Subiri akaunti iunganishwe kisha ujaribu kutuma comment.')
-      return
-    }
-
-    setSendingComment(true)
-
-    const { error } = await supabase
-      .from('vibra_comments')
-      .insert({
-        video_id: activeVideo,
-        user_email: userId,
-        username: userHandle,
-        avatar: dp || '',
-        text: commentText.trim(),
-      })
-
-    if (error) {
-      alert(error.message)
-    } else {
-      setCommentText('')
-      await loadServerComments(activeVideo)
-      const { count } = await supabase
-        .from('vibra_comments')
-        .select('*', { count: 'exact', head: true })
-        .eq('video_id', activeVideo)
-      if (count !== null) setCommentCounts(previous => ({ ...previous, [activeVideo]: count }))
-    }
-
-    setSendingComment(false)
-  }
-
-  // Upload video kutoka kwenye simu.
-  const uploadVideo = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file || !userId) return
-
-    if (!file.type.startsWith('video/')) {
-      alert('Tafadhali chagua faili la video.')
-      return
-    }
-
-    if (file.size > 50 * 1024 * 1024) {
-      alert('Video imezidi 50 MB. Chagua video ndogo.')
-      return
-    }
-
-    const caption = window.prompt('Andika maelezo ya video yako:') || ''
-
-    setUploading(true)
-
-    try {
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
-      const filePath = `${userId}/${Date.now()}-${safeName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('vibra-videos')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false,
-          contentType: file.type,
-        })
-
-      if (uploadError) throw uploadError
-
-      const { data: publicData } = supabase.storage
-        .from('vibra-videos')
-        .getPublicUrl(filePath)
-
-      const { error: insertError } = await supabase
-        .from('vibra_videos')
-        .insert({
-          user_id: userId,
-          video_url: publicData.publicUrl,
-          caption,
-          username: userHandle,
-          avatar: dp || null,
-          country: 'Kenya',
-        })
-
-      if (insertError) throw insertError
-
-      alert('Video imepakiwa VIBRA WORLDWIDE! 🎉')
-      setPage('home')
-      await loadVideos()
-    } catch (error: any) {
-      alert('Upload imeshindikana: ' + (error?.message || 'Jaribu tena.'))
-    } finally {
-      setUploading(false)
-      event.target.value = ''
-    }
-  }
-
-  const changePhoto = (event: ChangeEvent<HTMLInputElement>) => {
+const addComment=async()=>{
+ if(!activeVideo||!commentText.trim())return
+ setSendingComment(true);setComments(p=>[...p,{video_id:activeVideo,username:userHandle,text:commentText.trim(),created_at:new Date().toISOString()}])
+ setCommentCounts(p=>({...p,[activeVideo]:(p[activeVideo]||0)+1}));setCommentText('');setSendingComment(false)
+}
+// Upload video ya demo kwenye simu hii pekee.
+const uploadVideo=async(event:ChangeEvent<HTMLInputElement>)=>{
+ const file=event.target.files?.[0];if(!file)return
+ if(!file.type.startsWith('video/')){alert('Chagua faili la video.');return}
+ if(file.size>50*1024*1024){alert('Video izidi 50 MB.');return}
+ setUploading(true)
+ const item:Video={id:'local-'+Date.now(),user_id:userId,video_url:URL.createObjectURL(file),caption:window.prompt('Andika maelezo ya video:')||'Video yangu ya VIBRA',username:userHandle,avatar:dp||null,country:'Kenya',created_at:new Date().toISOString()}
+ setVideos(p=>[item,...p]);setUploading(false);setPage('home');alert('Video imeongezwa kwenye simu hii pekee; haijaonekana kwa wengine.');event.target.value=''
+}
+const changePhoto = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
