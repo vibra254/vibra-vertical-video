@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VIBRA - Your Vibe. Your World.</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
@@ -85,30 +86,8 @@ window.addEventListener('error', e => alert('ERROR: ' + (e.message || 'JavaScrip
 window.addEventListener('unhandledrejection', e => alert('ERROR: ' + (e.reason?.message || e.reason || 'Promise error')));
 const SUPABASE_URL = "https://wxqimmnubggkfzmiqdka.supabase.co";
 const SUPABASE_KEY = "sb_publishable_dBA5ATYY-IxHw2EPyNVW5Q_Zet5GRcN";
-let supabase = null;
-const supabaseReady = new Promise((resolve,reject)=>{
-  const load=(url,fallback)=>{
-    const tag=document.createElement('script');
-    tag.src=url;
-    tag.onload=()=>{
-      if(!window.supabase || !window.supabase.createClient){
-        if(fallback) load(fallback,null);
-        else reject(new Error('Supabase library haikupatikana.'));
-        return;
-      }
-      try {
-        supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-        resolve(supabase);
-      } catch(e){ reject(e); }
-    };
-    tag.onerror=()=>{
-      if(fallback) load(fallback,null);
-      else reject(new Error('Imeshindwa kupakia huduma ya login. Angalia internet.'));
-    };
-    document.head.appendChild(tag);
-  };
-  load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','https://unpkg.com/@supabase/supabase-js@2');
-});
+const supabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const supabaseReady = Promise.resolve(supabase);
 
 const LANGS = {
   sw:{home:"Nyumbani",follow:"Follow",following:"Unafuata",like:"Like",comment:"Comment",share:"Share",post:"Post"},
