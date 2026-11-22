@@ -81,6 +81,8 @@ body{background:#0a0a0a;color:#fff}
 </div>
 
 <script>
+window.addEventListener('error', e => alert('ERROR: ' + (e.message || 'JavaScript error')));
+window.addEventListener('unhandledrejection', e => alert('ERROR: ' + (e.reason?.message || e.reason || 'Promise error')));
 const SUPABASE_URL = "https://wxqimmnubggkfzmiqdka.supabase.co";
 const SUPABASE_KEY = "sb_publishable_dBA5ATYY-IxHw2EPyNVW5Q_Zet5GRcN";
 let supabase = null;
@@ -134,15 +136,24 @@ function authMessage(message,isError=true){
   const el=document.getElementById('authMessage');
   if(el){el.textContent=message||'';el.style.color=isError?'#fca5a5':'#86efac';}
 }
-function setLang(l){ currentLang=l; localStorage.setItem('vibra_lang',l); document.getElementById('langLabel').innerText=l.toUpperCase(); loadFeed(); renderLangBar(); }
+function setLang(l){
+  if(!LANGS[l]) return;
+  currentLang=l;
+  try{localStorage.setItem('vibra_lang',l);}catch(e){}
+  const label=document.getElementById('langLabel');
+  if(label) label.innerText=l.toUpperCase();
+  renderLangBar();
+  if(supabase && currentUser) loadFeed();
+}
 function renderLangBar(){
   const flags={sw:'🇰🇪 SW',en:'🇺🇸 EN',fr:'🇫🇷 FR',es:'🇪🇸 ES',pt:'🇧🇷 PT',ar:'🇸🇦 AR',hi:'🇮🇳 HI',zh:'🇨🇳 ZH'};
-  document.getElementById('langBar').innerHTML = Object.keys(flags).map(k=>`<button onclick="setLang('${k}')">${flags[k]}</button>`).join('');
+  const bar=document.getElementById('langBar');
+  if(bar) bar.innerHTML = Object.keys(flags).map(k=>`<button type="button" onclick="setLang('${k}')">${flags[k]}</button>`).join('');
 }
 
 async function loginGoogle(){
   authMessage('Inapakia Google Login...',false);
-  try { await supabaseReady; } catch(e){authMessage(e.message);return;}
+  try { await supabaseReady; } catch(e){alert('Supabase login haijapakia: '+(e.message||e));authMessage(e.message);return;}
   authMessage('');
   try {
     const {error}=await supabase.auth.signInWithOAuth({
@@ -154,7 +165,7 @@ async function loginGoogle(){
 }
 async function loginEmail(){
   authMessage('Inapakia huduma ya akaunti...',false);
-  try { await supabaseReady; } catch(e){authMessage(e.message);return;}
+  try { await supabaseReady; } catch(e){alert('Supabase login haijapakia: '+(e.message||e));authMessage(e.message);return;}
   const email=document.getElementById('email').value.trim().toLowerCase();
   const password=document.getElementById('password').value;
   if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){authMessage('Weka email sahihi.');return;}
