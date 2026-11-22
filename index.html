@@ -45,7 +45,10 @@ body{background:#0a0a0a;color:#fff}
   <button class="btn btn-google" onclick="loginGoogle()">G Continue with Google</button>
   <p style="margin:12px 0;color:#666">OR</p>
   <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+  <div style="position:relative">
+  <input id="password" type="password" placeholder="Password" style="width:100%;padding:13px;margin:8px 0;border-radius:12px;border:1px solid #333;background:#111;color:#fff">
+  <span onclick="let p=document.getElementById('password'); p.type=p.type==='password'?'text':'password'" style="position:absolute;right:12px;top:20px;cursor:pointer;font-size:20px">👁️</span>
+  </div>
   <button class="btn btn-email" onclick="loginEmail()">Ingia / Jisajili</button>
   <div class="lang-bar" style="justify-content:center">
     <button onclick="setLang('sw')">🇰🇪 Kiswahili</button>
