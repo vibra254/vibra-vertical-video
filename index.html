@@ -82,12 +82,22 @@ body{background:#0a0a0a;color:#fff}
 </div>
 
 <script>
-window.addEventListener('error', e => alert('ERROR: ' + (e.message || 'JavaScript error')));
+window.addEventListener('error', e => alert('ERROR: ' + (e.message || 'JavaScript error') + (e.filename ? '\\n' + e.filename + ':' + e.lineno : '')));
 window.addEventListener('unhandledrejection', e => alert('ERROR: ' + (e.reason?.message || e.reason || 'Promise error')));
 const SUPABASE_URL = "https://wxqimmnubggkfzmiqdka.supabase.co";
 const SUPABASE_KEY = "sb_publishable_dBA5ATYY-IxHw2EPyNVW5Q_Zet5GRcN";
-const supabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const supabaseReady = Promise.resolve(supabase);
+let supabase = null;
+const supabaseReady = (() => {
+  if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+    return Promise.reject(new Error('Supabase library haikupatikana. Hakikisha internet inafanya kazi kisha refresh.'));
+  }
+  try {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    return Promise.resolve(supabase);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+})();
 
 const LANGS = {
   sw:{home:"Nyumbani",follow:"Follow",following:"Unafuata",like:"Like",comment:"Comment",share:"Share",post:"Post"},
