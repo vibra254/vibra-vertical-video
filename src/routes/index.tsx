@@ -755,7 +755,12 @@ if (page === 'ai') {
       }}>
         <b style={{ fontSize: 25, color: '#00DDF5' }}>VIBRA</b>
         <span style={{ fontWeight: 800 }}>For You</span>
-        <span onClick={() => setPage('discover')} style={{ fontSize: 22, pointerEvents: 'auto' }}>🔍</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 18, pointerEvents: 'auto' }}>
+          <button type="button" aria-label="Tafuta video" onClick={() => setPage('discover')} style={{ fontSize: 22, background: 'transparent', border: 0, color: '#fff', padding: 4 }}>🔍</button>
+          <button type="button" aria-label="Fungua wasifu wangu" onClick={() => setPage('me')} style={{ width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', border: '2px solid #00DDF5', background: '#142033', color: '#fff', padding: 0, display: 'grid', placeItems: 'center' }}>
+            {dp ? <img src={dp} alt="DP" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
+          </button>
+        </div>
       </div>
 
       {uploading && (
@@ -800,7 +805,6 @@ if (page === 'ai') {
               loop
               muted={muted || activeVideoId !== v.id}
               preload="metadata"
-              onClick={() => toggleSound(v.id)}
               onTimeUpdate={e => setProgress(previous => ({
                 ...previous, [v.id]: e.currentTarget.currentTime,
               }))}
@@ -809,21 +813,21 @@ if (page === 'ai') {
               }))}
               style={{
                 width: '100%', height: '100%', objectFit: 'contain',
-                background: '#000',
+                background: '#000', pointerEvents: 'none',
               }}
             />
 
-            <div onClick={() => toggleSound(v.id)} style={{
-              position: 'absolute', top: 75, right: 15,
-              background: '#0008', padding: '8px 11px',
-              borderRadius: 25, fontSize: 20,
-            }}>{muted ? '🔇' : '🔊'}</div>
+            <button type="button" aria-label="Washa au zima sauti" onClick={e => { e.preventDefault(); e.stopPropagation(); toggleSound(v.id) }} style={{
+              position: 'absolute', top: 75, right: 15, zIndex: 80,
+              background: '#000b', color: '#fff', border: '1px solid #ffffff55',
+              padding: '8px 11px', borderRadius: 25, fontSize: 20,
+            }}>{muted ? '🔇' : '🔊'}</button>
 
             <div
               onClick={e => e.stopPropagation()}
               style={{
                 position: 'absolute', right: 12, bottom: 115,
-                zIndex: 50, pointerEvents: 'auto',
+                zIndex: 90, pointerEvents: 'auto',
                 display: 'flex', flexDirection: 'column',
                 gap: 20, alignItems: 'center',
                 touchAction: 'manipulation',
@@ -855,10 +859,10 @@ if (page === 'ai') {
                 <small>{commentCounts[v.id] || 0}</small>
               </button>
 
-              <div role="button" tabIndex={0} onClick={e => { e.stopPropagation(); toggleSave(v.id) }} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleSave(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation' }}>
-                <div style={{ fontSize: 30 }}>{savedIds.includes(v.id) ? '🔖' : '🔖'}</div>
+              <button type="button" aria-label="Hifadhi video" onClick={e => { e.preventDefault(); e.stopPropagation(); toggleSave(v.id) }} style={{ textAlign: 'center', cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                <span style={{ fontSize: 30 }}>🔖</span>
                 <small>{savedIds.includes(v.id) ? 'Saved' : 'Save'}</small>
-              </div>
+              </button>
 
               <button type="button" aria-label="Share video" onClick={e => { e.preventDefault(); e.stopPropagation(); void shareVideo(v) }} style={{ fontSize: 30, cursor: 'pointer', pointerEvents: 'auto', touchAction: 'manipulation', background: 'transparent', border: 0, color: '#fff', padding: 0 }}>↗️</button>
             </div>
