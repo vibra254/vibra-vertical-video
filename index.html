@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIBRA - Hamadi Mkungu</title>
+<title>VIBRAMr Vibra</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow:hidden;height:100dvh}
@@ -97,16 +97,16 @@ const firebaseConfig={apiKey:"AIzaSyD6CwP7TqvA2cY5wX7Yv1a1v9v0ZvQ0Y0",authDomain
 try{firebase.initializeApp(firebaseConfig)}catch(e){}
 let currentUser=null;
 let posts=[
-{id:'1',uid:'hamadi',name:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:'Karibu VIBRA! 🔥 App mpya ya dunia! Nifollow uone video zangu kila siku! #vibra #fyp #viral',song:'Hamadi Mkungu - Vibra Sound',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',isVideo:true,likes:128,liked:false,comments:[{user:'@juma',text:'Hongera bro 🔥'}],views:5200},
-{id:'2',uid:'hamadi',name:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:'Mombasa ni motooo 🌊🌴 #mombasa #vibra',song:'Diamond - Yatapita',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',isVideo:true,likes:89,liked:false,comments:[],views:3100},
-{id:'3',uid:'hamadi',name:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:'Nani anapenda video hizi? Comment 👇',song:'Harmonize - Single Again',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',isVideo:true,likes:210,liked:false,comments:[],views:7800}
+{id:'1',uid:'hamadi',name:'Mr Vibra',user:'@mrvibra254',avatar:'H',caption:'Karibu VIBRA! 🔥 App mpya ya dunia! Nifollow uone video zangu kila siku! #vibra #fyp #viral',song:'Hamadi Mkungu - Vibra Sound',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',isVideo:true,likes:128,liked:false,comments:[{user:'@juma',text:'Hongera bro 🔥'}],views:5200},
+{id:'2',uid:'hamadi',namme:'Mr Vibra',user:'@mrvibra254',avatar:'H',caption:'Mombasa ni motooo 🌊🌴 #mombasa #vibra',song:'Diamond - Yatapita',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',isVideo:true,likes:89,liked:false,comments:[],views:3100},
+{id:'3',uid:'hamadi',name:'Mr Vibra',user:'@mrvibra254',avatar:'H',caption:'Nani anapenda video hizi? Comment 👇',song:'Harmonize - Single Again',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',isVideo:true,likes:210,liked:false,comments:[],views:7800}
 ];
 let creators=[
 {name:'Juma Said',user:'@juma_said',followers:'12.4K',bio:'😂 Vichekesho kila siku',emoji:'😂',lastMsg:'Sawa bro, video yako kali 🔥',time:'10:12',verified:true},
 {name:'Amina Zuri',user:'@amina_zuri',followers:'8.9K',bio:'🎵 Muziki • Dance',emoji:'💃',lastMsg:'Tupost dance pamoja?',time:'09:45',verified:false},
 {name:'Baraka M.',user:'@baraka_m',followers:'5.2K',bio:'⚽ Michezo',emoji:'⚽',lastMsg:'Mechi leo saa 4',time:'08:20',verified:false},
 {name:'Neema K.',user:'@neema_k',followers:'15K',bio:'🍔 Chakula • Mapishi',emoji:'🍔',lastMsg:'Recipe mpya nimepost!',time:'Jana',verified:true},
-{name:'Hamadi Mkungu',user:'@hamadoski47',followers:'2.1K',bio:'🔥 Founder Vibra',emoji:'🔥',lastMsg:'Karibu Vibra!',time:'Jana',verified:true}
+{name:'Mr Vibra',user:'@mrvibra254',followers:'2.1K',bio:'🔥 Founder Vibra',emoji:'🔥',lastMsg:'Karibu Vibra!',time:'Jana',verified:true}
 ];
 let following=new Set(JSON.parse(localStorage.getItem('vibra_following')||'[]'));
 let currentCommentId=null; let selectedFileURL=null; let currentChatName='Juma Said'; let mediaRecorder=null; let isRecording=false;
@@ -230,14 +230,14 @@ document.getElementById('fileInput').addEventListener('change',e=>{let f=e.targe
 function doPost(){let cap=document.getElementById('captionInput').value||'Video mpya 🔥 #vibra'; let song=document.getElementById('songInput').value||'Hamadi Mkungu - Vibra Sound'; let isVid=document.getElementById('previewBox').dataset.isVideo!=='0'; let vid=selectedFileURL||'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'; let views=Math.floor(Math.random()*500)+100; let newPost={id:'p'+Date.now(),uid:currentUser?currentUser.uid:'hamadi',name:currentUser?currentUser.displayName:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:cap,song:song,video:vid,isVideo:isVid,likes:0,liked:false,comments:[],views:views}; posts.unshift(newPost); localStorage.setItem('vibra_posts',JSON.stringify(posts.filter(p=>p.video && !String(p.video).startsWith('blob:')))); closeModal('uploadModal'); document.getElementById('captionInput').value=''; selectedFileURL=null; renderFeed(); showToast('Video imepostwa! 🎉'); goHome();}
 function openProfile(){if(!currentUser){login();return;} closeAll(); document.getElementById('profileModal').classList.add('show'); setActive('navMe'); document.getElementById('profileName').innerHTML=(currentUser.displayName||'Hamadi Mkungu')+' <span class="blueTick">✓</span>'; document.getElementById('profileUser').textContent='@hamadoski47 • Mombasa'; renderMyVideos(); updatePayDashboard();}
 function renderMyVideos(){let box=document.getElementById('myVideos'); if(!box) return; let mine=posts.filter(p=>isMyPost(p)); if(mine.length===0) mine=posts.slice(0,3); document.getElementById('myVideoCount').textContent=mine.length+' video • Bonyeza 🗑️ hapa Me page tu kufuta'; document.getElementById('statLikes').textContent=posts.filter(p=>isMyPost(p)).reduce((a,p)=>a+p.likes,0); document.getElementById('statFollowing').textContent=following.size; document.getElementById('statFollowers').textContent=1240+following.size; box.innerHTML=mine.map(p=>`<div><span class="delBtn" onclick="deletePost('${p.id}')">🗑️</span>${p.isVideo?`<video src="${p.video}" muted></video>`:`<img src="${p.video}">`}<div style="position:absolute;bottom:4px;left:4px;font-size:11px;background:#000a;padding:2px 6px;border-radius:8px">❤️ ${p.likes}</div></div>`).join('')+`<div onclick="closeModal('profileModal');openUpload()" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:28px">➕<small style="font-size:11px">Post Mpya</small></div>`;}
-function openEdit(){document.getElementById('editName').value=currentUser?currentUser.displayName:'Hamadi Mkungu';document.getElementById('editModal').classList.add('show')}
-function saveProfile(){let n=document.getElementById('editName').value||'Hamadi Mkungu'; let u=document.getElementById('editUser').value||'@hamadoski47'; if(currentUser) currentUser.displayName=n; document.getElementById('profileName').innerHTML=n+' <span class="blueTick">✓</span>'; document.getElementById('profileUser').textContent=u+' • Mombasa'; document.getElementById('profileBio').textContent=document.getElementById('editBio').value||'🔥 Vibra Creator | Founder wa Vibra'; localStorage.setItem('vibra_name',n); localStorage.setItem('vibra_user',u); closeModal('editModal'); showToast('Profile imehifadhiwa ✅'); renderFeed();}
+function openEdit(){document.getElementById('editName').value=currentUser?currentUser.displayName:'Mr Vibra';document.getElementById('editModal').classList.add('show')}
+function saveProfile(){let n=document.getElementById('editName').value||'Mr Vibra'; let u=document.getElementById('editUser').value||'@hamadoski47'; if(currentUser) currentUser.displayName=n; document.getElementById('profileName').innerHTML=n+' <span class="blueTick">✓</span>'; document.getElementById('profileUser').textContent=u+' • Mombasa'; document.getElementById('profileBio').textContent=document.getElementById('editBio').value||'🔥 Vibra Creator | Founder wa Vibra'; localStorage.setItem('vibra_name',n); localStorage.setItem('vibra_user',u); closeModal('editModal'); showToast('Profile imehifadhiwa ✅'); renderFeed();}
 function closeModal(id){document.getElementById(id).classList.remove('show')}
 function closeAll(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));document.getElementById('commentBox').classList.remove('show')}
 function setActive(id){document.querySelectorAll('.bottom div').forEach(d=>d.classList.remove('active')); if(id) document.getElementById(id).classList.add('active');}
 function goHome(){closeAll(); setActive('navHome'); document.getElementById('feed').scrollTo({top:0,behavior:'smooth'});}
 function login(){if(!firebase.auth){fakeLogin();return;} let provider=new firebase.auth.GoogleAuthProvider(); firebase.auth().signInWithPopup(provider).then(r=>{currentUser=r.user; afterLogin()}).catch(()=>fakeLogin());}
-function fakeLogin(){currentUser={uid:'hamadi',displayName:localStorage.getItem('vibra_name')||'Hamadi Mkungu',email:'hamadimkungu74@gmail.com'}; afterLogin();}
+function fakeLogin(){currentUser={uid:'hamadi',displayName:localStorage.getItem('vibra_name')||'Mr Vibra',email:'hamadimkungu74@gmail.com'}; afterLogin();}
 function afterLogin(){localStorage.setItem('vibra_name',currentUser.displayName||'Hamadi Mkungu'); showToast('Karibu '+(currentUser.displayName||'Hamadi')+' ✅'); renderFeed();}
 function logout(){if(firebase.auth) firebase.auth().signOut().catch(()=>{}); currentUser=null; localStorage.removeItem('vibra_name'); showToast('Umetoka'); setTimeout(()=>login(),800);}
 document.getElementById('avatarInput').addEventListener('change',e=>{
@@ -253,7 +253,7 @@ document.getElementById('avatarInput').addEventListener('change',e=>{
   reader.readAsDataURL(f);
 });
 try{let saved=JSON.parse(localStorage.getItem('vibra_posts')||'[]'); saved=saved.filter(p=>p.video && !String(p.video).startsWith('blob:')); if(saved.length>0) posts=saved;}catch(e){}
-currentUser={uid:'hamadi',displayName:localStorage.getItem('vibra_name')||'Hamadi Mkungu',email:'hamadimkungu74@gmail.com'};
+currentUser={uid:'hamadi',displayName:'Mr Vibra'
 if(firebase.auth){ firebase.auth().onAuthStateChanged(u=>{ if(u) currentUser=u; renderFeed(); }); }
 renderFeed();
 let savedAvatar=localStorage.getItem('vibra_avatar'); if(savedAvatar){document.getElementById('profileAvatar').innerHTML=`<img src="${savedAvatar}" style="width:100%;height:100%;object-fit:cover">`; document.getElementById('editAvatarPreview').innerHTML=`<img src="${savedAvatar}" style="width:100%;height:100%;object-fit:cover">`;}
