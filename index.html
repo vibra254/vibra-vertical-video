@@ -61,8 +61,6 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Se
 </style>
 </head>
 <body>
-
-<!-- LOGIN SCREEN - CONTINUE WITH GOOGLE - INAONEKANA KWANZA -->
 <div class="loginScreen" id="loginScreen">
 <div style="font-size:70px">🔥</div>
 <h1 style="font-size:42px;font-weight:900;margin:10px 0">VIBRA<span style="color:#fe2c55">.</span></h1>
@@ -71,7 +69,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Se
 <button class="googleBtn" onclick="loginReal()">G Continue with Google</button>
 <p style="font-size:11px;opacity:.5;margin-top:14px">Kwa kuendelea unakubali Masharti ya Vibra</p>
 <button onclick="skipLogin()" style="background:transparent;border:0;color:#fff;opacity:.6;margin-top:16px;cursor:pointer;text-decoration:underline">Endelea bila kuingia →</button>
-<div style="margin-top:20px;background:#111;padding:12px;border-radius:12px;font-size:12px;opacity:.8;max-width:320px">✅ Video zako zinahifadhiwa Cloud<br>✅ Watu wote wanaona video yako<br>✅ Lipwa $ kupitia PayPal</div>
+<div style="margin-top:20px;background:#111;padding:12px;border-radius:12px;font-size:12px;opacity:.8;max-width:320px">✅ Video zako zinahifadhiwa Cloud<br>✅ Watu wote wanaona video yako<br>✅ Lipwa kupitia M-PESA</div>
 </div>
 
 <div class="top"><div class="logo">VIBRA<b>.</b></div><span class="active">Kwa Ajili Yako</span><span onclick="openDiscover()">Zinazofuata</span></div>
@@ -96,13 +94,13 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Se
 
 <div class="modal" id="profileModal"><div class="modalHead"><span class="back" onclick="closeModal('profileModal');goHome()">←</span> <span>Mimi</span> <span style="position:absolute;right:12px" onclick="openEdit()">⚙️</span></div><div style="text-align:center;padding:18px 12px 6px"><div id="profileAvatar" onclick="document.getElementById('avatarInput').click()" style="width:92px;height:92px;border-radius:50%;background:#fe2c55;margin:auto;display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden;cursor:pointer;border:3px solid #1DA1F2">M</div><p style="font-size:11px;opacity:.6;margin-top:4px">👆 Bonyeza picha kubadilisha DP</p><input type="file" id="avatarInput" accept="image/*" style="display:none"><h2 id="profileName">Mr Vibra <span class="blueTick">✓</span></h2><p id="profileUser" style="opacity:.6">@mrvibra • Mombasa</p><p id="profileBio" style="font-size:13px;margin-top:8px;opacity:.8">🔥 Founder wa Vibra | Mr Vibra</p><div style="display:flex;justify-content:center;gap:24px;margin:14px 0"><div><b id="statFollowing">0</b><br><small style="opacity:.6">Ninaowafuata</small></div><div><b id="statFollowers">0</b><br><small style="opacity:.6">Wanaonifuata</small></div><div><b id="statLikes">0</b><br><small style="opacity:.6">Likes</small></div></div><div style="display:flex;gap:10px"><button class="btn" onclick="openEdit()">✏️ Badilisha Profile</button><button class="btn2" onclick="shareProfile()">🔗 Share</button></div><div style="display:flex;gap:8px;margin-top:12px"><button onclick="logout()" style="flex:1;background:#222;color:#fff;border:0;border-radius:8px;font-weight:700;padding:11px">Toka</button></div></div>
 
-<div class="payBox"><h3>💰 MALIPO YANGU - $ REAL</h3><p style="font-size:13px;opacity:.9;margin:4px 0">Mwezi huu umepata: <b id="myEarnings" style="font-size:18px">$0.00</b></p><p style="font-size:12px;opacity:.8">Kila views 1,000 = $0.60 • Malipo kupitia PayPal kila tarehe 1</p><div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Followers: <b id="payFollowers">0 / 1,000</b></span><span id="payFollowersCheck">⏳</span></div><div class="progress"><div id="barFollowers" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Video: <b id="payVideos">0 / 3</b></span><span id="payVideosCheck">⏳</span></div><div class="progress"><div id="barVideos" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Views: <b id="payViews">0 / 10,000</b></span><span id="payViewsCheck">⏳</span></div><div class="progress"><div id="barViews" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Likes: <b id="payLikes">0 / 500</b></span><span id="payLikesCheck">⏳</span></div><div class="progress"><div id="barLikes" style="width:0%"></div></div></div><p id="payStatus" style="font-size:13px;font-weight:700;margin-top:6px">⏳ Bado kidogo...</p><input id="paypalInput" class="input" style="margin-top:10px;background:#000a;border:1px solid #fff" placeholder="💳 PayPal email yako"><button class="btn" style="background:#fff;color:#000" onclick="requestPayReal()">💸 Omba Malipo $ - REAL</button><button class="btn2" style="width:100%;margin-top:8px" onclick="requestBlueTick()">✓ Omba Blue Tick</button></div>
+<div class="payBox"><h3>💰 MALIPO YANGU - $</h3><p style="font-size:13px;opacity:.9;margin:4px 0">Mwezi huu umepata: <b id="myEarnings" style="font-size:18px">$0.00</b></p><p style="font-size:12px;opacity:.8">Kila views 1,000 = $0.60 • Lipwa kupitia M-PESA kila tarehe 1</p><div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Followers: <b id="payFollowers">0 / 1,000</b></span><span id="payFollowersCheck">⏳</span></div><div class="progress"><div id="barFollowers" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Video: <b id="payVideos">0 / 3</b></span><span id="payVideosCheck">⏳</span></div><div class="progress"><div id="barVideos" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Views: <b id="payViews">0 / 10,000</b></span><span id="payViewsCheck">⏳</span></div><div class="progress"><div id="barViews" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Likes: <b id="payLikes">0 / 500</b></span><span id="payLikesCheck">⏳</span></div><div class="progress"><div id="barLikes" style="width:0%"></div></div></div><p id="payStatus" style="font-size:13px;font-weight:700;margin-top:6px">⏳ Bado kidogo...</p><input id="mpesaInput" class="input" style="margin-top:10px;background:#000a;border:1px solid #fff" placeholder="📱 Namba ya M-PESA: 07XX XXX XXX"><button class="btn" style="background:#25D366;color:#000" onclick="requestPayReal()">💸 Omba Malipo $ - Lipwa kupitia M-PESA</button><button class="btn2" style="width:100%;margin-top:8px" onclick="requestBlueTick()">✓ Omba Blue Tick</button></div>
 
 <div style="padding:10px 10px 0"><h3>🎬 Video Zangu - Cloud - Bonyeza 🗑️ Kufuta</h3><p id="myVideoCount" style="font-size:12px;opacity:.6"></p></div><div class="grid" id="myVideos" style="padding:10px"></div><div style="padding:10px"><button class="btn" onclick="closeModal('profileModal');goHome()">🏠 Rudi Nyumbani</button></div></div>
 
-<div class="modal" id="editModal"><div class="modalHead"><span class="back" onclick="closeModal('editModal')">←</span> Badilisha Profile</div><div style="padding:16px"><div style="text-align:center;margin-bottom:12px"><div id="editAvatarPreview" onclick="document.getElementById('avatarInput').click()" style="width:80px;height:80px;border-radius:50%;background:#fe2c55;margin:auto;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;cursor:pointer">M</div><button class="btn2" style="margin-top:8px" onclick="document.getElementById('avatarInput').click()">📸 Chagua DP</button></div><label style="font-size:12px;opacity:.6">Jina</label><input id="editName" class="input" value="Mr Vibra"><label style="font-size:12px;opacity:.6">@username</label><input id="editUser" class="input" value="@mrvibra"><label style="font-size:12px;opacity:.6">Bio</label><textarea id="editBio" class="input">🔥 Founder wa Vibra | Mr Vibra</textarea><button class="btn" onclick="saveProfileReal()">✅ Hifadhi Profile - Cloud</button></div></div>
+<div class="modal" id="editModal"><div class="modalHead"><span class="back" onclick="closeModal('editModal')">←</span> Badilisha Profile</div><div style="padding:16px"><div style="text-align:center;margin-bottom:12px"><div id="editAvatarPreview" onclick="document.getElementById('avatarInput').click()" style="width:80px;height:80px;border-radius:50%;background:#fe2c55;margin:auto;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;cursor:pointer">M</div><button class="btn2" style="margin-top:8px" onclick="document.getElementById('avatarInput').click()">📸 Chagua DP</button></div><label style="font-size:12px;opacity:.6">Jina</label><input id="editName" class="input" value="Mr Vibra"><label style="font-size:12px;opacity:.6">@username</label><input id="editUser" class="input" value="@mrvibra"><label style="font-size:12px;opacity:.6">Bio</label><textarea id="editBio" class="input">🔥 Founder wa Vibra | Mr Vibra</textarea><button class="btn" onclick="saveProfileReal()">✅ Hifadhi Profile</button></div></div>
 
-<div class="commentBox" id="commentBox"><div style="padding:12px;text-align:center;border-bottom:1px solid #333;font-weight:700">💬 Maoni - Real <span style="float:right;cursor:pointer" onclick="closeComments()">✕</span></div><div id="commentList" style="flex:1;overflow-y:auto"></div><div style="display:flex;gap:8px;padding:10px"><input id="commentInput" class="input" style="margin:0" placeholder="Andika maoni..."><button class="btn" style="width:auto;padding:10px 16px" onclick="sendCommentReal()">Tuma</button></div></div>
+<div class="commentBox" id="commentBox"><div style="padding:12px;text-align:center;border-bottom:1px solid #333;font-weight:700">💬 Maoni <span style="float:right;cursor:pointer" onclick="closeComments()">✕</span></div><div id="commentList" style="flex:1;overflow-y:auto"></div><div style="display:flex;gap:8px;padding:10px"><input id="commentInput" class="input" style="margin:0" placeholder="Andika maoni..."><button class="btn" style="width:auto;padding:10px 16px" onclick="sendCommentReal()">Tuma</button></div></div>
 <div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -113,7 +111,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Se
 const firebaseConfig={apiKey:"AIzaSyD6CwP7TqvA2cY5wX7Yv1a1v9v0ZvQ0Y0",authDomain:"vibra-1ee50.firebaseapp.com",projectId:"vibra-1ee50",storageBucket:"vibra-1ee50.appspot.com",messagingSenderId:"123456789",appId:"1:123456789:web:abc123"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore(); const storage=firebase.storage(); const auth=firebase.auth();
-let currentUser=null; let posts=[]; let myName='Mr Vibra'; let myUser='@mrvibra';
+let currentUser=null; let posts=[];
 let creators=[
 {name:'Juma Said',user:'@juma_said',followers:'12.4K',bio:'😂 Vichekesho kila siku',emoji:'😂',lastMsg:'Sawa bro, video yako kali 🔥',time:'10:12',verified:true},
 {name:'Amina Zuri',user:'@amina_zuri',followers:'8.9K',bio:'🎵 Muziki • Dance',emoji:'💃',lastMsg:'Tupost dance pamoja?',time:'09:45',verified:false},
@@ -168,10 +166,10 @@ function updatePayDashboard(){
   check('payFollowersCheck', followers>=1000); check('payVideosCheck', videos>=3); check('payViewsCheck', totalViews>=10000); check('payLikesCheck', totalLikes>=500);
 }
 async function requestPayReal(){
-  let email=document.getElementById('paypalInput').value.trim();
-  if(!email || !email.includes('@')){ showToast('Weka PayPal email sahihi'); return; }
+  let phone=document.getElementById('mpesaInput').value.trim();
+  if(!phone || phone.length<10){ showToast('Weka namba sahihi ya M-PESA: 07XX...'); return; }
   let mine=posts.filter(p=>isMyPost(p)); let totalViews=mine.reduce((a,p)=>a+(p.views||0),0); let earnings=(totalViews/1000*0.60).toFixed(2);
-  try{ await db.collection('payouts').add({name:'Mr Vibra',email:email,amount:parseFloat(earnings),views:totalViews,createdAt:firebase.firestore.FieldValue.serverTimestamp(),status:'pending'}); showToast('✅ REAL! Ombi la $'+earnings+' limetumwa Database.'); }catch(e){ showToast('✅ Ombi limetumwa! $'+earnings+' kwa '+email+' - Washa Firestore kwanza'); }
+  try{ await db.collection('payouts').add({name:'Mr Vibra',phone:phone,amount:parseFloat(earnings),views:totalViews,createdAt:firebase.firestore.FieldValue.serverTimestamp(),status:'pending',method:'M-PESA'}); showToast('✅ REAL! Ombi la $'+earnings+' limetumwa. Utalipwa kupitia M-PESA '+phone); }catch(e){ showToast('✅ Ombi limetumwa! $'+earnings+' kwa M-PESA '+phone+' - Washa Firestore kwanza'); }
 }
 function requestBlueTick(){ showToast('✅ Ombi la Blue Tick limetumwa! Wewe ni Founder, unayo tayari ✓'); }
 function openUpload(){ if(!currentUser){ showToast('Ingia na Google kwanza'); document.getElementById('loginScreen').classList.remove('hide'); return; } closeAll(); document.getElementById('uploadModal').classList.add('show'); }
@@ -186,10 +184,10 @@ function sendAI(){
   let inp=document.getElementById('aiInput'); let q=inp.value.trim(); if(!q) return;
   let chat=document.getElementById('aiChat'); chat.innerHTML+=`<div class="aiMsg me">${q}</div>`; inp.value='';
   let low=q.toLowerCase(); let ans='';
-  if(low.includes('pesa')||low.includes('lipwa')||low.includes('ngapi')) ans='Unalipwa kwa $! 💵\nKila views 1,000 = $0.60\nViews 10,000 = $6.00\nViews 100,000 = $60.00\nUnalipwa kupitia PayPal kila tarehe 1.';
+  if(low.includes('pesa')||low.includes('lipwa')||low.includes('ngapi')) ans='Unalipwa kwa $! 💵\nKila views 1,000 = $0.60\nViews 10,000 = $6.00\nViews 100,000 = $60.00\nLipwa kupitia M-PESA kila tarehe 1.';
   else if(low.includes('caption')) ans='Caption kali 3:\n1. 🔥 Mr Vibra motooo! 👇 #vibra #fyp\n2. Siku ya leo ni yangu! 💪 #fyp\n3. Tazama mpaka mwisho 😱 #viral';
   else if(low.includes('salam')||low.includes('mambo')) ans='Mambo poa Mr Vibra! 🔥 Niko vizuri sana.';
-  else ans='Swali zuri! 🤔 Najua: malipo $, caption, blue tick. Jaribu: "Nitalipwa pesa ngapi?"';
+  else ans='Swali zuri! 🤔 Najua: malipo $ kupitia M-PESA, caption, blue tick. Jaribu: "Nitalipwa pesa ngapi?"';
   setTimeout(()=>{ chat.innerHTML+=`<div class="aiMsg">✨ ${ans.replace(/\n/g,'<br>')}</div>`; },500);
 }
 function toggleVoice(){
@@ -233,14 +231,14 @@ function openEdit(){ document.getElementById('editModal').classList.add('show');
 async function saveProfileReal(){
   let n=document.getElementById('editName').value||'Mr Vibra';
   try{ await db.collection('users').doc(currentUser?currentUser.uid:'mrvibra').set({name:n,user:'@mrvibra',updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}); }catch(e){}
-  document.getElementById('profileName').innerHTML=n+' <span class="blueTick">✓</span>'; closeModal('editModal'); showToast('Profile imehifadhiwa Cloud ✅');
+  document.getElementById('profileName').innerHTML=n+' <span class="blueTick">✓</span>'; closeModal('editModal'); showToast('Profile imehifadhiwa ✅');
 }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function closeAll(){ document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show')); document.getElementById('commentBox').classList.remove('show'); }
 function goHome(){ closeAll(); document.getElementById('feed').scrollTo({top:0,behavior:'smooth'}); }
 function loginReal(){
   let provider=new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).then(r=>{ currentUser=r.user; myName='Mr Vibra'; document.getElementById('loginScreen').classList.add('hide'); showToast('Karibu Mr Vibra ✅ - Uko ndani REAL'); loadPostsReal(); }).catch(e=>{ showToast('Google imeshindwa - Jaribu tena, hakikisha umewasha Google kwenye Firebase Auth'); });
+  auth.signInWithRedirect(provider);
 }
 function skipLogin(){ document.getElementById('loginScreen').classList.add('hide'); currentUser={uid:'mrvibra',displayName:'Mr Vibra'}; loadPostsReal(); }
 function logout(){ auth.signOut().catch(()=>{}); currentUser=null; document.getElementById('loginScreen').classList.remove('hide'); showToast('Umetoka'); }
@@ -249,7 +247,8 @@ document.getElementById('avatarInput').addEventListener('change',e=>{
   reader.onload=function(ev){ let url=ev.target.result; document.getElementById('profileAvatar').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`; document.getElementById('editAvatarPreview').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`; try{localStorage.setItem('vibra_avatar',url);}catch(e){} showToast('DP imebadilika ✅'); };
   reader.readAsDataURL(f);
 });
-auth.onAuthStateChanged(u=>{ if(u){ currentUser=u; document.getElementById('loginScreen').classList.add('hide'); loadPostsReal(); } else { /* baki kwenye login screen */ } });
+auth.getRedirectResult().then(r=>{ if(r && r.user){ currentUser=r.user; document.getElementById('loginScreen').classList.add('hide'); showToast('Karibu Mr Vibra ✅ - Uko ndani'); loadPostsReal(); } }).catch(e=>{ showToast('Google imeshindwa - Washa Google kwenye Firebase'); });
+auth.onAuthStateChanged(u=>{ if(u){ currentUser=u; document.getElementById('loginScreen').classList.add('hide'); loadPostsReal(); } });
 loadPostsReal();
 document.getElementById('feed').addEventListener('scroll',()=>{ document.querySelectorAll('.post video').forEach(v=>v.pause()); document.querySelectorAll('.post').forEach(el=>{ let r=el.getBoundingClientRect(); if(r.top>=-100 && r.top<=100){ let v=el.querySelector('video'); if(v) v.play().catch(()=>{}) } }); });
 document.getElementById('aiInput').addEventListener('keydown',e=>{ if(e.key==='Enter') sendAI(); });
