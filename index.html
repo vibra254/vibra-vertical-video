@@ -2,319 +2,275 @@
 <html lang="sw">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>VIBRA</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VIBRA - Hamadi Mkungu</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
-body{background:#000;color:#fff;overflow:hidden;height:100dvh}
-body.light{background:#fff;color:#000}
-body.light .bottom,body.light .sheet,body.light .modal{background:#fff;color:#000}
-button{cursor:pointer;border:none}.hidden{display:none!important}
-.top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:center;gap:16px;padding:12px;background:linear-gradient(#0009,transparent);font-weight:700;font-size:14px}
-.top span{opacity:.6;cursor:pointer}.top span.on{opacity:1;border-bottom:2px solid #fe2c55}
-#feed{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory}
-.post{height:100dvh;scroll-snap-align:start;position:relative;background:#111;display:flex;align-items:center;justify-content:center}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow:hidden;height:100dvh}
+.top{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:center;gap:18px;z-index:100;background:linear-gradient(#000c,transparent);font-weight:700;font-size:18px}
+.top span{opacity:.6;cursor:pointer;padding:6px 10px}.top span.active{opacity:1;border-bottom:2px solid #fff}
+.logo{position:absolute;left:12px;font-weight:900;letter-spacing:1px}.logo b{color:#fe2c55}
+.feed{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory}
+.post{height:100dvh;scroll-snap-align:start;position:relative;background:#111;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .post video,.post img{width:100%;height:100%;object-fit:cover}
-.post-info{position:absolute;left:12px;bottom:90px;z-index:5;max-width:70%}
-.post-info b{font-size:17px}.post-info p{font-size:14px;margin:5px 0}
-.actions{position:absolute;right:8px;bottom:100px;z-index:6;display:flex;flex-direction:column;gap:12px;align-items:center}
-.act{width:48px;height:48px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}
-.avatar{width:48px;height:48px;border-radius:50%;border:2px solid #fff;object-fit:cover;cursor:pointer}
-.followBtn{background:#fe2c55;color:#fff;padding:6px 12px;border-radius:15px;font-size:11px;font-weight:700}
-.followBtn.following{background:#333}
-.bottom{position:fixed;bottom:0;left:0;right:0;height:62px;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;align-items:center;z-index:300}
-.bottom button{background:none;color:#fff;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:55px}
-.bottom button.active{color:#fe2c55}
-.bottom .plus{width:48px;height:30px;background:#fff;color:#000;border-radius:8px;font-size:22px;font-weight:900;position:relative}
-.bottom .plus::after{content:"";position:absolute;inset:0;background:#fe2c55;border-radius:8px;z-index:-1;transform:translate(3px,0)}
-.sheet{position:fixed;left:0;right:0;bottom:0;background:#161616;border-radius:20px 20px 0 0;padding:14px;padding-bottom:85px;z-index:400;max-height:75vh;overflow:auto}
-.sheet h3{text-align:center;margin-bottom:12px}
-.row{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px}
-.sitem{min-width:62px;text-align:center;font-size:11px;cursor:pointer}
-.sitem div{width:54px;height:54px;border-radius:50%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:24px;margin:auto;margin-bottom:5px}
-.opt{display:flex;align-items:center;gap:12px;padding:13px 5px;border-top:1px solid #2a2a2a;cursor:pointer}
-.modal{position:fixed;inset:0;background:#000;z-index:350;display:flex;flex-direction:column;overflow-y:auto}
-.mhead{padding:12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;position:sticky;top:0;background:#000;z-index:10}
-.chatbox{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0b141a;min-height:300px}
-.msg{max-width:80%;padding:8px 11px;border-radius:12px;font-size:14px}.me{align-self:flex-end;background:#005c4b;color:#fff}.other{align-self:flex-start;background:#202c33;color:#fff}
-.minput{display:flex;gap:8px;padding:10px;background:#202c33}.minput input{flex:1;padding:11px;border-radius:20px;border:none;background:#2a3942;color:#fff;outline:none}.minput button{width:44px;height:44px;border-radius:50%;background:#00a884;color:#fff;font-size:20px}
-.chatlist{flex:1;overflow:auto}.citem{display:flex;gap:12px;padding:13px;border-bottom:1px solid #1a1a1a;align-items:center;cursor:pointer}.citem img{width:50px;height:50px;border-radius:50%;object-fit:cover}.online{width:10px;height:10px;background:#00ff00;border-radius:50%;display:inline-block}
-.set-item{display:flex;justify-content:space-between;align-items:center;padding:15px;border-bottom:1px solid #222;cursor:pointer}.set-item select{background:#222;color:#fff;border:none;padding:7px;border-radius:8px}
-.livebox{flex:1;position:relative;background:#000;min-height:400px}.livebox video{width:100%;height:100%;object-fit:cover}.liveTag{position:absolute;top:12px;left:12px;background:#fe2c55;padding:5px 10px;border-radius:6px;font-weight:800}.viewers{position:absolute;top:12px;right:12px;background:#000a;padding:5px 10px;border-radius:20px}.liveChat{position:absolute;left:10px;bottom:80px;right:80px;display:flex;flex-direction:column;gap:6px}.liveChat div{background:#000a;padding:6px 10px;border-radius:12px;font-size:13px}.gifts{position:absolute;right:10px;bottom:80px;display:flex;flex-direction:column;gap:8px}.gifts button{width:44px;height:44px;border-radius:50%;background:#222;font-size:20px}
-.login{position:fixed;inset:0;background:#000;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;text-align:center}.login button{width:100%;max-width:340px;padding:13px;border-radius:10px;font-weight:700}
-#toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#000;padding:12px 18px;border-radius:10px;z-index:999;font-weight:700;display:none;max-width:90%;text-align:center}
-.langGrid{display:flex;flex-wrap:wrap;gap:8px;padding:10px}.langGrid button{background:#222;color:#fff;padding:8px 12px;border-radius:20px;font-size:13px}.langGrid button.on{background:#fe2c55}
-.dpWrap{position:relative;width:90px;height:90px;margin:0 auto}.dpWrap img{width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid #fe2c55;background:#222}.dpCam{position:absolute;bottom:2px;right:2px;width:28px;height:28px;background:#fe2c55;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #000}
-.profileTabs{display:flex;justify-content:center;gap:20px;padding:10px;border-bottom:1px solid #222;font-weight:700;font-size:13px}.profileTabs span{cursor:pointer;opacity:.6}.profileTabs span.on{opacity:1;color:#fe2c55}
-.myVideos{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;padding:2px}.myVideos div{aspect-ratio:9/16;background:#222;display:flex;align-items:center;justify-content:center;overflow:hidden}.myVideos img,.myVideos video{width:100%;height:100%;object-fit:cover}
-.uploadOpt{padding:16px;margin:8px 0;background:#222;border-radius:12px;cursor:pointer;display:flex;gap:12px;align-items:center;font-size:15px}
-.igBtn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;margin-top:6px}
+.right{position:absolute;right:10px;bottom:100px;display:flex;flex-direction:column;gap:18px;align-items:center;z-index:20}
+.action{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.action .ico{width:48px;height:48px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid #333}
+.action.active .ico{background:#fe2c55}
+.action small{font-size:11px;font-weight:600}
+.avatar{width:50px;height:50px;border-radius:50%;border:2px solid #fff;overflow:hidden;position:relative;background:#333;display:flex;align-items:center;justify-content:center;font-size:22px}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.followBtn{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:#fe2c55;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #000;z-index:2}
+.followBtn.me{background:#25D366}
+.info{position:absolute;left:12px;bottom:90px;right:70px;z-index:20}
+.info h3{font-size:17px;margin-bottom:4px}.info h3 a{color:#fff;text-decoration:none}.info h3 a:hover{text-decoration:underline}
+.info p{font-size:14px;opacity:.9;line-height:1.4}
+.song{font-size:12px;opacity:.7;margin-top:6px}
+.bottom{position:fixed;bottom:0;left:0;right:0;height:62px;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;align-items:center;z-index:500}
+.bottom div{text-align:center;font-size:22px;cursor:pointer;flex:1}.bottom small{display:block;font-size:10px}
+.addBtn{width:46px;height:30px;background:#fff;border-radius:8px;color:#000;font-size:24px;line-height:30px;border-left:4px solid #25f4ee;border-right:4px solid #fe2c55}
+.modal{position:fixed;inset:0;background:#000;z-index:400;display:none;overflow-y:auto;padding-bottom:80px}
+.modal.show{display:block}
+.modalHead{height:52px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid #222;font-weight:700}
+.back{position:absolute;left:12px;font-size:22px;cursor:pointer;padding:8px}
+.btn{background:#fe2c55;color:#fff;border:0;padding:12px 20px;border-radius:8px;font-weight:700;width:100%;cursor:pointer;font-size:15px}
+.btn2{background:#222;color:#fff;border:0;padding:10px 16px;border-radius:20px;cursor:pointer}
+.input{width:100%;background:#111;border:1px solid #333;color:#fff;padding:12px;border-radius:10px;margin-bottom:10px;font-size:15px}
+.card{background:#111;border-radius:14px;padding:14px;margin:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px}
+.grid div{aspect-ratio:9/16;background:#222;overflow:hidden;position:relative}
+.grid video,.grid img{width:100%;height:100%;object-fit:cover}
+.delBtn{position:absolute;top:4px;right:4px;background:#fe2c55;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;z-index:5;cursor:pointer}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:10px 16px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;display:none}
+.commentBox{position:fixed;bottom:0;left:0;right:0;background:#111;border-radius:16px 16px 0 0;max-height:60vh;z-index:600;display:none;flex-direction:column}
+.commentBox.show{display:flex}
+.cmt{padding:10px 14px;border-bottom:1px solid #222;font-size:14px}
 </style>
 </head>
 <body>
-<div id="toast"></div>
-<div class="login" id="loginBox">
-  <h1 style="font-size:52px">VIBRA<span style="color:#fe2c55">.</span></h1>
-  <p id="loginTxt">Jisajili uanze kupost, live na kuchat 🌍</p>
-  <button onclick="loginGoogle()" style="background:#fff;color:#000">🔍 <span id="btnGoogle">Ingia na Google</span></button>
-  <button onclick="loginGuest()" style="background:#fe2c55;color:#fff"><span id="btnGuest">Ingia kama Mgeni</span></button>
-  <p id="loginStatus" style="font-size:12px;color:#aaa"></p>
-  <div class="langGrid" id="loginLangs"></div>
-</div>
-<div class="top"><span class="on" onclick="showTab(this,'For You')">For You</span><span onclick="showTab(this,'Following')">Following</span><span onclick="openLiveList()">LIVE 🔴</span><span onclick="openDiscover()">🔍 Discover</span></div>
-<div id="feed"></div>
+
+<div class="top"><div class="logo">VIBRA<b>.</b></div><span class="active">Kwa Ajili Yako</span><span onclick="alert('Karibu Vibra!')">Zinazofuata</span></div>
+
+<div class="feed" id="feed"></div>
+
 <div class="bottom">
-  <button id="navHome" onclick="goHome()">🏠<span id="tHome">Home</span></button>
-  <button onclick="openDiscover()">🔍<span id="tDisc">Discover</span></button>
-  <button onclick="openUpload()"><div class="plus">+</div></button>
-  <button onclick="openAI()">✨<span>Vibra AI</span></button>
-  <button onclick="openInbox()">💬<span id="tInbox">Inbox</span></button>
-  <button id="navMe" onclick="openProfile()"><img id="bottomDP" src="https://via.placeholder.com/100" style="width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid #fff"><span id="tProf">Me</span></button>
-</div>
-<input type="file" id="fileUp" accept="video/*,image/*" class="hidden" onchange="uploadPost(this)">
-<div id="uploadSheet" class="sheet hidden">
-  <h3>➕ Post Mpya</h3>
-  <div class="uploadOpt" onclick="document.getElementById('fileUp').click()"><span style="font-size:24px">🎬</span><div style="text-align:left"><b>Post Video / Picha</b><br><small style="color:#aaa">Itaenda kwenye Profile yako + Firebase</small></div></div>
-  <div class="uploadOpt" onclick="closeUpload();openLive()"><span style="font-size:24px">🔴</span><div style="text-align:left"><b>Anza LIVE</b><br><small style="color:#aaa">Live sasa hivi</small></div></div>
-  <div class="uploadOpt" onclick="closeUpload();openProfile()"><span style="font-size:24px">👤</span><div style="text-align:left"><b>Angalia Profile Yangu</b><br><small style="color:#aaa">Ona videos zako zote</small></div></div>
-  <div class="opt" onclick="closeUpload()" style="justify-content:center;color:#fe2c55"><b>✕ Close</b></div>
-</div>
-<div id="shareSheet" class="sheet hidden">
-  <h3 id="shareTitle">Share video</h3>
-  <div class="row">
-    <div class="sitem" onclick="shareCopy()"><div>🔗</div>Copy link</div>
-    <div class="sitem" onclick="shareApp('whatsapp')"><div style="background:#25D366">💬</div>WhatsApp</div>
-    <div class="sitem" onclick="shareApp('telegram')"><div style="background:#229ED9">✈️</div>Telegram</div>
-    <div class="sitem" onclick="shareApp('facebook')"><div style="background:#1877F2">f</div>Facebook</div>
-    <div class="sitem" onclick="shareApp('instagram')"><div style="background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)">📸</div>Instagram</div>
-    <div class="sitem" onclick="shareApp('sms')"><div>💬</div>Message</div>
-    <div class="sitem" onclick="shareApp('email')"><div>✉️</div>Email</div>
-    <div class="sitem" onclick="shareApp('x')"><div>𝕏</div>X</div>
-    <div class="sitem" onclick="shareMore()"><div>⋯</div>More</div>
-  </div>
-  <div class="opt" onclick="reportPost()"><span>🚩</span><span id="optReport">Report</span></div>
-  <div class="opt" onclick="notInterested()"><span>🚫</span><span id="optNot">Not interested</span></div>
-  <div class="opt" onclick="saveVideo()"><span>⬇️</span><span id="optSave">Save video</span></div>
-  <div class="opt" onclick="duetVideo()"><span>👥</span>Duet</div>
-  <div class="opt" onclick="closeShare()" style="justify-content:center;color:#fe2c55"><b>✕ Close</b></div>
-</div>
-<div id="commentSheet" class="sheet hidden">
-  <h3>Comments (<span id="cCount">0</span>) <span onclick="closeComment()" style="float:right;cursor:pointer">✕</span></h3>
-  <div id="commentList" style="max-height:300px;overflow:auto"></div>
-  <div class="minput"><input id="commentInput" placeholder="Add comment..."><button onclick="sendComment()">➤</button></div>
-</div>
-<div id="liveModal" class="modal hidden">
-  <div class="mhead"><b>🔴 LIVE - <span id="liveUser">You</span></b><button onclick="stopLive()" style="background:#fe2c55;color:#fff;padding:8px 14px;border-radius:8px">End Live ✕</button></div>
-  <div class="livebox"><video id="liveVideo" autoplay playsinline muted></video><div class="liveTag">● LIVE</div><div class="viewers">👁️ <span id="liveViews">1</span></div><div class="liveChat" id="liveChat"></div><div class="gifts"><button onclick="sendGift('🌹')">🌹</button><button onclick="sendGift('🔥')">🔥</button><button onclick="sendGift('💎')">💎</button><button onclick="sendGift('🦁')">🦁</button></div></div>
-  <div class="minput"><input id="liveInput" placeholder="Live comment..."><button onclick="sendLiveComment()">➤</button></div>
-</div>
-<div id="aiModal" class="modal hidden"><div class="mhead"><b>✨ Vibra AI</b><button onclick="closeModal('aiModal')">✕</button></div><div class="chatbox" id="aiBox"><div class="msg other">Hello! I'm <b>Vibra AI</b> 🤖 Ask me anything!</div></div><div class="minput"><input id="aiInput" placeholder="Ask Vibra AI..." onkeydown="if(event.key==='Enter')askAI()"><button onclick="askAI()">➤</button></div></div>
-<div id="inboxModal" class="modal hidden"><div class="mhead"><b>💬 Chats</b><button onclick="closeModal('inboxModal')">✕</button></div><div class="chatlist" id="chatList"></div></div>
-<div id="chatModal" class="modal hidden"><div class="mhead"><b>👤 <span id="chatName">Hamadi</span> <span class="online"></span> <small>Online</small></b><button onclick="closeModal('chatModal')">✕</button></div><div class="chatbox" id="chatBox"></div><div class="minput"><input id="chatInput" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">➤</button></div></div>
-
-<!-- PROFILE NDOGO + INSTAGRAM LINK -->
-<div id="profileModal" class="modal hidden">
-  <div class="mhead"><b>👤 <span id="profTopName">Me</span></b><div><button onclick="openSettingsPage()" style="background:none;font-size:20px">⚙️</button><button onclick="closeModal('profileModal')" style="background:none;font-size:18px;margin-left:8px">✕</button></div></div>
-  <div style="padding:12px 16px 6px;text-align:center">
-    <div class="dpWrap" onclick="document.getElementById('profPic').click()"><img id="profImg" src="https://via.placeholder.com/150"><div class="dpCam">📷</div></div>
-    <input type="file" id="profPic" accept="image/*" class="hidden" onchange="changePic(this)">
-    <h3 id="profNameDisplay" style="margin-top:6px">@hamadoski47</h3>
-    <p id="profBioDisplay" style="color:#aaa;font-size:13px">Karibu Vibra! 🔥</p>
-    <a id="igLink" href="https://instagram.com/hamadoski47" target="_blank" class="igBtn">📸 @hamadoski47 • Instagram</a>
-    <div style="display:flex;justify-content:center;gap:22px;margin:10px 0">
-      <div><b id="statFollowing">0</b><br><small style="color:#aaa">Following</small></div>
-      <div><b id="statFollowers">0</b><br><small style="color:#aaa">Followers</small></div>
-      <div><b id="statLikes">0</b><br><small style="color:#aaa">Likes</small></div>
-    </div>
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button onclick="toggleEdit()" style="background:#fe2c55;color:#fff;padding:9px 20px;border-radius:8px;font-weight:700;font-size:13px">✏️ Edit Profile</button>
-      <button onclick="document.getElementById('profPic').click()" style="background:#333;color:#fff;padding:9px 14px;border-radius:8px;font-size:13px">📷 Weka DP</button>
-    </div>
-    <div id="editForm" class="hidden" style="margin-top:10px;background:#1a1a1a;padding:12px;border-radius:12px;text-align:left">
-      <input id="profName" placeholder="Jina" style="padding:9px;width:100%;border-radius:8px;background:#222;color:#fff;border:1px solid #333;margin:4px 0">
-      <textarea id="profBio" placeholder="Bio" style="padding:9px;width:100%;border-radius:8px;background:#222;color:#fff;margin:4px 0"></textarea>
-      <input id="profUser" placeholder="@username" style="padding:9px;width:100%;border-radius:8px;background:#222;color:#fff;border:1px solid #333;margin:4px 0">
-      <input id="profIG" placeholder="Instagram username - mfano hamadoski47" style="padding:9px;width:100%;border-radius:8px;background:#222;color:#fff;border:1px solid #333;margin:4px 0">
-      <button onclick="saveProfile()" style="background:#fe2c55;color:#fff;padding:10px;width:100%;border-radius:8px;margin-top:6px">Hifadhi ✅</button>
-    </div>
-  </div>
-  <div class="profileTabs"><span class="on" onclick="showMyTab(this,'videos')">🎬 Videos</span><span onclick="showMyTab(this,'liked')">❤️ Liked</span><span onclick="showMyTab(this,'saved')">🔖 Saved</span></div>
-  <div class="myVideos" id="myVideos"></div>
-  <div style="height:30px"></div>
+<div onclick="goHome()">🏠<small>Nyumbani</small></div>
+<div onclick="openUpload()"><div class="addBtn">+</div><small>Post</small></div>
+<div onclick="openProfile()">👤<small>Mimi</small></div>
 </div>
 
-<div id="settingsModal" class="modal hidden">
-  <div class="mhead"><b>⚙️ Settings</b><button onclick="closeModal('settingsModal')">✕</button></div>
-  <div style="padding:10px">
-    <h3 style="padding:10px">🌍 Language - Worldwide</h3><div class="langGrid" id="settingsLangs"></div>
-    <h3 style="padding:10px">⚙️ Settings</h3>
-    <div class="set-item"><span>🌙 Dark / Light</span><select onchange="toggleTheme(this.value)"><option value="dark">Dark</option><option value="light">Light</option></select></div>
-    <div class="set-item"><span>📦 Data Saver</span><select onchange="toast('Data Saver: '+this.value)"><option>Off</option><option>On</option></select></div>
-    <div class="set-item"><span>🧹 Free Up Space</span><button onclick="freeSpace()" style="background:#333;color:#fff;padding:7px 12px;border-radius:8px">Clear Cache</button></div>
-    <div class="set-item" onclick="reportProblem()"><span>🚩 Report a Problem</span><span>›</span></div>
-    <div class="set-item" onclick="logout()" style="color:#fe2c55"><span>🚪 Log Out</span><span>›</span></div>
-    <div class="set-item"><span>Version</span><span>Vibra 5.1</span></div>
-    <button onclick="closeModal('settingsModal');openProfile()" style="background:#fe2c55;color:#fff;padding:12px;width:100%;border-radius:8px;margin-top:14px">⬅️ Rudi Profile</button>
-  </div>
+<!-- UPLOAD -->
+<div class="modal" id="uploadModal">
+<div class="modalHead"><span class="back" onclick="closeModal('uploadModal');goHome()">✕</span> Post Mpya</div>
+<div style="padding:16px">
+<div id="previewBox" style="height:280px;background:#111;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:40px">📹</div>
+<input type="file" id="fileInput" accept="video/*,image/*" style="display:none">
+<button class="btn" style="margin-top:12px;background:#222" onclick="document.getElementById('fileInput').click()">📂 Chagua Video / Picha</button>
+<textarea id="captionInput" class="input" style="margin-top:12px" placeholder="Andika caption... #vibra #tanzania"></textarea>
+<input id="songInput" class="input" placeholder="🎵 Wimbo (mf: Diamond - Yatapita)" value="Hamadi Mkungu - Vibra Sound">
+<button class="btn" onclick="doPost()">🚀 Post Sasa</button>
+<p style="text-align:center;font-size:12px;opacity:.6;margin-top:10px">Video yako itaonekana mara moja kwa kila mtu</p>
+</div>
 </div>
 
+<!-- PROFILE -->
+<div class="modal" id="profileModal">
+<div class="modalHead"><span class="back" onclick="closeModal('profileModal');goHome()">←</span> <span id="profileTitle">Mimi</span> <span style="position:absolute;right:12px" onclick="openEdit()">⚙️</span></div>
+<div style="text-align:center;padding:18px 12px 6px">
+<div id="profileAvatar" style="width:88px;height:88px;border-radius:50%;background:#fe2c55;margin:auto;display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden">H</div>
+<h2 id="profileName" style="margin-top:10px">Hamadi Mkungu</h2>
+<p id="profileUser" style="opacity:.6">@hamadoski47 • 🇹🇿 Mombasa</p>
+<p id="profileBio" style="font-size:13px;margin-top:6px;opacity:.8">🔥 Vibra Creator | Tanzania 🇹🇿 | Follow me 👇</p>
+<div style="display:flex;justify-content:center;gap:24px;margin:14px 0"><div><b id="statFollowing">0</b><br><small style="opacity:.6">Ninaowafuata</small></div><div><b id="statFollowers">0</b><br><small style="opacity:.6">Wanaonifuata</small></div><div><b id="statLikes">0</b><br><small style="opacity:.6">Likes</small></div></div>
+<div style="display:flex;gap:10px"><button class="btn" onclick="openEdit()">✏️ Badilisha Profile</button><button class="btn2" onclick="shareProfile()">🔗 Share</button></div>
+<div style="display:flex;gap:8px;margin-top:12px"><a href="https://instagram.com/hamadoski47" target="_blank" style="flex:1;background:#E1306C;color:#fff;text-align:center;padding:11px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px">📸 Instagram</a><button onclick="logout()" style="flex:1;background:#222;color:#fff;border:0;border-radius:8px;font-weight:700">Toka</button></div>
+</div>
+<div style="padding:10px 10px 0"><h3>🎬 Video Zangu</h3><p id="myVideoCount" style="font-size:12px;opacity:.6"></p></div>
+<div class="grid" id="myVideos" style="padding:10px"></div>
+<div style="padding:10px"><button class="btn" onclick="closeModal('profileModal');goHome()">🏠 Rudi Nyumbani</button></div>
+</div>
+
+<!-- EDIT -->
+<div class="modal" id="editModal">
+<div class="modalHead"><span class="back" onclick="closeModal('editModal')">←</span> Badilisha Profile</div>
+<div style="padding:16px">
+<label style="font-size:12px;opacity:.6">Jina</label><input id="editName" class="input" value="Hamadi Mkungu">
+<label style="font-size:12px;opacity:.6">@username - LAZIMA iwe @hamadoski47</label><input id="editUser" class="input" value="@hamadoski47">
+<label style="font-size:12px;opacity:.6">Bio</label><textarea id="editBio" class="input">🔥 Vibra Creator | Tanzania 🇹🇿</textarea>
+<button class="btn" onclick="saveProfile()">✅ Hifadhi</button>
+</div>
+</div>
+
+<!-- COMMENTS -->
+<div class="commentBox" id="commentBox">
+<div style="padding:12px;text-align:center;border-bottom:1px solid #333;font-weight:700">💬 Maoni <span style="float:right;cursor:pointer" onclick="closeComments()">✕</span></div>
+<div id="commentList" style="flex:1;overflow-y:auto"></div>
+<div style="display:flex;gap:8px;padding:10px"><input id="commentInput" class="input" style="margin:0" placeholder="Andika maoni..."><button class="btn" style="width:auto;padding:10px 16px" onclick="sendComment()">Tuma</button></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig = {apiKey:"AIzaSyBAsF_SALFEiraimj1Qg10AiOI8gpixheU",authDomain:"vibra-44dce.firebaseapp.com",projectId:"vibra-44dce",storageBucket:"vibra-44dce.firebasestorage.app",messagingSenderId:"424385936523",appId:"1:424385936523:web:54c1b5fff7381519e8288e"};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(), db=firebase.firestore(), storage=firebase.storage();
-let currentUser=null, currentShare=null, currentPost=null, liveStream=null, liveTimer=null, currentChat=null;
-let myDP=localStorage.getItem('vibra_dp')||'';
-let myFollows=JSON.parse(localStorage.getItem('vibra_follows')||'[]');
-let myLikes=JSON.parse(localStorage.getItem('vibra_likes')||'[]');
-const LANGS={
- sw:{name:"Kiswahili 🇹🇿",home:"Nyumbani",disc:"Tafuta",inbox:"Inbox",me:"Mimi",login:"Jisajili uanze kupost, live na kuchat 🌍",google:"Ingia na Google",guest:"Ingia kama Mgeni",share:"Shiriki video",report:"Ripoti",not:"Sipendi",save:"Hifadhi video"},
- en:{name:"English 🇺🇸",home:"Home",disc:"Discover",inbox:"Inbox",me:"Me",login:"Join to post, go live and chat 🌍",google:"Sign in with Google",guest:"Continue as Guest",share:"Share video",report:"Report",not:"Not interested",save:"Save video"},
- fr:{name:"Français 🇫🇷",home:"Accueil",disc:"Découvrir",inbox:"Boîte",me:"Moi",login:"Rejoins pour poster 🌍",google:"Se connecter avec Google",guest:"Continuer en invité",share:"Partager la vidéo",report:"Signaler",not:"Pas intéressé",save:"Enregistrer"},
- es:{name:"Español 🇪🇸",home:"Inicio",disc:"Descubrir",inbox:"Bandeja",me:"Yo",login:"Únete para publicar 🌍",google:"Iniciar con Google",guest:"Continuar como invitado",share:"Compartir video",report:"Reportar",not:"No me interesa",save:"Guardar video"},
- ar:{name:"العربية 🇸🇦",home:"الرئيسية",disc:"اكتشف",inbox:"الرسائل",me:"أنا",login:"انضم للنشر 🌍",google:"تسجيل الدخول بـ Google",guest:"متابعة كضيف",share:"مشاركة الفيديو",report:"إبلاغ",not:"غير مهتم",save:"حفظ الفيديو"},
- zh:{name:"中文 🇨🇳",home:"首页",disc:"发现",inbox:"收件箱",me:"我",login:"加入发布 🌍",google:"用 Google 登录",guest:"以访客继续",share:"分享视频",report:"举报",not:"不感兴趣",save:"保存视频"},
- hi:{name:"हिन्दी 🇮🇳",home:"होम",disc:"खोजें",inbox:"इनबॉक्स",me:"मैं",login:"पोस्ट के लिए जुड़ें 🌍",google:"Google से साइन इन करें",guest:"अतिथि के रूप में जारी रखें",share:"वीडियो शेयर करें",report:"रिपोर्ट",not:"रुचि नहीं",save:"वीडियो सेव करें"},
- pt:{name:"Português 🇧🇷",home:"Início",disc:"Descobrir",inbox:"Caixa",me:"Eu",login:"Junte-se para postar 🌍",google:"Entrar com Google",guest:"Continuar como convidado",share:"Compartilhar vídeo",report:"Denunciar",not:"Não tenho interesse",save:"Salvar vídeo"},
- de:{name:"Deutsch 🇩🇪",home:"Start",disc:"Entdecken",inbox:"Postfach",me:"Ich",login:"Mach mit 🌍",google:"Mit Google anmelden",guest:"Als Gast weiter",share:"Video teilen",report:"Melden",not:"Nicht interessiert",save:"Video speichern"},
- am:{name:"Amharic 🇪🇹",home:"ቤት",disc:"አግኝ",inbox:"መልእክት",me:"እኔ",login:"ለመለጠፍ ይቀላቀሉ 🌍",google:"በ Google ይግቡ",guest:"እንደ እንግዳ ይቀጥሉ",share:"ቪዲዮ አጋራ",report:"ሪፖርት",not:"አላስደሰተኝም",save:"ቪዲዮ አስቀምጥ"},
- so:{name:"Somali 🇸🇴",home:"Guriga",disc:"Baadh",inbox:"Sanduuqa",me:"Aniga",login:"Ku biir 🌍",google:"Ku gal Google",guest:"Sii wad marti ahaan",share:"Wadaag video",report:"Warbixin",not:"Ma xiiseynayo",save:"Kaydi video"},
- yo:{name:"Yoruba 🇳🇬",home:"Ile",disc:"Wa",inbox:"Apoti",me:"Emi",login:"Darapo 🌍",google:"Wole pelu Google",guest:"Tesiwaju bi alejo",share:"Pin fidio",report:"Jabo",not:"Ko nifẹ",save:"Fi fidio pamọ"},
-};
-let curLang=localStorage.getItem('vibra_lang')||'sw';
-function renderLangButtons(){let html=Object.keys(LANGS).map(k=>`<button class="${k===curLang?'on':''}" onclick="setLang('${k}')">${LANGS[k].name}</button>`).join('');document.getElementById('loginLangs').innerHTML=html;document.getElementById('settingsLangs').innerHTML=html}
-function setLang(code){curLang=code;localStorage.setItem('vibra_lang',code);let L=LANGS[code];document.getElementById('tHome').innerText=L.home;document.getElementById('tDisc').innerText=L.disc;document.getElementById('tInbox').innerText=L.inbox;document.getElementById('tProf').innerText=L.me;document.getElementById('loginTxt').innerText=L.login;document.getElementById('btnGoogle').innerText=L.google;document.getElementById('btnGuest').innerText=L.guest;document.getElementById('shareTitle').innerText=L.share;document.getElementById('optReport').innerText=L.report;document.getElementById('optNot').innerText=L.not;document.getElementById('optSave').innerText=L.save;renderLangButtons();toast('Language: '+L.name)}
+const firebaseConfig={apiKey:"AIzaSyD6CwP7TqvA2cY5wX7Yv1a1v9v0ZvQ0Y0",authDomain:"vibra-1ee50.firebaseapp.com",projectId:"vibra-1ee50",storageBucket:"vibra-1ee50.appspot.com",messagingSenderId:"123456789",appId:"1:123456789:web:abc123"};
+try{firebase.initializeApp(firebaseConfig)}catch(e){}
+let db=null; try{db=firebase.firestore()}catch(e){}
+let currentUser=null;
 let posts=[
- {id:"post1",user:"@hamadoski47",uid:"hamadi",name:"Hamadi Mkungu",avatar:"https://via.placeholder.com/100",caption:"Karibu Vibra! 🔥 #vibra #worldwide",likes:0,comments:0,shares:0,video:"https://www.w3schools.com/html/mov_bbb.mp4",isVideo:true,allComments:[]},
- {id:"post2",user:"@vibra_official",uid:"vibra",name:"Vibra Official",avatar:"https://via.placeholder.com/100",caption:"Vibra sasa ni Worldwide 🌍",likes:0,comments:0,shares:0,video:"https://picsum.photos/600/900?random=2",isVideo:false,allComments:[]},
+{id:'1',uid:'hamadi',name:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:'Karibu VIBRA! 🔥 Hii ni app yangu mpya. Nifollow uone video zangu kila siku! #vibra #tanzania',song:'Hamadi Mkungu - Vibra Sound',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',isVideo:true,likes:128,liked:false,comments:[{user:'@juma',text:'Hongera bro 🔥'}]},
+{id:'2',uid:'hamadi',name:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:'Mombasa ni motooo 🌊🌴 #mombasa #vibra',song:'Diamond - Yatapita',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',isVideo:true,likes:89,liked:false,comments:[]},
+{id:'3',uid:'hamadi',name:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:'Nani anapenda video hizi? Comment 👇',song:'Harmonize - Single Again',video:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',isVideo:true,likes:210,liked:false,comments:[]}
 ];
-let chats=[{name:"Mama",msg:"Mambo, umeona Vibra mpya?",time:"10:24",img:"https://via.placeholder.com/100",msgs:[{t:"Mambo, umeona Vibra mpya?",me:false}]},{name:"Vibra Support",msg:"Karibu Vibra",time:"09:10",img:"https://via.placeholder.com/100",msgs:[{t:"Karibu Vibra",me:false}]}];
-function toast(m){let t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2800)}
-function showTab(el,txt){document.querySelectorAll('.top span').forEach(s=>s.classList.remove('on'));el.classList.add('on');toast(txt)}
-function goHome(){closeAll();document.querySelectorAll('.bottom button').forEach(b=>b.classList.remove('active'));document.getElementById('navHome').classList.add('active');renderFeed()}
-function closeAll(){['shareSheet','liveModal','aiModal','inboxModal','chatModal','profileModal','commentSheet','uploadSheet','settingsModal'].forEach(id=>document.getElementById(id).classList.add('hidden'))}
-function closeModal(id){document.getElementById(id).classList.add('hidden')}
-function closeShare(){document.getElementById('shareSheet').classList.add('hidden')}
-function closeComment(){document.getElementById('commentSheet').classList.add('hidden')}
-function closeUpload(){document.getElementById('uploadSheet').classList.add('hidden')}
-function openUpload(){closeAll();document.getElementById('uploadSheet').classList.remove('hidden')}
-function openSettingsPage(){closeModal('profileModal');document.getElementById('settingsModal').classList.remove('hidden')}
-function loginGoogle(){let p=new firebase.auth.GoogleAuthProvider();auth.signInWithPopup(p).then(r=>afterLogin(r.user)).catch(e=>{if(e.code==='auth/unauthorized-domain'){toast('Ongeza domain Firebase: '+location.hostname);document.getElementById('loginStatus').innerText='⚠️ Firebase > Authorized domains > Add: '+location.hostname}else if(e.code==='auth/popup-blocked'){auth.signInWithRedirect(p)}else toast(e.message)})}
-auth.getRedirectResult().then(r=>{if(r.user)afterLogin(r.user)}).catch(()=>{});
-function afterLogin(user){currentUser=user;document.getElementById('loginBox').classList.add('hidden');toast('Karibu '+(user.displayName||user.email)+' ✅');if(user.photoURL)applyDP(user.photoURL);db.collection('users').doc(user.uid).set({name:user.displayName,email:user.email,photo:user.photoURL,lastLogin:new Date()},{merge:true});loadRealData()}
-function loginGuest(){currentUser={displayName:'Mgeni',uid:'guest_'+Date.now()};document.getElementById('loginBox').classList.add('hidden');toast('Umeingia kama Mgeni ✅');if(myDP)applyDP(myDP);loadRealData()}
-function logout(){auth.signOut().then(()=>location.reload())}
-auth.onAuthStateChanged(u=>{if(u){currentUser=u;document.getElementById('loginBox').classList.add('hidden');if(u.photoURL)applyDP(u.photoURL);loadRealData()}})
-async function loadRealData(){
-  try{
-    if(currentUser){
-      let snap=await db.collection('follows').where('follower','==',currentUser.uid).where('active','==',true).get();
-      myFollows=snap.docs.map(d=>d.data().following);localStorage.setItem('vibra_follows',JSON.stringify(myFollows));
-      document.getElementById('statFollowing').innerText=myFollows.length;
-      let snap2=await db.collection('follows').where('following','==',currentUser.uid).where('active','==',true).get();
-      document.getElementById('statFollowers').innerText=snap2.size;
-      // LOAD REAL POSTS FROM FIRESTORE
-      let psnap=await db.collection('posts').orderBy('time','desc').limit(20).get();
-      if(!psnap.empty){
-        let real=psnap.docs.map(d=>({id:d.id,...d.data(),allComments:d.data().allComments||[]}));
-        // Weka real juu, demo chini
-        posts=[...real.filter(p=>!posts.find(x=>x.id===p.id)), ...posts];
-      }
-    }
-  }catch(e){console.log(e)}
-  renderFeed();
-}
-function applyDP(url){myDP=url;localStorage.setItem('vibra_dp',url);document.getElementById('profImg').src=url;document.getElementById('bottomDP').src=url;renderFeed()}
-function changePic(inp){let file=inp.files[0];if(!file)return;let reader=new FileReader();reader.onload=e=>{applyDP(e.target.result);toast('DP imewekwa ✅');if(db&&currentUser)db.collection('users').doc(currentUser.uid).set({photo:e.target.result},{merge:true})};reader.readAsDataURL(file)}
-// === FIX: USIJIFOLLOW ===
+let following=new Set(JSON.parse(localStorage.getItem('vibra_following')||'[]'));
+let currentCommentId=null;
+let selectedFileURL=null;
+
+function showToast(t){let el=document.getElementById('toast');el.textContent=t;el.style.display='block';setTimeout(()=>el.style.display='none',2200)}
+
 function isMyPost(p){
   if(!currentUser) return false;
-  let myName=(currentUser.displayName||'').toLowerCase();
-  let myUser=(localStorage.getItem('vibra_user')||'@hamadoski47').toLowerCase();
-  let postUser=(p.user||'').toLowerCase();
-  let postName=(p.name||'').toLowerCase();
   if(p.uid===currentUser.uid) return true;
-  if(postUser===myUser) return true;
+  if(p.uid==='hamadi') return true;
+  let myName=(currentUser.displayName||'').toLowerCase();
+  let postName=(p.name||'').toLowerCase();
   if(myName && postName===myName) return true;
-  if(postUser==='@hamadoski47' && myName.includes('hamadi')) return true;
-  if(p.uid==='hamadi' && myName.includes('hamadi')) return true;
-  if(postUser==='@wewe') return true;
+  if(postName.includes('hamadi') || postName.includes('hamadoski') || postName.includes('mr vibra')) return true;
+  if((p.user||'').toLowerCase()==='@hamadoski47') return true;
+  if((p.user||'').toLowerCase()==='@mr vibra') return true;
   return false;
 }
-function renderFeed(){let f=document.getElementById('feed');f.innerHTML='';posts.forEach((p,i)=>{let media=p.isVideo?`<video src="${p.video}" loop autoplay muted playsinline onclick="this.paused?this.play():this.pause()"></video>`:`<img src="${p.video}">`;let isMe=isMyPost(p);let followHtml=isMe?`<small style="color:#aaa;font-size:11px">Wewe ✓</small>`:`<button class="followBtn ${myFollows.includes(p.user)?'following':''}" onclick="followUser('${p.user}',${i},event)">${myFollows.includes(p.user)?'✓ Following':'➕ Follow'}</button>`;let liked=myLikes.includes(p.id);f.innerHTML+=`<div class="post">${media}<div class="post-info"><b>${p.name} ${p.user}</b><p>${p.caption}</p><p>🎵 Original Audio - Vibra</p></div><div class="actions"><img class="avatar" src="${p.avatar}" onclick="openProfile()">${followHtml}<div><div class="act" onclick="likePost(${i},this)" style="${liked?'background:#fe2c55':''}">❤️</div><small id="lk${i}">${p.likes}</small></div><div><div class="act" onclick="openComments(${i})">💬</div><small>${p.comments}</small></div><div><div class="act" onclick="openShare(${i})">↗️</div><small>${p.shares}</small></div><div><div class="act" onclick="saveVideo()">🔖</div><small>Save</small></div></div></div>`})}
-function followUser(username,i,ev){
-  if(ev)ev.stopPropagation();
-  if(!currentUser){toast('Ingia na Google kwanza');return}
-  // ULINZI WA PILI: USIJIFOLLOW
-  let myUser=(localStorage.getItem('vibra_user')||'@hamadoski47').toLowerCase();
-  let myName=(currentUser.displayName||'').toLowerCase();
-  if(username.toLowerCase()===myUser || username==='@wewe' || (username.toLowerCase()==='@hamadoski47' && myName.includes('hamadi'))){
-    toast('Huwezi kujifollow mwenyewe 😅');return;
-  }
-  let isFollowing=myFollows.includes(username);
-  if(isFollowing){myFollows=myFollows.filter(u=>u!==username);toast('Umemu-unfollow '+username)}else{myFollows.push(username);toast('Umemfollow '+username+' ✅')}
-  localStorage.setItem('vibra_follows',JSON.stringify(myFollows));document.getElementById('statFollowing').innerText=myFollows.length;
-  if(db)db.collection('follows').doc(currentUser.uid+'_'+username).set({follower:currentUser.uid,followerName:currentUser.displayName,following:username,time:new Date(),active:!isFollowing},{merge:true});
+function isFollowing(id){ return following.has(id); }
+
+function renderFeed(){
+  let feed=document.getElementById('feed');
+  feed.innerHTML=posts.map(p=>{
+    let mine=isMyPost(p);
+    let followHtml = mine ? `<div class="followBtn me" title="Hii ni yako">✓</div>` : (isFollowing(p.id) ? `<div class="followBtn" style="background:#fff;color:#000" onclick="toggleFollow(event,'${p.id}')">✓</div>` : `<div class="followBtn" onclick="toggleFollow(event,'${p.id}')">+</div>`);
+    let delHtml = mine ? `<div style="position:absolute;top:60px;right:10px;z-index:30;display:flex;gap:8px"><button onclick="deletePost('${p.id}')" style="background:#fe2c55;color:#fff;border:0;padding:8px 12px;border-radius:20px;font-weight:700;cursor:pointer">🗑️ Futa</button></div>` : '';
+    let media = p.isVideo ? `<video src="${p.video}" loop muted playsinline onclick="this.paused?this.play():this.pause()"></video>` : `<img src="${p.video}">`;
+    return `<div class="post">${media}${delHtml}
+    <div class="right">
+      <div class="action"><div class="avatar" onclick="openProfile()">${p.avatar}<span style="display:none"></span></div>${followHtml}</div>
+      <div class="action ${p.liked?'active':''}" onclick="toggleLike('${p.id}',this)"><div class="ico">❤️</div><small>${p.likes}</small></div>
+      <div class="action" onclick="openComments('${p.id}')"><div class="ico">💬</div><small>${p.comments.length}</small></div>
+      <div class="action" onclick="sharePost('${p.id}')"><div class="ico">↗️</div><small>Share</small></div>
+      <div class="action" onclick="alert('Imehifadhiwa ✅')"><div class="ico">🔖</div><small>Save</small></div>
+    </div>
+    <div class="info"><h3><a href="https://instagram.com/hamadoski47" target="_blank">${p.user}</a> ${mine?'<span style="background:#25D366;padding:2px 8px;border-radius:10px;font-size:11px">WEWE ✓</span>':''}</h3><p>${p.caption}</p><div class="song">🎵 ${p.song}</div></div>
+    </div>`;
+  }).join('');
+  let vids=document.querySelectorAll('.post video'); if(vids[0]) vids[0].play().catch(()=>{});
+  renderMyVideos();
+}
+function toggleFollow(e,id){
+  e.stopPropagation();
+  if(following.has(id)){following.delete(id);showToast('Ume-unfollow')}
+  else{following.add(id);showToast('Umemfollow ✅')}
+  localStorage.setItem('vibra_following',JSON.stringify([...following]));
   renderFeed();
 }
-function likePost(i,el){let p=posts[i];let liked=myLikes.includes(p.id);if(liked){myLikes=myLikes.filter(x=>x!==p.id);p.likes--;el.style.background='#222'}else{myLikes.push(p.id);p.likes++;el.style.background='#fe2c55';toast('Umelike ❤️')}localStorage.setItem('vibra_likes',JSON.stringify(myLikes));document.getElementById('lk'+i).innerText=p.likes;document.getElementById('statLikes').innerText=posts.reduce((a,b)=>a+b.likes,0)}
-// === UPLOAD REAL KWENYE FIREBASE STORAGE ===
-async function uploadPost(inp){
-  let file=inp.files[0];if(!file)return;closeUpload();
-  toast('⏳ Inapanda video... subiri');
-  let videoUrl=URL.createObjectURL(file);
-  try{
-    if(currentUser && !currentUser.uid.startsWith('guest_')){
-      let ref=storage.ref('posts/'+(currentUser.uid)+'/'+Date.now()+'_'+file.name);
-      let snap=await ref.put(file);
-      videoUrl=await snap.ref.getDownloadURL();
-      toast('✅ Imepanda Firebase!');
-    }
-  }catch(e){console.log('Storage error, tumia local:',e.message);toast('Video imewekwa (local) - weka Storage Rules Firebase ili iwe kwa wote')}
-  let newPost={id:'post_'+Date.now(),user:localStorage.getItem('vibra_user')||'@hamadoski47',uid:currentUser?.uid||'guest',name:currentUser?.displayName||'Wewe',avatar:myDP||'https://via.placeholder.com/100',caption:'Video mpya kutoka Vibra 🔥🌍',likes:0,comments:0,shares:0,video:videoUrl,isVideo:file.type.includes('video'),allComments:[],time:new Date()};
-  posts.unshift(newPost);renderFeed();openProfile();toast('Video imepakiwa ✅ Iko kwenye Profile yako');
-  if(db && currentUser) db.collection('posts').add(newPost).catch(e=>console.log(e));
+function toggleLike(id,el){
+  let p=posts.find(x=>x.id===id); p.liked=!p.liked; p.likes+=p.liked?1:-1; renderFeed();
 }
-function openComments(i){currentShare=i;document.getElementById('commentSheet').classList.remove('hidden');renderComments(i)}
-function renderComments(i){let list=document.getElementById('commentList');let p=posts[i];document.getElementById('cCount').innerText=p.allComments.length;list.innerHTML=p.allComments.length?p.allComments.map(c=>`<div style="display:flex;gap:10px;padding:10px"><div style="width:35px;height:35px;background:#fe2c55;border-radius:50%;display:flex;align-items:center;justify-content:center">👤</div><div><b>${c.u}</b><br>${c.t}</div></div>`).join(''):'<p style="text-align:center;padding:20px;color:#aaa">Hakuna comment bado - kuwa wa kwanza!</p>'}
-function sendComment(){let inp=document.getElementById('commentInput');if(!inp.value)return;posts[currentShare].allComments.push({u:currentUser?.displayName||'@wewe',t:inp.value});posts[currentShare].comments++;inp.value='';renderComments(currentShare);renderFeed()}
-function openShare(i){currentShare=i;currentPost=posts[i];document.getElementById('shareSheet').classList.remove('hidden')}
-function getShareText(){return `${currentPost.caption} - Tazama kwenye Vibra! ${location.href} | Instagram: https://instagram.com/hamadoski47`}
-function shareCopy(){navigator.clipboard.writeText(location.href+'?v='+currentPost.id).then(()=>toast('Link imenakiliwa ✅'))}
-function shareApp(app){let txt=encodeURIComponent(getShareText()),link=encodeURIComponent(location.href);let urls={whatsapp:`https://wa.me/?text=${txt}`,telegram:`https://t.me/share/url?url=${link}&text=${txt}`,facebook:`https://www.facebook.com/sharer/sharer.php?u=${link}`,instagram:`https://instagram.com/hamadoski47`,sms:`sms:?body=${txt}`,email:`mailto:?subject=Vibra Video&body=${txt}`,x:`https://twitter.com/intent/tweet?text=${txt}`};window.open(urls[app],'_blank');posts[currentShare].shares++;toast('Inafungua '+app+'... ✅')}
-function shareMore(){if(navigator.share){navigator.share({title:'Vibra Video',text:getShareText(),url:location.href})}else{shareCopy()}}
-function reportPost(){let r=prompt('Eleza tatizo:');if(r){toast('Report imetumwa ✅');closeShare()}}
-function notInterested(){posts.splice(currentShare,1);renderFeed();closeShare();toast('Sawa')}
-function saveVideo(){let a=document.createElement('a');a.href=currentPost.video;a.download='vibra-video.mp4';a.click();toast('Video inapakuliwa ⬇️ ✅')}
-function duetVideo(){toast('Duet imefunguka');openLive()}
-async function openLive(){closeAll();document.getElementById('liveModal').classList.remove('hidden');try{liveStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});document.getElementById('liveVideo').srcObject=liveStream;document.getElementById('liveUser').innerText=currentUser?.displayName||'Wewe';let v=1;liveTimer=setInterval(()=>{v+=Math.floor(Math.random()*3);document.getElementById('liveViews').innerText=v},3000);addLiveChat('Vibra','Karibu Live! 🔥')}catch(e){toast('Ruhusu camera: '+e.message)}}
-function openLiveList(){if(confirm('Unataka kuanza LIVE yako sasa?'))openLive();else toast('Hakuna live sasa')}
-function stopLive(){if(liveStream)liveStream.getTracks().forEach(t=>t.stop());clearInterval(liveTimer);closeModal('liveModal');toast('Live imemalizika ✅')}
-function addLiveChat(n,t){let d=document.createElement('div');d.innerHTML=`<b>${n}:</b> ${t}`;document.getElementById('liveChat').appendChild(d)}
-function sendLiveComment(){let inp=document.getElementById('liveInput');if(!inp.value)return;addLiveChat('Wewe',inp.value);inp.value=''}
-function sendGift(g){addLiveChat('Wewe','Ametuma '+g);toast('Umetuma gift '+g+' 🎁')}
-function openAI(){closeAll();document.getElementById('aiModal').classList.remove('hidden')}
-async function askAI(){let inp=document.getElementById('aiInput'),q=inp.value.trim();if(!q)return;let box=document.getElementById('aiBox');box.innerHTML+=`<div class="msg me">${q}</div>`;inp.value='';let th=document.createElement('div');th.className='msg other';th.innerText='Vibra AI inaandika...';box.appendChild(th);box.scrollTop=box.scrollHeight;let ans=await getAIAnswer(q);th.innerHTML=ans;box.scrollTop=box.scrollHeight}
-async function getAIAnswer(q){let l=q.toLowerCase();if(l.includes('mambo')||l.includes('hello'))return 'Mambo poa! 😊 Niulize chochote!';if(l.includes('follower'))return 'Kupata followers: Post 2-3 kila siku, trending sound, LIVE kila siku!';try{let r=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(q)}`);let j=await r.json();if(j.extract)return `<b>${j.title}</b><br>${j.extract}`}catch(e){}return `Swali zuri! Kuhusu "<b>${q}</b>" - niulize kwa undani zaidi.`}
-function openInbox(){closeAll();document.getElementById('inboxModal').classList.remove('hidden');renderChats()}
-function renderChats(){let l=document.getElementById('chatList');l.innerHTML='';chats.forEach((c,i)=>{l.innerHTML+=`<div class="citem" onclick="openChat(${i})"><img src="${c.img}"><div style="flex:1"><b>${c.name} <span class="online"></span></b><br><small>${c.msg}</small></div><small>${c.time} ✓✓</small></div>`})}
-function openChat(i){currentChat=i;document.getElementById('inboxModal').classList.add('hidden');document.getElementById('chatModal').classList.remove('hidden');document.getElementById('chatName').innerText=chats[i].name;renderChat()}
-function renderChat(){let b=document.getElementById('chatBox');b.innerHTML='';chats[currentChat].msgs.forEach(m=>{b.innerHTML+=`<div class="msg ${m.me?'me':'other'}">${m.t}</div>`});b.scrollTop=b.scrollHeight}
-function sendChat(){let inp=document.getElementById('chatInput');if(!inp.value)return;chats[currentChat].msgs.push({t:inp.value,me:true});chats[currentChat].msg=inp.value;inp.value='';renderChat();setTimeout(()=>{chats[currentChat].msgs.push({t:'Sawa, nimepokea! 😊',me:false});renderChat()},1200)}
-function openDiscover(){let s=prompt('Tafuta video / mtu:');if(s)toast('Matokeo ya "'+s+'"')}
-function openProfile(){closeAll();document.querySelectorAll('.bottom button').forEach(b=>b.classList.remove('active'));document.getElementById('navMe').classList.add('active');let m=document.getElementById('profileModal');m.classList.remove('hidden');let savedName=localStorage.getItem('vibra_name')||currentUser?.displayName||'@hamadoski47';let savedBio=localStorage.getItem('vibra_bio')||'Karibu Vibra! 🔥';let savedUser=localStorage.getItem('vibra_user')||'@hamadoski47';let savedIG=localStorage.getItem('vibra_ig')||'hamadoski47';document.getElementById('profNameDisplay').innerText=savedName;document.getElementById('profBioDisplay').innerText=savedBio;document.getElementById('profTopName').innerText=savedName;document.getElementById('profName').value=savedName;document.getElementById('profBio').value=savedBio;document.getElementById('profUser').value=savedUser;document.getElementById('profIG').value=savedIG;let ig=document.getElementById('igLink');ig.href='https://instagram.com/'+savedIG;ig.innerHTML='📸 @'+savedIG+' • Instagram';if(myDP)document.getElementById('profImg').src=myDP;else if(currentUser?.photoURL)document.getElementById('profImg').src=currentUser.photoURL;renderMyVideos();m.scrollTop=0}
-function toggleEdit(){document.getElementById('editForm').classList.toggle('hidden')}
-function showMyTab(el,tab){document.querySelectorAll('.profileTabs span').forEach(s=>s.classList.remove('on'));el.classList.add('on');renderMyVideos()}
-function renderMyVideos(){let box=document.getElementById('myVideos');box.innerHTML=posts.filter(p=>isMyPost(p)||p.uid==='hamadi').map(p=>p.isVideo?`<div><video src="${p.video}" muted></video></div>`:`<div><img src="${p.video}"></div>`).join('')+`<div onclick="openUpload()" style="cursor:pointer">➕<br><small style="font-size:12px">Post Mpya</small></div>`}
-function saveProfile(){let n=document.getElementById('profName').value||'Hamadi';let b=document.getElementById('profBio').value||'Karibu Vibra! 🔥';let u=document.getElementById('profUser').value||'@hamadoski47';let ig=document.getElementById('profIG').value||'hamadoski47';localStorage.setItem('vibra_name',n);localStorage.setItem('vibra_bio',b);localStorage.setItem('vibra_user',u);localStorage.setItem('vibra_ig',ig);document.getElementById('profNameDisplay').innerText=n;document.getElementById('profBioDisplay').innerText=b;let link=document.getElementById('igLink');link.href='https://instagram.com/'+ig;link.innerHTML='📸 @'+ig+' • Instagram';document.getElementById('editForm').classList.add('hidden');toast('Profile imehifadhiwa ✅');if(db&&currentUser)db.collection('users').doc(currentUser.uid).set({name:n,bio:b,username:u,instagram:ig},{merge:true});renderFeed()}
-function toggleTheme(v){document.body.classList.toggle('light',v==='light');toast('Theme: '+v)}
-function freeSpace(){toast('Cache imefutwa ✅')}
-function reportProblem(){let p=prompt('Eleza tatizo:');if(p)toast('Report imetumwa ✅')}
-if(myDP){setTimeout(()=>{document.getElementById('profImg').src=myDP;document.getElementById('bottomDP').src=myDP},200)}
-renderFeed();renderLangButtons();setLang(curLang);
+function openComments(id){currentCommentId=id;let p=posts.find(x=>x.id===id);document.getElementById('commentList').innerHTML=p.comments.map(c=>`<div class="cmt"><b>${c.user}</b> ${c.text}</div>`).join('')||'<p style="padding:14px;opacity:.6">Hakuna maoni bado. Kuwa wa kwanza!</p>';document.getElementById('commentBox').classList.add('show')}
+function closeComments(){document.getElementById('commentBox').classList.remove('show')}
+function sendComment(){
+  let inp=document.getElementById('commentInput'); if(!inp.value.trim()) return;
+  let p=posts.find(x=>x.id===currentCommentId); p.comments.push({user:currentUser? '@'+(currentUser.displayName||'hamadoski47'):'@mgeni',text:inp.value}); inp.value=''; openComments(currentCommentId); renderFeed();
+}
+function sharePost(id){let url='https://vibra-vertical-video.vercel.app'; if(navigator.share) navigator.share({title:'VIBRA',text:'Angalia video hii Vibra!',url}); else {navigator.clipboard.writeText(url); showToast('Link imenakiliwa ✅')}}
+function shareProfile(){navigator.clipboard.writeText('https://vibra-vertical-video.vercel.app'); showToast('Link ya profile imenakiliwa ✅')}
+
+function deletePost(id){
+  if(!confirm('Una uhakika unataka KUFUTA video hii kabisa? 🗑️')) return;
+  posts=posts.filter(p=>p.id!==id);
+  localStorage.setItem('vibra_posts',JSON.stringify(posts));
+  renderFeed(); showToast('Video imefutwa ✅');
+}
+function openUpload(){
+  if(!currentUser){ login(); return; }
+  closeAll(); document.getElementById('uploadModal').classList.add('show');
+}
+document.getElementById('fileInput').addEventListener('change',e=>{
+  let f=e.target.files[0]; if(!f) return;
+  selectedFileURL=URL.createObjectURL(f);
+  let isVid=f.type.startsWith('video');
+  document.getElementById('previewBox').innerHTML=isVid?`<video src="${selectedFileURL}" controls style="width:100%;height:100%;object-fit:cover"></video>`:`<img src="${selectedFileURL}" style="width:100%;height:100%;object-fit:cover">`;
+  document.getElementById('previewBox').dataset.isVideo=isVid?'1':'0';
+});
+function doPost(){
+  let cap=document.getElementById('captionInput').value||'Video mpya 🔥 #vibra';
+  let song=document.getElementById('songInput').value||'Hamadi Mkungu - Vibra Sound';
+  let isVid=document.getElementById('previewBox').dataset.isVideo!=='0';
+  let vid=selectedFileURL||'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+  let newPost={id:'p'+Date.now(),uid:currentUser?currentUser.uid:'hamadi',name:currentUser?currentUser.displayName:'Hamadi Mkungu',user:'@hamadoski47',avatar:'H',caption:cap,song:song,video:vid,isVideo:isVid,likes:0,liked:false,comments:[]};
+  posts.unshift(newPost);
+  localStorage.setItem('vibra_posts',JSON.stringify(posts));
+  closeModal('uploadModal'); document.getElementById('captionInput').value=''; selectedFileURL=null;
+  renderFeed(); showToast('Video imepostwa! 🎉'); goHome();
+}
+function openProfile(){
+  if(!currentUser){ login(); return; }
+  closeAll(); document.getElementById('profileModal').classList.add('show');
+  document.getElementById('profileName').textContent=currentUser.displayName||'Hamadi Mkungu';
+  document.getElementById('profileUser').textContent='@hamadoski47 • 🇹🇿 Mombasa';
+  document.getElementById('profileAvatar').textContent=(currentUser.displayName||'H')[0];
+  renderMyVideos();
+}
+function renderMyVideos(){
+  let box=document.getElementById('myVideos'); if(!box) return;
+  let mine=posts.filter(p=>isMyPost(p));
+  if(mine.length===0) mine=posts.slice(0,3);
+  document.getElementById('myVideoCount').textContent=mine.length+' video • Bonyeza 🗑️ kufuta';
+  document.getElementById('statLikes').textContent=posts.filter(p=>isMyPost(p)).reduce((a,p)=>a+p.likes,0);
+  document.getElementById('statFollowing').textContent=following.size;
+  document.getElementById('statFollowers').textContent=1240+following.size;
+  box.innerHTML=mine.map(p=>`<div><span class="delBtn" onclick="deletePost('${p.id}')">🗑️</span>${p.isVideo?`<video src="${p.video}" muted></video>`:`<img src="${p.video}">`}<div style="position:absolute;bottom:4px;left:4px;font-size:11px;background:#000a;padding:2px 6px;border-radius:8px">❤️ ${p.likes}</div></div>`).join('')+`<div onclick="closeModal('profileModal');openUpload()" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:28px">➕<small style="font-size:11px">Post Mpya</small></div>`;
+}
+function openEdit(){document.getElementById('editName').value=currentUser?currentUser.displayName:'Hamadi Mkungu';document.getElementById('editModal').classList.add('show')}
+function saveProfile(){
+  let n=document.getElementById('editName').value||'Hamadi Mkungu';
+  let u=document.getElementById('editUser').value||'@hamadoski47';
+  if(!u.includes('hamadoski47')){ if(!confirm('Username sio @hamadoski47. Uendelee? Video zako zinaweza kupotea.')) return; }
+  if(currentUser) currentUser.displayName=n;
+  document.getElementById('profileName').textContent=n; document.getElementById('profileUser').textContent=u+' • 🇹🇿 Mombasa';
+  document.getElementById('editBio').value && (document.getElementById('profileBio').textContent=document.getElementById('editBio').value);
+  localStorage.setItem('vibra_name',n); localStorage.setItem('vibra_user',u);
+  closeModal('editModal'); showToast('Profile imehifadhiwa ✅'); renderFeed();
+}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function closeAll(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));document.getElementById('commentBox').classList.remove('show')}
+function goHome(){closeAll(); document.getElementById('feed').scrollTo({top:0,behavior:'smooth'}); showToast('🏠 Nyumbani')}
+function login(){
+  if(!firebase.auth){ fakeLogin(); return; }
+  let provider=new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(r=>{currentUser=r.user; afterLogin()}).catch(()=>fakeLogin());
+}
+function fakeLogin(){
+  currentUser={uid:'hamadi',displayName:localStorage.getItem('vibra_name')||'Hamadi Mkungu',email:'hamadimkungu74@gmail.com'};
+  afterLogin();
+}
+function afterLogin(){
+  localStorage.setItem('vibra_name',currentUser.displayName||'Hamadi Mkungu');
+  showToast('Karibu '+(currentUser.displayName||'Hamadi')+' ✅');
+  renderFeed();
+}
+function logout(){ if(firebase.auth) firebase.auth().signOut().catch(()=>{}); currentUser=null; localStorage.removeItem('vibra_name'); showToast('Umetoka. Ingia tena na Hamadi Mkungu'); setTimeout(()=>login(),800); }
+
+// Load saved
+try{let saved=JSON.parse(localStorage.getItem('vibra_posts')||'[]'); if(saved.length>0) posts=saved;}catch(e){}
+// Auto login - daima Hamadi Mkungu
+currentUser={uid:'hamadi',displayName:localStorage.getItem('vibra_name')||'Hamadi Mkungu',email:'hamadimkungu74@gmail.com'};
+if(firebase.auth){ firebase.auth().onAuthStateChanged(u=>{ if(u) currentUser=u; renderFeed(); }); }
+renderFeed();
+// Auto play on scroll
+document.getElementById('feed').addEventListener('scroll',()=>{
+  document.querySelectorAll('.post video').forEach(v=>v.pause());
+  let postsEls=document.querySelectorAll('.post');
+  postsEls.forEach(el=>{let r=el.getBoundingClientRect(); if(r.top>=-100 && r.top<=100){let v=el.querySelector('video'); if(v) v.play().catch(()=>{})}});
+});
 </script>
 </body>
 </html>
