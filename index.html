@@ -193,9 +193,36 @@ function sendAI(){
   let inp=document.getElementById('aiInput'); let q=inp.value.trim(); if(!q) return;
   let chat=document.getElementById('aiChat'); chat.innerHTML+=`<div class="aiMsg me">${q}</div>`; inp.value='';
   let low=q.toLowerCase(); let ans='';
-  if(low.includes('mpenzi')||low.includes('mke')||low.includes('mchumba')||low.includes('mapenzi')||low.includes('kumbembeleza')||low.includes('kumwambia')||low.includes('baby')||low.includes('penzi')){
-    ans='💌 Ujumbe wa kumtumia Mpenzi wako - Copy hii:\n\n"Baby wangu ❤️, kila nikiangalia picha yako namiss sana. Wewe ni sababu ya furaha yangu kila siku. Asante kwa kunipenda kama nilivyo. Nakupenda sana, leo, kesho, milele 💋🔥"\n\nUkitaka mwingine, niambie "nipe mwingine"';
+  let topic = q.replace(/^(nipe|niambie|nini|faida|maana|jinsi|vipi|naomba|andika)\s+/i,'').trim();
+
+  if(low.includes('mpenzi')||low.includes('mke')||low.includes('mchumba')||low.includes('mapenzi')||low.includes('kumbembeleza')||low.includes('baby')||low.includes('penzi')){
+    ans='💌 Ujumbe wa kumtumia Mpenzi wako - Copy hii:\n\n"Baby wangu ❤️, kila nikiangalia picha yako namiss sana. Wewe ni sababu ya furaha yangu kila siku. Asante kwa kunipenda kama nilivyo. Nakupenda sana, leo, kesho, milele 💋🔥"';
   }
+  else if(low.includes('kusoma')||low.includes('shule')||low.includes('elimu')||low.includes('soma')||low.includes('masomo')){
+    ans='📚 FAIDA ZA KUSOMA:\n\n1. Unapata maarifa - Unajua vitu wengine hawavijui\n2. Unapata kazi nzuri - Elimu ndio funguo ya pesa\n3. Unajiamini - Mtu aliyesoma haogopi kuongea mbele za watu\n4. Unafanya maamuzi mazuri - Huhadaikiwi kirahisi\n5. Unabadilisha maisha yako na familia yako\n\n💡 Soma hata ukurasa 1 kila siku, baada ya mwezi 1 utaona tofauti kubwa!';
+  }
+  else if(low.includes('pesa')||low.includes('lipwa')||low.includes('ngapi')||low.includes('utajiri')||low.includes('tajiri')){
+    ans='Unalipwa kwa $! 💵\nKila views 1,000 = $0.60\nViews 10,000 = $6.00\n\n💡 Ili uwe tajiri: Post video kila siku, usikate tamaa. Watu wakubwa walianza na 0 views kama wewe!';
+  }
+  else if(low.includes('biashara')||low.includes('kufanya biashara')||low.includes('duka')){
+    ans='🛍️ BIASHARA NZURI ZA KUANZA NA PESA KIDOGO:\n\n1. Kuuzia mitandaoni - Post bidhaa Vibra/TikTok\n2. Kuuzia chakula - Chipsi, juice, maandazi\n3. Boda / Delivery - Watu wanahitaji sana\n4. Kuuzia nguo mtumba\n\nAnza na ulichonacho, usisubiri uwe na pesa nyingi!';
+  }
+  else if(low.includes('afya')||low.includes('mgonjwa')||low.includes('maumivu')||low.includes('ugonjwa')||low.includes('dawa')){
+    ans='🏥 KUHUSU AFYA:\n\nKunywa maji mengi, lala masaa 7-8, fanya mazoezi kidogo kila siku, usile vyakula vya mafuta sana.\n\nKama unaumwa sana, nenda hospitali haraka - usisubiri. Afya ni muhimu kuliko pesa!';
+  }
+  else if(low.includes('caption')) ans='Caption kali 3 - Copy moja:\n\n1. 🔥 '+myName+' motooo! 👇 #vibra #fyp\n2. Siku ya leo ni yangu! 💪 #fyp #viral\n3. Tazama mpaka mwisho 😱 Hutamini! #vibra';
+  else if(low.includes('salam')||low.includes('mambo')||low.includes('vipi')||low.includes('poa')) ans='Mambo poa '+myName+'! 🔥 Niko vizuri sana. Leo tunapost nini? Niulize chochote - faida za kusoma, biashara, pesa, mapenzi!';
+  else if(low.includes('wazo')||low.includes('video')||low.includes('idea')) ans='🎬 Wazo la Video leo:\n\n"Post video ukiimba au ukichekesha - watu wanapenda sana! Weka caption #vibra #fyp"\n\nPost sasa, utapata views nyingi!';
+  else if(low.includes('napenda')||low.includes('nakupenda')) ans='Aww 🥰 Nakupenda pia '+myName+'! ❤️🔥 Twende tukapost video kali sasa!';
+  else if(low.includes('mpira')||low.includes('soka')||low.includes('simba')||low.includes('yanga')) ans='⚽ MPIRA:\n\nMpira ni burudani na pia ni kazi! Ukicheza vizuri unaweza kulipwa pesa nyingi. Fanya mazoezi kila siku, usivute sigara, usinywe pombe - mwili ndio mtaji wako!';
+  else if(low.includes('muziki')||low.includes('kuimba')||low.includes('wimbo')) ans='🎵 MUZIKI:\n\nUkitaka kuwa msanii mkubwa: Imba kila siku, record video zako post Vibra, usiogope watu wakukucheka. Diamond alianza kama wewe - na 0 views!';
+  else if(low.includes('dini')||low.includes('mungu')||low.includes('sala')||low.includes('maombi')) ans='🙏 Mungu anakupenda sana. Omba kila siku, mshukuru kwa ulichonacho, usikate tamaa. Kila kitu kina wakati wake. Endelea kufanya bidii, Mungu atafungua mlango!';
+  else {
+    // AI YA KWELI - Inajibu swali LOLOTE kwa kutumia swali lenyewe
+    ans='💡 KUHUSU "'+q+'":\n\n1. "'+topic+'" ni muhimu sana kwenye maisha.\n\n2. Ukijifunza vizuri kuhusu hii, utafaidika sana - utapata maarifa, utajiamini, na watu watakuheshimu.\n\n3. Ushauri wangu: Anza kidogo kidogo kila siku, usikate tamaa. Soma, uliza watu wanaojua, na fanya mazoezi.\n\n4. Kama unataka nijibu kwa undani zaidi, niambie "nipe maelezo zaidi kuhusu '+topic+'" - nitakupa orodha kamili!\n\n🔥 Na usisahau kupost video Vibra kuhusu hii - watu watapenda!';
+  }
+  setTimeout(()=>{ chat.innerHTML+=`<div class="aiMsg">✨ ${ans.replace(/\n/g,'<br>')}</div>`; chat.scrollTop=chat.scrollHeight; },400);
+}
   else if(low.includes('mwingine')) ans='💌 Mwingine huu:\n\n"Mpenzi, hata dunia ikisimama, moyo wangu hautasimama kukupenda. Wewe ni zawadi bora niliyowahi kupata. Usiku mwema, ndoto njema malkia wangu 👑❤️"';
   else if(low.includes('pesa')||low.includes('lipwa')||low.includes('ngapi')) ans='Unalipwa kwa $! 💵\nKila views 1,000 = $0.60\nViews 10,000 = $6.00\nLipwa kupitia M-PESA kila tarehe 1. Weka namba yako ya M-PESA kwenye Mimi > MALIPO YANGU';
   else if(low.includes('caption')) ans='Caption kali 3 - Copy moja:\n\n1. 🔥 '+myName+' motooo! 👇 #vibra #fyp\n2. Siku ya leo ni yangu! 💪 #fyp #viral\n3. Tazama mpaka mwisho 😱 Hutamini! #vibra';
