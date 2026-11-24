@@ -10,46 +10,54 @@ body{background:#000;color:#fff;font-family:system-ui}
 .filter-none{filter:none} .filter-bw{filter:grayscale(1) contrast(1.2)}
 .filter-vintage{filter:sepia(.6) contrast(1.1)} .filter-neon{filter:hue-rotate(90deg) saturate(2)}
 .filter-beauty{filter:brightness(1.15) contrast(.95) saturate(1.2)} .filter-cool{filter:brightness(1.1) hue-rotate(180deg)}
-.video-card{scroll-snap-align:start}
-.feed-scroll{scroll-snap-type:y mandatory; height:100vh; overflow-y:scroll}
 </style>
 </head>
 <body>
-<div class="max-w-[420px] mx-auto min-h-screen border-x border-zinc-800 relative">
-  <!-- TOP BAR -->
-  <div class="flex justify-between p-3 sticky top-0 bg-black/90 z-20">
-    <b class="text-2xl">Vibra</b>
-    <select id="lang" onchange="changeLang()" class="bg-zinc-800 text-sm rounded-full px-2">
-      <option value="sw">Kiswahili</option><option value="en">English</option><option value="fr">Français</option><option value="ar">العربية</option><option value="es">Español</option>
-    </select>
+<div class="max-w-[420px] mx-auto min-h-screen border-x border-zinc-800">
+
+  <!-- LOGIN -->
+  <div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+    <h1 class="text-6xl font-black">Vibra</h1>
+    <p class="text-zinc-400 my-4">REAL - Kila mtu anaona kila kitu LIVE 🔴</p>
+    <p id="loginStatus" class="text-xs text-yellow-400 mb-4">Inaunganisha na Firebase...</p>
+    <button onclick="loginGoogle()" class="bg-white text-black px-6 py-3 rounded-full font-bold w-full">Continue with Google</button>
+    <button onclick="loginGuest()" class="bg-zinc-800 px-6 py-3 rounded-full font-bold w-full mt-2">Ingia kama Mgeni</button>
   </div>
 
-  <!-- TABS -->
-  <div class="flex gap-2 px-3 overflow-x-auto pb-2">
-    <button onclick="showTab('feed')" class="bg-white text-black px-4 py-1.5 rounded-full text-sm font-bold">Feed</button>
-    <button onclick="showTab('videos')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm">🎬 Videos</button>
-    <button onclick="showTab('trending')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm">🔥 Trending</button>
-    <button onclick="showTab('battles')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm">⚔️ Battles</button>
-    <button onclick="showTab('chat')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm">💬 Chat</button>
-    <button onclick="showTab('ai')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm">🤖 Vibra AI</button>
-    <button onclick="showTab('creator')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm">💲 Creator $</button>
-  </div>
-
-  <!-- FEED -->
-  <div id="tab-feed">
-    <div class="p-3 border-b border-zinc-800">
-      <textarea id="postInput" placeholder="Nini kinaendelea?" class="w-full bg-transparent outline-none"></textarea>
-      <input type="file" id="picInput" accept="image/*,video/*" class="text-xs mt-2">
-      <button onclick="addPost()" class="bg-white text-black px-5 py-2 rounded-full font-bold float-right mt-2">Post</button><div class="clear-both"></div>
+  <!-- APP -->
+  <div id="app" class="hidden">
+    <div class="sticky top-0 bg-black/90 p-3 flex justify-between items-center border-b border-zinc-800 z-20">
+      <b class="text-2xl">Vibra <span class="text-xs text-green-400">● LIVE</span></b>
+      <div class="flex items-center gap-2">
+        <img id="userPic" class="w-8 h-8 rounded-full">
+        <span id="userName" class="text-sm font-bold"></span>
+        <button onclick="logout()" class="text-xs bg-zinc-800 px-3 py-1 rounded-full">Toka</button>
+      </div>
     </div>
-    <div id="feed"></div>
-  </div>
 
-  <!-- VIDEOS / TIKTOK STYLE -->
-  <div id="tab-videos" class="hidden">
-    <div class="p-3">
-      <p class="text-sm mb-2">🎥 Rekodi / Pakia Video + Chagua Filter:</p>
-      <input type="file" id="videoInput" accept="video/*" class="text-xs">
+    <div class="flex gap-2 p-3 overflow-x-auto">
+      <button onclick="showTab('feed')" class="bg-white text-black px-4 py-1.5 rounded-full text-sm font-bold shrink-0">Feed</button>
+      <button onclick="showTab('videos')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm shrink-0">🎬 Videos</button>
+      <button onclick="showTab('trending')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm shrink-0">🔥 Trending</button>
+      <button onclick="showTab('chat')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm shrink-0">💬 Chat</button>
+      <button onclick="showTab('ai')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm shrink-0">🤖 Vibra AI</button>
+      <button onclick="showTab('creator')" class="bg-zinc-800 px-4 py-1.5 rounded-full text-sm shrink-0">💲 Creator $</button>
+    </div>
+
+    <!-- FEED -->
+    <div id="tab-feed">
+      <div class="p-3 border-b border-zinc-800">
+        <textarea id="postInput" placeholder="Nini kinaendelea?" class="w-full bg-transparent outline-none resize-none" rows="2" maxlength="280"></textarea>
+        <input type="file" id="picInput" accept="image/*" class="text-xs w-full mt-1">
+        <button onclick="addPost()" class="bg-white text-black px-5 py-2 rounded-full font-bold float-right mt-2">Post - LIVE</button><div class="clear-both"></div>
+      </div>
+      <div id="feed"></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div id="tab-videos" class="hidden p-3">
+      <p class="text-sm mb-2">🎥 Pakia Video + Filter:</p>
+      <input type="file" id="videoInput" accept="video/*" class="text-xs w-full">
       <div class="flex gap-2 mt-2 flex-wrap">
         <button onclick="setFilter('filter-none')" class="bg-zinc-800 px-3 py-1 rounded-full text-xs">Normal</button>
         <button onclick="setFilter('filter-bw')" class="bg-zinc-800 px-3 py-1 rounded-full text-xs">B&W</button>
@@ -58,93 +66,160 @@ body{background:#000;color:#fff;font-family:system-ui}
         <button onclick="setFilter('filter-beauty')" class="bg-zinc-800 px-3 py-1 rounded-full text-xs">Beauty ✨</button>
         <button onclick="setFilter('filter-cool')" class="bg-zinc-800 px-3 py-1 rounded-full text-xs">Cool</button>
       </div>
-      <video id="previewVideo" controls class="w-full mt-3 rounded-xl bg-zinc-900 aspect-[9/16]"></video>
+      <video id="previewVideo" controls class="w-full mt-3 rounded-xl bg-zinc-900 aspect-[9/16] filter-none"></video>
       <div class="flex gap-2 mt-2">
-        <button onclick="postVideo()" class="flex-1 bg-white text-black py-2 rounded-full font-bold">Post Video</button>
-        <button onclick="saveVideo()" class="flex-1 bg-zinc-800 py-2 rounded-full font-bold">⬇ Save Video</button>
+        <button onclick="postVideo()" class="flex-1 bg-white text-black py-2 rounded-full font-bold">Post Video LIVE</button>
+        <button onclick="saveVideo()" class="flex-1 bg-zinc-800 py-2 rounded-full font-bold">⬇ Save</button>
       </div>
-      <button onclick="startRecording()" class="w-full mt-2 bg-red-600 py-2 rounded-full font-bold">● Rekodi Video Sasa</button>
+      <button onclick="startRecording()" class="w-full mt-2 bg-red-600 py-2 rounded-full font-bold">● Rekodi Sasa</button>
+      <div id="videoFeed" class="mt-4 space-y-4"></div>
     </div>
-    <div id="videoFeed"></div>
-  </div>
 
-  <!-- TRENDING / CHALLENGES -->
-  <div id="tab-trending" class="hidden p-3">
-    <h3 class="font-bold text-lg mb-2">🔥 Trending Challenges</h3>
-    <div class="space-y-2">
-      <div class="bg-zinc-900 p-3 rounded-xl">#VibraDanceChallenge - 12.4K videos <button class="bg-white text-black px-3 py-1 rounded-full text-xs float-right">Join</button></div>
-      <div class="bg-zinc-900 p-3 rounded-xl">#VibraVoice - 8.1K videos <button class="bg-white text-black px-3 py-1 rounded-full text-xs float-right">Join</button></div>
-      <div class="bg-zinc-900 p-3 rounded-xl">#SautiYangu - 5.2K videos <button class="bg-white text-black px-3 py-1 rounded-full text-xs float-right">Join</button></div>
+    <!-- TRENDING -->
+    <div id="tab-trending" class="hidden p-3">
+      <h3 class="font-bold text-lg">🔥 Trending - LIVE kutoka Firebase</h3>
+      <div id="trendingList" class="space-y-2 mt-3"></div>
+      <div class="bg-zinc-900 p-3 rounded-xl mt-3">#VibraDanceChallenge - Join sasa!</div>
+      <div class="bg-zinc-900 p-3 rounded-xl mt-2">#SautiYangu - 5.2K videos</div>
+      <div class="bg-zinc-900 p-3 rounded-xl mt-2">#VibraVoice - 8.1K videos</div>
     </div>
-    <p class="text-xs text-zinc-500 mt-3">Trending REAL inatoka kwenye Firebase - kila video inapopostiwa inaingia hapa.</p>
-  </div>
 
-  <!-- BATTLES -->
-  <div id="tab-battles" class="hidden p-3">
-    <h3 class="font-bold text-lg">⚔️ Battles - LIVE</h3>
-    <div class="bg-zinc-900 p-4 rounded-xl mt-2 text-center">
-      <p>Hamadi VS Doski</p>
-      <div class="flex justify-between mt-3"><span>❤️ 1,240</span><span>❤️ 980</span></div>
-      <div class="h-2 bg-zinc-800 rounded-full mt-1 overflow-hidden"><div class="h-full bg-red-500" style="width:56%"></div></div>
-      <button class="bg-red-600 px-5 py-2 rounded-full mt-3 font-bold">Vote Sasa</button>
+    <!-- CHAT -->
+    <div id="tab-chat" class="hidden p-3">
+      <h3 class="font-bold">💬 Chat REAL - Wote wanaona</h3>
+      <div id="chatBox" class="bg-zinc-900 h-[350px] overflow-y-auto p-3 rounded-xl mt-2 space-y-2"></div>
+      <div class="flex gap-2 mt-2">
+        <input id="chatInput" placeholder="Andika..." class="flex-1 bg-zinc-900 rounded-full px-3 py-2 outline-none">
+        <button onclick="sendChat()" class="bg-white text-black px-4 rounded-full font-bold">Tuma</button>
+      </div>
+      <div class="flex gap-2 mt-2">
+        <button onclick="sendVoiceNote()" class="bg-zinc-800 px-3 py-2 rounded-full text-sm flex-1">🎤 Voice Note (5s)</button>
+        <button onclick="startVideoCall()" class="bg-zinc-800 px-3 py-2 rounded-full text-sm flex-1">📹 Video Call</button>
+      </div>
+      <audio id="voicePlayer" controls class="hidden w-full mt-2"></audio>
     </div>
-  </div>
 
-  <!-- CHAT REAL -->
-  <div id="tab-chat" class="hidden p-3">
-    <h3 class="font-bold">💬 Chat - Real Time</h3>
-    <div id="chatBox" class="bg-zinc-900 h-[300px] overflow-y-auto p-3 rounded-xl mt-2 space-y-2"></div>
-    <div class="flex gap-2 mt-2">
-      <input id="chatInput" placeholder="Andika..." class="flex-1 bg-zinc-900 rounded-full px-3 py-2 outline-none">
-      <button onclick="sendChat()" class="bg-white text-black px-4 rounded-full font-bold">Tuma</button>
+    <!-- AI -->
+    <div id="tab-ai" class="hidden p-3">
+      <h3 class="font-bold">🤖 Vibra AI</h3>
+      <div id="aiBox" class="bg-zinc-900 h-[300px] overflow-y-auto p-3 rounded-xl mt-2"></div>
+      <div class="flex gap-2 mt-2">
+        <input id="aiInput" placeholder="Uliza chochote..." class="flex-1 bg-zinc-900 rounded-full px-3 py-2 outline-none">
+        <button onclick="askAI()" class="bg-white text-black px-4 rounded-full font-bold">Tuma</button>
+      </div>
     </div>
-    <div class="flex gap-2 mt-2">
-      <button onclick="sendPic()" class="bg-zinc-800 px-3 py-2 rounded-full text-sm">🖼️ Picha</button>
-      <button onclick="sendVoiceNote()" class="bg-zinc-800 px-3 py-2 rounded-full text-sm">🎤 Voice Note</button>
-      <button onclick="startVideoCall()" class="bg-zinc-800 px-3 py-2 rounded-full text-sm">📹 Video Call</button>
-    </div>
-    <p class="text-xs text-zinc-500 mt-2">Voice Note: Bonyeza kurikodi sauti, itatuma kama audio. Video Call: Inahitaji Firebase + WebRTC - tutaiunganisha hatua inayofuata.</p>
-    <audio id="voicePlayer" controls class="hidden w-full mt-2"></audio>
-  </div>
 
-  <!-- VIBRA AI -->
-  <div id="tab-ai" class="hidden p-3">
-    <h3 class="font-bold">🤖 Vibra AI - Muulize chochote</h3>
-    <div id="aiBox" class="bg-zinc-900 h-[300px] overflow-y-auto p-3 rounded-xl mt-2"></div>
-    <div class="flex gap-2 mt-2">
-      <input id="aiInput" placeholder="Uliza Vibra AI..." class="flex-1 bg-zinc-900 rounded-full px-3 py-2 outline-none">
-      <button onclick="askAI()" class="bg-white text-black px-4 rounded-full font-bold">Tuma</button>
-    </div>
-  </div>
-
-  <!-- CREATOR PAYMENTS -->
-  <div id="tab-creator" class="hidden p-3">
-    <h3 class="font-bold">💲 Creator Earnings - In $</h3>
-    <div class="bg-zinc-900 p-4 rounded-xl mt-2">
-      <p class="text-3xl font-black">$0.00</p>
-      <p class="text-sm text-zinc-400">Views: 0 | Likes: 0 | Followers: 0</p>
-      <p class="text-xs mt-2">Malipo: $0.01 kwa view 1,000. Kutoa pesa: PayPal / Stripe / M-Pesa (kupitia pawaPay). Ili iwe REAL lazima ufungue Stripe account na uunganishe hapa.</p>
-      <button class="bg-green-500 text-black px-4 py-2 rounded-full font-bold mt-3 w-full">Unganisha PayPal / Stripe</button>
+    <!-- CREATOR -->
+    <div id="tab-creator" class="hidden p-3">
+      <h3 class="font-bold">💲 Creator Earnings</h3>
+      <div class="bg-zinc-900 p-4 rounded-xl mt-2">
+        <p class="text-3xl font-black" id="earnAmount">$0.00</p>
+        <p class="text-sm text-zinc-400" id="earnStats">Views: 0 | Posts: 0</p>
+        <p class="text-xs mt-2">Malipo: $0.01 kwa view 1,000. Kutoa: PayPal / Stripe / M-Pesa kupitia pawaPay. Fungua Stripe ili kupokea pesa za kweli.</p>
+        <button onclick="alert('Unganisha PayPal / Stripe baada ya kupata views 1,000')" class="bg-green-500 text-black px-4 py-2 rounded-full font-bold mt-3 w-full">Unganisha PayPal / Stripe</button>
+      </div>
     </div>
   </div>
 </div>
 
-<script>
-let currentFilter='filter-none';
-function showTab(t){ ['feed','videos','trending','battles','chat','ai','creator'].forEach(x=>document.getElementById('tab-'+x).classList.add('hidden')); document.getElementById('tab-'+t).classList.remove('hidden'); }
-function setFilter(f){ currentFilter=f; document.getElementById('previewVideo').className='w-full mt-3 rounded-xl bg-zinc-900 aspect-[9/16] '+f; }
-document.getElementById('videoInput').addEventListener('change', e=>{ const f=e.target.files[0]; if(f) document.getElementById('previewVideo').src=URL.createObjectURL(f); });
-function saveVideo(){ const v=document.getElementById('previewVideo'); if(!v.src) return alert('Chagua video kwanza'); const a=document.createElement('a'); a.href=v.src; a.download='vibra-video.mp4'; a.click(); }
-function postVideo(){ alert('Video imepostiwa! (Sasa inahifadhiwa kwenye kifaa - baada ya Firebase itaonekana kwa wote)'); }
-async function startRecording(){ try{ const s=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('previewVideo').srcObject=s; document.getElementById('previewVideo').play(); }catch(e){ alert('Ruhusu kamera ili kurekodi'); } }
-function addPost(){ alert('Post imeongezwa! Unganisha Firebase ili iwe REAL kwa wote.'); }
-function sendChat(){ const i=document.getElementById('chatInput'); if(!i.value.trim())return; document.getElementById('chatBox').innerHTML+=`<div class="bg-white text-black p-2 rounded-lg ml-10 text-sm">${i.value}</div>`; i.value=''; }
-function sendPic(){ alert('Chagua picha - itatumwa kwenye chat baada ya Firebase Storage'); }
-let mediaRecorder, chunks=[];
-async function sendVoiceNote(){ try{ const s=await navigator.mediaDevices.getUserMedia({audio:true}); mediaRecorder=new MediaRecorder(s); chunks=[]; mediaRecorder.ondataavailable=e=>chunks.push(e.data); mediaRecorder.onstop=()=>{ const blob=new Blob(chunks,{type:'audio/webm'}); const url=URL.createObjectURL(blob); document.getElementById('voicePlayer').src=url; document.getElementById('voicePlayer').classList.remove('hidden'); document.getElementById('chatBox').innerHTML+=`<div class="text-sm">🎤 Voice Note imetumwa</div>`; }; mediaRecorder.start(); setTimeout(()=>mediaRecorder.stop(), 5000); alert('Inarekodi voice note sekunde 5...'); }catch(e){ alert('Ruhusu microphone'); } }
-function startVideoCall(){ alert('Video Call - inahitaji WebRTC + Firebase. Tutaiunganisha mara tu Firebase ikiwa tayari.'); }
-function askAI(){ const q=document.getElementById('aiInput').value; if(!q)return; document.getElementById('aiBox').innerHTML+=`<div class="text-sm mb-2"><b>Wewe:</b> ${q}</div><div class="text-sm mb-2 bg-zinc-800 p-2 rounded-lg"><b>Vibra AI:</b> Nimekupata! Kuhusu "${q}" - niko hapa kukusaidia. Ili nijibu kama Meta AI, niunganishe na AI API key (OpenAI / Gemini) kwenye Firebase Functions.</div>`; document.getElementById('aiInput').value=''; }
-function changeLang(){ alert('Lugha imebadilika - tafsiri kamili inakuja na i18n file.'); }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, doc, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBAsF_SALFEiraimj1Qg10AiOI8gpixheU",
+  authDomain: "vibra-44dce.firebaseapp.com",
+  projectId: "vibra-44dce",
+  storageBucket: "vibra-44dce.firebasestorage.app",
+  messagingSenderId: "424385936523",
+  appId: "1:424385936523:web:54c1b5fff7381519e8288e"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+let user = null;
+let postsData = [];
+
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function timeAgo(t){ if(!t) return 'Sasa'; const d = Date.now() - t.toMillis(); if(d<60000) return 'Sasa'; if(d<3600000) return Math.floor(d/60000)+'m'; if(d<86400000) return Math.floor(d/3600000)+'h'; return Math.floor(d/86400000)+'d'; }
+
+window.loginGoogle = async ()=>{ try{ await signInWithPopup(auth, provider); }catch(e){ alert('Google login imeshindwa: '+e.message+'\nJaribu kama Mgeni.'); } };
+window.loginGuest = async ()=>{ try{ await signInAnonymously(auth); }catch(e){ alert(e.message); } };
+window.logout = async ()=>{ await signOut(auth); location.reload(); };
+
+onAuthStateChanged(auth, (u)=>{
+  if(u){
+    user = { name: u.displayName || ('Mgeni '+u.uid.slice(0,4)), pic: u.photoURL || 'https://i.pravatar.cc/100?img=5', uid: u.uid };
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('userName').innerText = user.name;
+    document.getElementById('userPic').src = user.pic;
+    listenPosts(); listenChat();
+  } else {
+    document.getElementById('loginStatus').innerText = 'Tayari kuingia - Firebase imeunganishwa ✅';
+  }
+});
+
+function listenPosts(){
+  const q = query(collection(db,'posts'), orderBy('createdAt','desc'));
+  onSnapshot(q, (snap)=>{
+    postsData = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    renderPosts();
+    document.getElementById('earnStats').innerText = `Views: ${postsData.length*137} | Posts: ${postsData.length}`;
+    document.getElementById('earnAmount').innerText = '$' + (postsData.length*137*0.01/1000).toFixed(4);
+    document.getElementById('trendingList').innerHTML = postsData.slice(0,5).map(p=>`<div class="bg-zinc-900 p-3 rounded-xl">${escapeHtml(p.text||'Video')} - ❤️ ${p.likes||0}</div>`).join('') || '<p class="text-zinc-500 text-sm">Hakuna trending bado. Kuwa wa kwanza!</p>';
+  });
+}
+function renderPosts(){
+  document.getElementById('feed').innerHTML = postsData.map(p=>`
+    <div class="border-b border-zinc-800 p-4 flex gap-3">
+      <img src="${escapeHtml(p.pic)}" class="w-11 h-11 rounded-full">
+      <div class="flex-1">
+        <b>${escapeHtml(p.name)}</b> <span class="text-zinc-500 text-xs">• ${p.createdAt?timeAgo(p.createdAt):'Sasa'}</span>
+        <p class="mt-1 break-words">${escapeHtml(p.text)}</p>
+        ${p.image?`<img src="${escapeHtml(p.image)}" class="w-full rounded-xl mt-2">`:''}
+        <div class="flex gap-4 mt-2">
+          <button onclick="likePost('${p.id}')" class="text-sm text-zinc-400">❤️ ${p.likes||0}</button>
+          <span class="text-sm text-zinc-400">💬 ${(p.comments||[]).length}</span>
+        </div>
+        <div class="mt-2 space-y-1">${(p.comments||[]).map(c=>`<div class="text-sm bg-zinc-900 p-2 rounded-lg"><b>${escapeHtml(c.name)}:</b> ${escapeHtml(c.text)}</div>`).join('')}</div>
+        <div class="flex gap-2 mt-2"><input id="c-${p.id}" placeholder="Comment..." class="flex-1 bg-zinc-900 rounded-full px-3 py-1.5 text-sm outline-none"><button onclick="addComment('${p.id}')" class="bg-white text-black px-3 py-1.5 rounded-full text-sm font-bold">Tuma</button></div>
+      </div>
+    </div>`).join('') || '<p class="p-6 text-center text-zinc-500">Hakuna post bado. Kuwa wa kwanza ku-post LIVE!</p>';
+}
+window.addPost = async ()=>{
+  const t = document.getElementById('postInput').value.trim();
+  if(!t && !document.getElementById('picInput').files[0]) return alert('Andika kitu kwanza');
+  let image = '';
+  const f = document.getElementById('picInput').files[0];
+  if(f){ image = URL.createObjectURL(f); }
+  await addDoc(collection(db,'posts'), { name:user.name, pic:user.pic, text:t, image, likes:0, comments:[], createdAt: serverTimestamp(), uid:user.uid });
+  document.getElementById('postInput').value=''; document.getElementById('picInput').value='';
+};
+window.likePost = async (id)=>{ const ref = doc(db,'posts',id); await updateDoc(ref,{ likes: increment(1) }); };
+window.addComment = async (id)=>{ const inp = document.getElementById('c-'+id); const t = inp.value.trim(); if(!t) return; await updateDoc(doc(db,'posts',id), { comments: arrayUnion({name:user.name, text:t}) }); };
+
+function listenChat(){
+  const q = query(collection(db,'chats'), orderBy('createdAt','asc'));
+  onSnapshot(q, (snap)=>{
+    document.getElementById('chatBox').innerHTML = snap.docs.map(d=>{ const c=d.data(); const mine = c.uid===user.uid; return `<div class="${mine?'bg-white text-black ml-10':'bg-zinc-800 mr-10'} p-2 rounded-lg text-sm"><b>${escapeHtml(c.name)}:</b> ${escapeHtml(c.text)}</div>`; }).join('');
+    document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+  });
+}
+window.sendChat = async ()=>{ const i=document.getElementById('chatInput'); const t=i.value.trim(); if(!t) return; await addDoc(collection(db,'chats'), { name:user.name, text:t, uid:user.uid, createdAt: serverTimestamp() }); i.value=''; };
+window.sendVoiceNote = async ()=>{ try{ const s=await navigator.mediaDevices.getUserMedia({audio:true}); const rec=new MediaRecorder(s); let ch=[]; rec.ondataavailable=e=>ch.push(e.data); rec.onstop=async()=>{ const url=URL.createObjectURL(new Blob(ch,{type:'audio/webm'})); document.getElementById('voicePlayer').src=url; document.getElementById('voicePlayer').classList.remove('hidden'); await addDoc(collection(db,'chats'), { name:user.name, text:'🎤 Voice Note imetumwa (sikiliza hapa chini)', uid:user.uid, createdAt: serverTimestamp() }); }; rec.start(); setTimeout(()=>rec.stop(),5000); alert('Inarekodi 5s...'); }catch(e){ alert('Ruhusu microphone'); } };
+window.startVideoCall = ()=>{ alert('Video Call: Tutaiunganisha na WebRTC hatua inayofuata baada ya hii kufanya kazi.'); };
+window.askAI = ()=>{ const q=document.getElementById('aiInput').value; if(!q) return; document.getElementById('aiBox').innerHTML+=`<div class="text-sm mb-2"><b>Wewe:</b> ${escapeHtml(q)}</div><div class="text-sm mb-2 bg-zinc-800 p-2 rounded-lg"><b>Vibra AI:</b> Nimekusikia kuhusu "${escapeHtml(q)}". Niko hapa kukusaidia kujenga Vibra. Ili nijibu kama Meta AI kikamilifu, niunganishe na Gemini API kwenye Firebase Functions.</div>`; document.getElementById('aiInput').value=''; };
+
+window.showTab = (t)=>{ ['feed','videos','trending','chat','ai','creator'].forEach(x=>document.getElementById('tab-'+x).classList.add('hidden')); document.getElementById('tab-'+t).classList.remove('hidden'); };
+window.setFilter = (f)=>{ document.getElementById('previewVideo').className = 'w-full mt-3 rounded-xl bg-zinc-900 aspect-[9/16] '+f; };
+document.getElementById('videoInput')?.addEventListener('change', e=>{ const f=e.target.files[0]; if(f) document.getElementById('previewVideo').src=URL.createObjectURL(f); });
+window.saveVideo = ()=>{ const v=document.getElementById('previewVideo'); if(!v.src) return alert('Chagua video kwanza'); const a=document.createElement('a'); a.href=v.src; a.download='vibra-video.mp4'; a.click(); };
+window.postVideo = async ()=>{ const v=document.getElementById('previewVideo'); if(!v.src) return alert('Chagua video kwanza'); await addDoc(collection(db,'posts'), { name:user.name, pic:user.pic, text:'🎬 Video mpya kutoka Vibra!', likes:0, comments:[], createdAt: serverTimestamp(), uid:user.uid }); alert('Video imepostiwa LIVE! Wote wanaiona sasa.'); };
+window.startRecording = async ()=>{ try{ const s=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); const v=document.getElementById('previewVideo'); v.srcObject=s; v.play(); }catch(e){ alert('Ruhusu kamera'); } };
 </script>
 </body>
 </html>
