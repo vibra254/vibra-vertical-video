@@ -67,7 +67,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Se
 <p style="opacity:.7;margin-bottom:6px">Video fupi, pesa halisi, watu halisi</p>
 <p style="opacity:.7;margin-bottom:12px">Karibu Vibra! Andika jina lako 👇</p>
 <input id="myNameInput" class="input" style="max-width:320px;text-align:center;font-weight:700" placeholder="✏️ Andika jina lako: mfano Juma">
-<button class="googleBtn" onclick="loginReal()">G Continue</button>
+<button class="googleBtn" onclick="ingiaSasa()">G Continue - Ingia</button>
 <p style="font-size:11px;opacity:.5;margin-top:10px">Ukibonyeza, unaingia na jina lako mwenyewe</p>
 </div>
 
@@ -91,11 +91,11 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Se
 <div class="modal" id="chatsModal"><div class="modalHead"><span class="back" onclick="closeModal('chatsModal');goHome()">←</span> 💬 Chats</div><div id="chatList" style="padding-top:6px"></div></div>
 <div class="modal" id="chatRoomModal"><div class="modalHead"><span class="back" onclick="closeModal('chatRoomModal');openChats()">←</span> <span id="chatRoomName">Juma Said</span></div><div id="chatRoomMsgs" style="padding:10px;padding-bottom:100px"></div><div style="position:fixed;bottom:64px;left:0;right:0;background:#000;padding:10px;display:flex;gap:8px"><input id="chatRoomInput" class="input" style="margin:0;flex:1" placeholder="Andika ujumbe..."><button class="btn" style="width:auto" onclick="sendChatMsgReal()">Tuma</button></div></div>
 
-<div class="modal" id="profileModal"><div class="modalHead"><span class="back" onclick="closeModal('profileModal');goHome()">←</span> <span>Mimi</span> <span style="position:absolute;right:12px;cursor:pointer;padding:6px" onclick="openSettings()">⚙️</span></div><div style="text-align:center;padding:18px 12px 6px"><div id="profileAvatar" onclick="document.getElementById('avatarInput').click()" style="width:92px;height:92px;border-radius:50%;background:#fe2c55;margin:auto;display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden;cursor:pointer;border:3px solid #1DA1F2">M</div><p style="font-size:11px;opacity:.6;margin-top:4px">👆 Bonyeza picha kubadilisha DP</p><input type="file" id="avatarInput" accept="image/*" style="display:none"><h2 id="profileName">Mr Vibra <span class="blueTick">✓</span></h2><p id="profileUser" style="opacity:.6">@mrvibra • Mombasa</p><p id="profileBio" style="font-size:13px;margin-top:8px;opacity:.8">🔥 Founder wa Vibra | Mr Vibra</p><div style="display:flex;justify-content:center;gap:24px;margin:14px 0"><div><b>0</b><br><small style="opacity:.6">Ninaowafuata</small></div><div><b>1240</b><br><small style="opacity:.6">Wanaonifuata</small></div><div><b id="statLikes">0</b><br><small style="opacity:.6">Likes</small></div></div><div style="display:flex;gap:10px"><button class="btn" onclick="openEdit()">✏️ Badilisha Profile</button><button class="btn2" onclick="shareProfile()">🔗 Share</button></div><div style="display:flex;gap:8px;margin-top:12px"><button onclick="logout()" style="flex:1;background:#222;color:#fff;border:0;border-radius:8px;font-weight:700;padding:11px">Toka</button></div></div>
+<div class="modal" id="profileModal"><div class="modalHead"><span class="back" onclick="closeModal('profileModal');goHome()">←</span> <span>Mimi</span> <span style="position:absolute;right:12px;cursor:pointer;padding:6px" onclick="openSettings()">⚙️</span></div><div style="text-align:center;padding:18px 12px 6px"><div id="profileAvatar" onclick="document.getElementById('avatarInput').click()" style="width:92px;height:92px;border-radius:50%;background:#fe2c55;margin:auto;display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden;cursor:pointer;border:3px solid #1DA1F2">M</div><p style="font-size:11px;opacity:.6;margin-top:4px">👆 Bonyeza picha kubadilisha DP</p><input type="file" id="avatarInput" accept="image/*" style="display:none"><h2 id="profileName">Mr Vibra <span class="blueTick">✓</span></h2><p id="profileUser" style="opacity:.6">@mrvibra • Mombasa</p><p id="profileBio" style="font-size:13px;margin-top:8px;opacity:.8">🔥 Founder wa Vibra | Mr Vibra</p><div style="display:flex;justify-content:center;gap:24px;margin:14px 0"><div><b>0</b><br><small style="opacity:.6">Ninaowafuata</small></div><div><b>1240</b><br><small style="opacity:.6">Wanaonifuata</small></div><div><b id="statLikes">0</b><br><small style="opacity:.6">Likes</small></div></div><div style="display:flex;gap:10px"><button class="btn" onclick="openEdit()">✏️ Badilisha Profile</button><button class="btn2" onclick="shareProfile()">🔗 Share</button></div><div style="display:flex;gap:8px;margin-top:12px"><button onclick="logout()">Toka</button></div></div>
 <div class="payBox"><h3>💰 MALIPO YANGU - $</h3><p style="font-size:13px;opacity:.9;margin:4px 0">Mwezi huu umepata: <b id="myEarnings" style="font-size:18px">$0.00</b></p><p style="font-size:12px;opacity:.8">Kila views 1,000 = $0.60 • Lipwa kupitia M-PESA kila tarehe 1</p><div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Video: <b id="payVideos">0 / 3</b></span><span id="payVideosCheck">⏳</span></div><div class="progress"><div id="barVideos" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Views: <b id="payViews">0 / 10,000</b></span><span id="payViewsCheck">⏳</span></div><div class="progress"><div id="barViews" style="width:0%"></div></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Likes: <b id="payLikes">0 / 500</b></span><span id="payLikesCheck">⏳</span></div><div class="progress"><div id="barLikes" style="width:0%"></div></div></div><input id="mpesaInput" class="input" style="margin-top:10px;background:#000a;border:1px solid #fff" placeholder="📱 Namba ya M-PESA: 07XX XXX XXX"><button class="btn" style="background:#25D366;color:#000" onclick="requestPayReal()">💸 Omba Malipo $ - Lipwa kupitia M-PESA</button><button class="btn2" style="width:100%;margin-top:8px" onclick="requestBlueTick()">✓ Omba Blue Tick</button></div>
 <div style="padding:10px 10px 0"><h3>🎬 Video Zangu - Bonyeza 🗑️ Kufuta</h3><p id="myVideoCount" style="font-size:12px;opacity:.6"></p></div><div class="grid" id="myVideos" style="padding:10px"></div><div style="padding:10px"><button class="btn" onclick="closeModal('profileModal');goHome()">🏠 Rudi Nyumbani</button></div></div>
 
-<div class="modal" id="settingsModal"><div class="modalHead"><span class="back" onclick="closeModal('settingsModal')">←</span> ⚙️ Settings</div><div style="padding:16px"><h3>🔊 Sauti</h3><p style="font-size:12px;opacity:.6">Ukichagua moja, sauti itabadilika kwa video zote</p><button class="btn2" style="width:100%;margin:8px 0;padding:14px" onclick="unmuteAll()">🔊 Washa Sauti - Video zote ziwe na sauti</button><button class="btn2" style="width:100%;margin:8px 0;padding:14px" onclick="muteAll()">🔇 Zima Sauti Zote - Video ziplay kimya</button><h3 style="margin-top:16px">👤 Akaunti</h3><button class="btn2" style="width:100%;margin:8px 0" onclick="openEdit()">✏️ Badilisha Profile / DP / Jina</button><button class="btn2" style="width:100%;margin:8px 0" onclick="shareProfile()">🔗 Share Vibra</button><h3 style="margin-top:16px">🗑️ Data</h3><button class="btn2" style="width:100%;margin:8px 0;background:#fe2c55" onclick="clearAll()">🗑️ Futa Video Zote Zangu</button><button class="btn" style="margin-top:16px" onclick="closeModal('settingsModal')">✅ Rudi</button></div></div>
+<div class="modal" id="settingsModal"><div class="modalHead"><span class="back" onclick="closeModal('settingsModal')">←</span> ⚙️ Settings</div><div style="padding:16px"><h3>🔊 Sauti</h3><button class="btn2" style="width:100%;margin:8px 0;padding:14px" onclick="unmuteAll()">🔊 Washa Sauti - Video zote ziwe na sauti</button><button class="btn2" style="width:100%;margin:8px 0;padding:14px" onclick="muteAll()">🔇 Zima Sauti Zote</button><h3 style="margin-top:16px">👤 Akaunti</h3><button class="btn2" style="width:100%;margin:8px 0" onclick="openEdit()">✏️ Badilisha Profile / DP / Jina</button><button class="btn2" style="width:100%;margin:8px 0" onclick="shareProfile()">🔗 Share Vibra</button><h3 style="margin-top:16px">🗑️ Data</h3><button class="btn2" style="width:100%;margin:8px 0;background:#fe2c55" onclick="clearAll()">🗑️ Futa Video Zote Zangu</button><button class="btn" style="margin-top:16px" onclick="closeModal('settingsModal')">✅ Rudi</button></div></div>
 
 <div class="modal" id="editModal"><div class="modalHead"><span class="back" onclick="closeModal('editModal')">←</span> Badilisha Profile</div><div style="padding:16px"><div style="text-align:center;margin-bottom:12px"><div id="editAvatarPreview" onclick="document.getElementById('avatarInput').click()" style="width:80px;height:80px;border-radius:50%;background:#fe2c55;margin:auto;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;cursor:pointer">M</div><button class="btn2" style="margin-top:8px" onclick="document.getElementById('avatarInput').click()">📸 Chagua DP</button></div><label style="font-size:12px;opacity:.6">Jina</label><input id="editName" class="input" value="Mr Vibra"><label style="font-size:12px;opacity:.6">@username</label><input id="editUser" class="input" value="@mrvibra"><label style="font-size:12px;opacity:.6">Bio</label><textarea id="editBio" class="input">🔥 Founder wa Vibra | Mr Vibra</textarea><button class="btn" onclick="saveProfileReal()">✅ Hifadhi Profile</button></div></div>
 
@@ -113,6 +113,17 @@ let creators=[
 {name:'Mr Vibra',user:'@mrvibra',followers:'2.1K',bio:'🔥 Founder Vibra',emoji:'🔥',lastMsg:'Karibu Vibra!',time:'Jana',verified:true}
 ];
 let currentCommentId=null; let selectedFile=null; let selectedFileURL=null; let currentChatName='Juma Said'; let mediaRecorder=null; let isRecording=false; let soundOn=false;
+function ingiaSasa(){
+  let inp=document.getElementById('myNameInput');
+  let name = inp ? inp.value.trim() : '';
+  if(!name){ alert('Andika jina lako kwanza!'); if(inp) inp.focus(); return; }
+  myName=name; currentUser={uid:'user_'+name, displayName:name};
+  try{ localStorage.setItem('vibra_my_name', name); }catch(e){}
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('loginScreen').classList.add('hide');
+  updateProfileUI(); renderFeed();
+  alert('Karibu '+name+'! Uko ndani ✅');
+}
 function getMyDP(){ try{ return localStorage.getItem('vibra_avatar')||''; }catch(e){ return ''; } }
 function getMyUser(){ return '@'+myName.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,'')||'@mrvibra'; }
 function isFounder(){ return myName.toLowerCase().includes('vibra'); }
@@ -140,17 +151,17 @@ function toggleSound(e,btn){
   if(!v){ showToast('Hii haina sauti'); return; }
   if(v.muted){
     document.querySelectorAll('.post video').forEach(o=>{ o.muted=true; });
-    v.muted=false; v.volume=1; v.currentTime=v.currentTime; v.play().then(()=>{ showToast('🔊 SAUTI IMEWASHWA - Sikiliza sasa!'); }).catch(()=>{ showToast('Bonyeza video tena'); });
+    v.muted=false; v.volume=1; v.play().then(()=>{ showToast('🔊 SAUTI IMEWASHWA!'); }).catch(()=>{ showToast('Bonyeza video tena'); });
     soundOn=true;
     document.querySelectorAll('.topBtn').forEach(b=>{ b.textContent='🔊 Sauti'; b.style.background='#000a'; });
     btn.textContent='🔊 Sauti Iko - Bonyeza Kuzima'; btn.style.background='#fe2c55';
   } else {
     v.muted=true; soundOn=false;
-    btn.textContent='🔊 Sauti'; btn.style.background='#000a'; showToast('🔇 Sauti Imezimwa - Bonyeza tena Kuwasha');
+    btn.textContent='🔊 Sauti'; btn.style.background='#000a'; showToast('🔇 Sauti Imezimwa');
   }
 }
 function muteAll(){ soundOn=false; document.querySelectorAll('video').forEach(v=>{ v.muted=true; }); document.querySelectorAll('.topBtn').forEach(b=>{ b.textContent='🔊 Sauti'; b.style.background='#000a'; }); showToast('🔇 Sauti Zote Zimezimwa'); closeModal('settingsModal'); }
-function unmuteAll(){ soundOn=true; let v=document.querySelector('.post video'); if(v){ v.muted=false; v.volume=1; v.play().catch(()=>{}); showToast('🔊 Sauti IMEWASHWA - Sikiliza video hii!'); } closeModal('settingsModal'); }
+function unmuteAll(){ soundOn=true; let v=document.querySelector('.post video'); if(v){ v.muted=false; v.volume=1; v.play().catch(()=>{}); showToast('🔊 Sauti IMEWASHWA!'); } closeModal('settingsModal'); }
 function openSettings(){ closeAll(); document.getElementById('settingsModal').classList.add('show'); }
 function clearAll(){ if(!confirm('Futa video zako zote?')) return; posts=posts.filter(p=>p.name!==myName); savePosts(); renderFeed(); showToast('Video zimefutwa'); }
 function renderDiscover(){ let box=document.getElementById('discoverList'); if(!box) return; box.innerHTML=creators.map(c=>`<div class="creatorCard"><div style="width:48px;height:48px;background:#fe2c55;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px">${c.emoji}</div><div style="flex:1"><b>${c.name} ${c.verified?blueTickHtml():''}</b> <span style="color:#fe2c55;font-size:12px">${c.user}</span><br><small style="opacity:.6">${c.bio} • ${c.followers} followers</small></div><button class="btn2" onclick="showToast('Umemfollow ${c.name} ✅')">+ Follow</button></div>`).join(''); }
@@ -181,7 +192,7 @@ function requestPayReal(){
   showToast('✅ Ombi la $'+earnings+' limetumwa. Utalipwa kupitia M-PESA '+phone);
 }
 function requestBlueTick(){ showToast('✅ Ombi la Blue Tick limetumwa!'); }
-function openUpload(){ if(!currentUser){ document.getElementById('loginScreen').classList.remove('hide'); return; } closeAll(); document.getElementById('uploadModal').classList.add('show'); }
+function openUpload(){ closeAll(); document.getElementById('uploadModal').classList.add('show'); }
 function openDiscover(){ closeAll(); document.getElementById('discoverModal').classList.add('show'); renderDiscover(); }
 function openAIChat(){ closeAll(); document.getElementById('aiModal').classList.add('show'); }
 function openChats(){ closeAll(); document.getElementById('chatsModal').classList.add('show'); renderChatList(); }
@@ -192,45 +203,29 @@ function askAI(q){ document.getElementById('aiInput').value=q; sendAI(); }
 function sendAI(){
   let inp=document.getElementById('aiInput'); let q=inp.value.trim(); if(!q) return;
   let chat=document.getElementById('aiChat'); chat.innerHTML+=`<div class="aiMsg me">${q}</div>`; inp.value='';
-  let low=q.toLowerCase(); let ans='';
-  let topic = q.replace(/^(nipe|niambie|nini|faida|maana|jinsi|vipi|naomba|andika)\s+/i,'').trim();
-
-  if(low.includes('mpenzi')||low.includes('mke')||low.includes('mchumba')||low.includes('mapenzi')||low.includes('kumbembeleza')||low.includes('baby')||low.includes('penzi')){
-    ans='💌 Ujumbe wa kumtumia Mpenzi wako - Copy hii:\n\n"Baby wangu ❤️, kila nikiangalia picha yako namiss sana. Wewe ni sababu ya furaha yangu kila siku. Asante kwa kunipenda kama nilivyo. Nakupenda sana, leo, kesho, milele 💋🔥"';
+  let low=q.toLowerCase(); let ans=''; let topic=q;
+  if(low.includes('mpenzi')||low.includes('mke')||low.includes('mchumba')||low.includes('mapenzi')||low.includes('baby')||low.includes('penzi')){
+    ans='💌 Ujumbe wa kumtumia Mpenzi wako - Copy hii:\n\n"Baby wangu ❤️, kila nikiangalia picha yako namiss sana. Wewe ni sababu ya furaha yangu kila siku. Nakupenda sana, leo, kesho, milele 💋🔥"';
   }
-  else if(low.includes('kusoma')||low.includes('shule')||low.includes('elimu')||low.includes('soma')||low.includes('masomo')){
-    ans='📚 FAIDA ZA KUSOMA:\n\n1. Unapata maarifa - Unajua vitu wengine hawavijui\n2. Unapata kazi nzuri - Elimu ndio funguo ya pesa\n3. Unajiamini - Mtu aliyesoma haogopi kuongea mbele za watu\n4. Unafanya maamuzi mazuri - Huhadaikiwi kirahisi\n5. Unabadilisha maisha yako na familia yako\n\n💡 Soma hata ukurasa 1 kila siku, baada ya mwezi 1 utaona tofauti kubwa!';
+  else if(low.includes('kusoma')||low.includes('shule')||low.includes('elimu')||low.includes('soma')){
+    ans='📚 FAIDA ZA KUSOMA:\n\n1. Unapata maarifa\n2. Unapata kazi nzuri\n3. Unajiamini\n4. Unafanya maamuzi mazuri\n5. Unabadilisha maisha yako\n\n💡 Soma hata ukurasa 1 kila siku!';
   }
-  else if(low.includes('pesa')||low.includes('lipwa')||low.includes('ngapi')||low.includes('utajiri')||low.includes('tajiri')){
-    ans='Unalipwa kwa $! 💵\nKila views 1,000 = $0.60\nViews 10,000 = $6.00\n\n💡 Ili uwe tajiri: Post video kila siku, usikate tamaa. Watu wakubwa walianza na 0 views kama wewe!';
+  else if(low.includes('pesa')||low.includes('lipwa')||low.includes('ngapi')){
+    ans='Unalipwa kwa $! 💵\nKila views 1,000 = $0.60\nViews 10,000 = $6.00\nLipwa kupitia M-PESA kila tarehe 1.';
   }
-  else if(low.includes('biashara')||low.includes('kufanya biashara')||low.includes('duka')){
-    ans='🛍️ BIASHARA NZURI ZA KUANZA NA PESA KIDOGO:\n\n1. Kuuzia mitandaoni - Post bidhaa Vibra/TikTok\n2. Kuuzia chakula - Chipsi, juice, maandazi\n3. Boda / Delivery - Watu wanahitaji sana\n4. Kuuzia nguo mtumba\n\nAnza na ulichonacho, usisubiri uwe na pesa nyingi!';
+  else if(low.includes('biashara')){
+    ans='🛍️ BIASHARA NZURI:\n\n1. Kuuzia mitandaoni\n2. Kuuzia chakula\n3. Boda / Delivery\n4. Nguo mtumba\n\nAnza na ulichonacho!';
   }
-  else if(low.includes('afya')||low.includes('mgonjwa')||low.includes('maumivu')||low.includes('ugonjwa')||low.includes('dawa')){
-    ans='🏥 KUHUSU AFYA:\n\nKunywa maji mengi, lala masaa 7-8, fanya mazoezi kidogo kila siku, usile vyakula vya mafuta sana.\n\nKama unaumwa sana, nenda hospitali haraka - usisubiri. Afya ni muhimu kuliko pesa!';
+  else if(low.includes('afya')||low.includes('mgonjwa')){
+    ans='🏥 KUHUSU AFYA:\n\nKunywa maji mengi, lala masaa 7-8, fanya mazoezi kidogo kila siku. Kama unaumwa sana, nenda hospitali haraka!';
   }
-  else if(low.includes('caption')) ans='Caption kali 3 - Copy moja:\n\n1. 🔥 '+myName+' motooo! 👇 #vibra #fyp\n2. Siku ya leo ni yangu! 💪 #fyp #viral\n3. Tazama mpaka mwisho 😱 Hutamini! #vibra';
-  else if(low.includes('salam')||low.includes('mambo')||low.includes('vipi')||low.includes('poa')) ans='Mambo poa '+myName+'! 🔥 Niko vizuri sana. Leo tunapost nini? Niulize chochote - faida za kusoma, biashara, pesa, mapenzi!';
-  else if(low.includes('wazo')||low.includes('video')||low.includes('idea')) ans='🎬 Wazo la Video leo:\n\n"Post video ukiimba au ukichekesha - watu wanapenda sana! Weka caption #vibra #fyp"\n\nPost sasa, utapata views nyingi!';
-  else if(low.includes('napenda')||low.includes('nakupenda')) ans='Aww 🥰 Nakupenda pia '+myName+'! ❤️🔥 Twende tukapost video kali sasa!';
-  else if(low.includes('mpira')||low.includes('soka')||low.includes('simba')||low.includes('yanga')) ans='⚽ MPIRA:\n\nMpira ni burudani na pia ni kazi! Ukicheza vizuri unaweza kulipwa pesa nyingi. Fanya mazoezi kila siku, usivute sigara, usinywe pombe - mwili ndio mtaji wako!';
-  else if(low.includes('muziki')||low.includes('kuimba')||low.includes('wimbo')) ans='🎵 MUZIKI:\n\nUkitaka kuwa msanii mkubwa: Imba kila siku, record video zako post Vibra, usiogope watu wakukucheka. Diamond alianza kama wewe - na 0 views!';
-  else if(low.includes('dini')||low.includes('mungu')||low.includes('sala')||low.includes('maombi')) ans='🙏 Mungu anakupenda sana. Omba kila siku, mshukuru kwa ulichonacho, usikate tamaa. Kila kitu kina wakati wake. Endelea kufanya bidii, Mungu atafungua mlango!';
+  else if(low.includes('caption')) ans='Caption kali:\n\n1. 🔥 '+myName+' motooo! 👇 #vibra #fyp\n2. Siku ya leo ni yangu! 💪 #fyp #viral\n3. Tazama mpaka mwisho 😱 Hutamini! #vibra';
+  else if(low.includes('mambo')||low.includes('vipi')||low.includes('poa')||low.includes('salam')) ans='Mambo poa '+myName+'! 🔥 Niko vizuri sana. Niulize chochote - faida za kusoma, biashara, pesa, mapenzi!';
+  else if(low.includes('wazo')||low.includes('video')) ans='🎬 Wazo la Video leo:\n\nPost video ukiimba au ukichekesha - watu wanapenda sana! Weka #vibra #fyp';
+  else if(low.includes('napenda')||low.includes('nakupenda')) ans='Aww 🥰 Nakupenda pia '+myName+'! ❤️🔥';
   else {
-    // AI YA KWELI - Inajibu swali LOLOTE kwa kutumia swali lenyewe
-    ans='💡 KUHUSU "'+q+'":\n\n1. "'+topic+'" ni muhimu sana kwenye maisha.\n\n2. Ukijifunza vizuri kuhusu hii, utafaidika sana - utapata maarifa, utajiamini, na watu watakuheshimu.\n\n3. Ushauri wangu: Anza kidogo kidogo kila siku, usikate tamaa. Soma, uliza watu wanaojua, na fanya mazoezi.\n\n4. Kama unataka nijibu kwa undani zaidi, niambie "nipe maelezo zaidi kuhusu '+topic+'" - nitakupa orodha kamili!\n\n🔥 Na usisahau kupost video Vibra kuhusu hii - watu watapenda!';
+    ans='💡 KUHUSU "'+q+'":\n\n1. "'+topic+'" ni muhimu sana kwenye maisha.\n\n2. Ukijifunza vizuri kuhusu hii, utafaidika sana - utapata maarifa na utajiamini.\n\n3. Ushauri wangu: Anza kidogo kidogo kila siku, usikate tamaa. Soma, uliza watu wanaojua, na fanya mazoezi.\n\n🔥 Post video Vibra kuhusu hii - watu watapenda!';
   }
-  setTimeout(()=>{ chat.innerHTML+=`<div class="aiMsg">✨ ${ans.replace(/\n/g,'<br>')}</div>`; chat.scrollTop=chat.scrollHeight; },400);
-}
-  else if(low.includes('mwingine')) ans='💌 Mwingine huu:\n\n"Mpenzi, hata dunia ikisimama, moyo wangu hautasimama kukupenda. Wewe ni zawadi bora niliyowahi kupata. Usiku mwema, ndoto njema malkia wangu 👑❤️"';
-  else if(low.includes('pesa')||low.includes('lipwa')||low.includes('ngapi')) ans='Unalipwa kwa $! 💵\nKila views 1,000 = $0.60\nViews 10,000 = $6.00\nLipwa kupitia M-PESA kila tarehe 1. Weka namba yako ya M-PESA kwenye Mimi > MALIPO YANGU';
-  else if(low.includes('caption')) ans='Caption kali 3 - Copy moja:\n\n1. 🔥 '+myName+' motooo! 👇 #vibra #fyp\n2. Siku ya leo ni yangu! 💪 #fyp #viral\n3. Tazama mpaka mwisho 😱 Hutamini! #vibra';
-  else if(low.includes('salam')||low.includes('mambo')||low.includes('vipi')||low.includes('poa')) ans='Mambo poa '+myName+'! 🔥 Niko vizuri sana. Leo tunapost nini? Niambie nikuandikie caption au ujumbe wa mpenzi wako!';
-  else if(low.includes('wazo')||low.includes('video')||low.includes('idea')) ans='🎬 Wazo la Video leo:\n\n"Jaribu kupost video ukiimba wimbo wa Mr Vibra, watu wanapenda sana! Au post video ya mchezo wa kuchekesha - #vibra #fyp"\n\nPost sasa, utapata views nyingi!';
-  else if(low.includes('napenda')||low.includes('nakupenda')) ans='Aww 🥰 Nakupenda pia '+myName+'! ❤️🔥 Twende tukapost video kali sasa!';
-  else if(low.includes('nini')||low.includes('sasa')||low.includes('fanya')) ans='Mimi ni Vibra AI wako! Naweza kukusaidia:\n✅ Kukupa caption kali\n✅ Kukuandikia ujumbe wa mpenzi\n✅ Kukuambia utalipwa ngapi\n✅ Kukupa wazo la video\n\nJaribu: "Niandikie ujumbe wa mpenzi wangu"';
-  else ans='💡 Nimekuelewa: "'+q+'"\n\nHili ni wazo zuri! Kama ni ujumbe wa mpenzi, niambie "niandikie ujumbe wa mpenzi". Kama ni caption, niambie "nipe caption kali". Kama ni pesa, niambie "nitalipwa ngapi?"';
   setTimeout(()=>{ chat.innerHTML+=`<div class="aiMsg">✨ ${ans.replace(/\n/g,'<br>')}</div>`; },400);
 }
 function toggleVoice(){
@@ -255,7 +250,7 @@ function doPostReal(){
   showToast('🎉 Video imepostwa!');
   closeModal('uploadModal'); document.getElementById('captionInput').value=''; selectedFile=null; document.getElementById('postBtn').textContent='🚀 Post Sasa'; goHome(); renderFeed();
 }
-function openProfile(){ if(!currentUser && myName==='Mr Vibra' && !localStorage.getItem('vibra_my_name')){ document.getElementById('loginScreen').classList.remove('hide'); return; } closeAll(); document.getElementById('profileModal').classList.add('show'); updateProfileUI(); renderMyVideos(); updatePayDashboard(); }
+function openProfile(){ closeAll(); document.getElementById('profileModal').classList.add('show'); updateProfileUI(); renderMyVideos(); updatePayDashboard(); }
 function updateProfileUI(){
   let isF=isFounder();
   document.getElementById('profileName').innerHTML=myName+(isF?' <span class="blueTick">✓</span>':'');
@@ -277,24 +272,14 @@ function saveProfileReal(){
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function closeAll(){ document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show')); document.getElementById('commentBox').classList.remove('show'); }
 function goHome(){ closeAll(); document.getElementById('feed').scrollTo({top:0,behavior:'smooth'}); }
-function loginReal(){
-  let inp=document.getElementById('myNameInput'); let name=inp?inp.value.trim():'';
-  if(!name){ showToast('Andika jina lako kwanza ✏️'); if(inp) inp.focus(); return; }
-  myName=name; try{ localStorage.setItem('vibra_my_name', name); }catch(e){}
-  currentUser={uid:'user_'+name, displayName:name};
-  updateProfileUI();
-  document.getElementById('loginScreen').classList.add('hide');
-  showToast('Karibu '+name+' ✅ - Uko ndani!');
-  renderFeed();
-}
-function logout(){ currentUser=null; document.getElementById('loginScreen').classList.remove('hide'); showToast('Umetoka'); }
+function logout(){ currentUser=null; document.getElementById('loginScreen').style.display='flex'; document.getElementById('loginScreen').classList.remove('hide'); showToast('Umetoka'); }
 document.getElementById('avatarInput').addEventListener('change',e=>{
   let f=e.target.files[0]; if(!f) return; let reader=new FileReader();
-  reader.onload=function(ev){ let url=ev.target.result; document.getElementById('profileAvatar').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`; document.getElementById('editAvatarPreview').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`; try{localStorage.setItem('vibra_avatar',url);}catch(e){} showToast('DP imebadilika ✅ - Itaonekana Feed pia!'); renderFeed(); };
+  reader.onload=function(ev){ let url=ev.target.result; document.getElementById('profileAvatar').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`; document.getElementById('editAvatarPreview').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`; try{localStorage.setItem('vibra_avatar',url);}catch(e){} showToast('DP imebadilika ✅'); renderFeed(); };
   reader.readAsDataURL(f);
 });
 let savedAvatar=getMyDP(); if(savedAvatar){ document.getElementById('profileAvatar').innerHTML=`<img src="${savedAvatar}" style="width:100%;height:100%;object-fit:cover">`; document.getElementById('editAvatarPreview').innerHTML=`<img src="${savedAvatar}" style="width:100%;height:100%;object-fit:cover">`; }
-if(localStorage.getItem('vibra_my_name')){ currentUser={uid:'user_'+myName, displayName:myName}; document.getElementById('loginScreen').classList.add('hide'); updateProfileUI(); }
+if(localStorage.getItem('vibra_my_name')){ currentUser={uid:'user_'+myName, displayName:myName}; document.getElementById('loginScreen').style.display='none'; document.getElementById('loginScreen').classList.add('hide'); updateProfileUI(); }
 renderFeed();
 document.addEventListener('click', function(e){
   let vid=e.target.closest('.post video');
@@ -317,7 +302,7 @@ document.getElementById('feed').addEventListener('scroll',()=>{
 });
 document.getElementById('aiInput').addEventListener('keydown',e=>{ if(e.key==='Enter') sendAI(); });
 document.getElementById('chatRoomInput').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChatMsgReal(); });
-document.getElementById('myNameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') loginReal(); });
+document.getElementById('myNameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') ingiaSasa(); });
 </script>
 </body>
 </html>
