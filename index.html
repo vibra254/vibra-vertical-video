@@ -6,86 +6,75 @@
 <title>Vibra</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{font-family:system-ui;background:#000;color:#fff}
-.post{border-bottom:1px solid #222;padding:14px}
-.btn{ background:#fff;color:#000;padding:10px 18px;border-radius:999px;font-weight:700;width:100%}
+body{font-family:system-ui;background:#000;color:#fff;overflow:hidden}
+.video-feed{height:calc(100vh - 120px);overflow-y:scroll;scroll-snap-type:y mandatory}
+.video-card{height:calc(100vh - 120px);scroll-snap-align:start;position:relative;background:#000}
+.video-card video{width:100%;height:100%;object-fit:cover}
+.overlay{position:absolute;bottom:0;left:0;right:60px;padding:16px;background:linear-gradient(transparent, rgba(0,0,0,0.8))}
+.side-actions{position:absolute;right:10px;bottom:90px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.action-btn{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;backdrop-filter:blur(5px)}
 </style>
 </head>
 <body>
 
-<!-- HAKUNA LOGINSCREEN TENA - APP INAFUNGUKA MOJA KWA MOJA -->
-
-<div id="app" class="max-w-[600px] mx-auto min-h-screen border-x border-zinc-800">
-  <div class="sticky top-0 bg-black/80 backdrop-blur p-4 flex justify-between items-center border-b border-zinc-800 z-10">
-    <b class="text-2xl">Vibra</b>
-    <div class="flex items-center gap-2">
-      <img id="userPic" class="w-9 h-9 rounded-full">
-      <b id="userName" class="text-sm"></b>
-      <span class="text-xs bg-white text-black px-3 py-1.5 rounded-full">Guest</span>
-    </div>
+<!-- HEADER KAMA WA ZAMANI -->
+<div class="sticky top-0 bg-black/90 backdrop-blur p-4 flex justify-between items-center border-b border-zinc-800 z-20">
+  <b class="text-2xl">Vibra 🔥</b>
+  <div class="flex items-center gap-2">
+    <img src="https://i.pravatar.cc/100?img=12" class="w-9 h-9 rounded-full">
+    <b class="text-sm">Mr Vibra</b>
+    <span class="text-xs bg-white text-black px-3 py-1.5 rounded-full">Guest</span>
   </div>
+</div>
 
-  <div class="p-4 border-b border-zinc-800">
-    <textarea id="postInput" placeholder="Nini kinaendelea?" class="w-full bg-transparent outline-none text-lg resize-none" rows="2"></textarea>
-    <button onclick="addPost()" class="bg-white text-black font-bold px-5 py-2 rounded-full float-right">Post</button>
-    <div class="clear-both"></div>
-  </div>
+<!-- TABS KAMA TIKTOK -->
+<div class="flex justify-center gap-6 py-2 text-sm border-b border-zinc-800 bg-black z-10 relative">
+  <b>Kwa Ajili Yako</b><span class="text-zinc-500">| Wanaonifuata</span>
+</div>
 
-  <div id="feed"></div>
+<!-- FEED YA TIKTOK - VIDEO KUBWA KUBWA -->
+<div class="video-feed" id="feed"></div>
 
-  <!-- BOTTOM NAV -->
-  <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-black border-t border-zinc-800 flex justify-around py-3 text-xs">
-    <button>🏠<br>Nyumbani</button>
-    <button>🔍<br>Gundua</button>
-    <button class="bg-white text-black w-11 h-11 rounded-full text-xl -mt-5">+</button>
-    <button>💬<br>Chats</button>
-    <button>👤<br>Wasifu</button>
-  </div>
-  <div class="h-16"></div>
+<!-- BOTTOM NAV KAMA YA ZAMANI -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-black border-t border-zinc-800 flex justify-around py-3 text-xs z-20">
+  <button>🏠<br>Nyumbani</button>
+  <button>🔍<br>Gundua</button>
+  <button class="bg-white text-black w-11 h-11 rounded-full text-xl -mt-5 flex items-center justify-center">+</button>
+  <button>💬<br>Chats</button>
+  <button>👤<br>Wasifu</button>
 </div>
 
 <script>
-// HAKUNA GOOGLE TENA - KILA MTU NI GUEST KIOTOMATIKI
-let user = {name: "Mr Vibra", pic: "https://i.pravatar.cc/100?img=12", email: "guest@vibra.co.tz"};
-let posts = JSON.parse(localStorage.getItem('vibra_posts') || '[]');
-if(posts.length===0){
-  posts=[
-    {name:'Vibra Official', pic:'https://i.pravatar.cc/100?img=12', text:'Karibu Vibra! Post kitu cha kwanza hapa 🔥', likes:124, time:'Sasa'},
-    {name:'Hamadi', pic:'https://i.pravatar.cc/100?img=32', text:'Vibra imezinduliwa rasmi! Mko tayari?', likes:89, time:'Dakika 2'}
-  ];
-}
-
-function showApp(){
-  document.getElementById('userName').innerText = user.name;
-  document.getElementById('userPic').src = user.pic;
-  render();
-}
-function addPost(){
-  const t = document.getElementById('postInput').value.trim();
-  if(!t) return;
-  posts.unshift({name:user.name, pic:user.pic, text:t, likes:0, time:'Sasa'});
-  localStorage.setItem('vibra_posts', JSON.stringify(posts));
-  document.getElementById('postInput').value='';
-  render();
-}
-function like(i){
-  posts[i].likes++;
-  localStorage.setItem('vibra_posts', JSON.stringify(posts));
-  render();
-}
+let posts = [
+  {name:"Mr Vibra", username:"@mrvibra", pic:"https://i.pravatar.cc/100?img=12", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=1", text:"Jalibu Vibra 🔥 #vibra #tanzania", likes:1240, comments:129, shares:45},
+  {name:"Neema", username:"@neema", pic:"https://i.pravatar.cc/100?img=47", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=2", text:"Siku nzuri Dar es Salaam ☀️", likes:890, comments:67, shares:23},
+  {name:"Doski", username:"@doski", pic:"https://i.pravatar.cc/100?img=33", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=3", text:"New vibe 🔥", likes:2100, comments:210, shares:98},
+  {name:"Hamadi", username:"@hamadi", pic:"https://i.pravatar.cc/100?img=32", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=4", text:"Vibra imezinduliwa rasmi! Mko tayari?", likes:89, comments:12, shares:5}
+];
+let liked = {};
 function render(){
   document.getElementById('feed').innerHTML = posts.map((p,i)=>`
-    <div class="post flex gap-3">
-      <img src="${p.pic}" class="w-11 h-11 rounded-full">
-      <div class="flex-1">
-        <b>${p.name}</b> <span class="text-zinc-500 text-xs">• ${p.time}</span>
-        <p class="mt-1">${p.text}</p>
-        <button onclick="like(${i})" class="mt-2 text-sm text-zinc-400">❤️ ${p.likes} Like</button>
+    <div class="video-card">
+      <video src="${p.video}" poster="${p.poster}" controls playsinline loop preload="metadata"></video>
+      <div class="overlay">
+        <div class="flex items-center gap-2"><img src="${p.pic}" class="w-10 h-10 rounded-full"><b>${p.name}</b><span class="text-zinc-400 text-xs">${p.username}</span></div>
+        <p class="mt-2 text-sm">${p.text}</p>
+      </div>
+      <div class="side-actions">
+        <div class="text-center"><button onclick="likePost(${i})" class="action-btn">${liked[i]?'❤️':'🤍'}</button><span class="text-xs">${p.likes}</span></div>
+        <div class="text-center"><button class="action-btn">💬</button><span class="text-xs">${p.comments}</span></div>
+        <div class="text-center"><button class="action-btn">↗️</button><span class="text-xs">${p.shares}</span></div>
+        <div class="text-center"><button class="action-btn">🔖</button></div>
+        <img src="${p.pic}" class="w-10 h-10 rounded-full border-2 border-white">
       </div>
     </div>
   `).join('');
 }
-showApp();
+function likePost(i){
+  if(liked[i]){ posts[i].likes--; liked[i]=false; } else { posts[i].likes++; liked[i]=true; }
+  render();
+}
+render();
 </script>
 </body>
 </html>
