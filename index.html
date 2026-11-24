@@ -6,19 +6,23 @@
 <title>Vibra</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{font-family:system-ui;background:#000;color:#fff;overflow:hidden}
-.video-feed{height:calc(100vh - 120px);overflow-y:scroll;scroll-snap-type:y mandatory}
-.video-card{height:calc(100vh - 120px);scroll-snap-align:start;position:relative;background:#000}
+body{font-family:system-ui;background:#000;color:#fff}
+.video-feed{height:calc(100vh - 170px);overflow-y:scroll;scroll-snap-type:y mandatory}
+.video-card{height:calc(100vh - 170px);scroll-snap-align:start;position:relative;background:#000}
 .video-card video{width:100%;height:100%;object-fit:cover}
-.overlay{position:absolute;bottom:0;left:0;right:60px;padding:16px;background:linear-gradient(transparent, rgba(0,0,0,0.8))}
+.overlay{position:absolute;bottom:0;left:0;right:60px;padding:16px;background:linear-gradient(transparent, rgba(0,0,0,0.85))}
 .side-actions{position:absolute;right:10px;bottom:90px;display:flex;flex-direction:column;gap:16px;align-items:center}
-.action-btn{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;backdrop-filter:blur(5px)}
+.action-btn{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px}
+.nav-btn.active{color:#fff;font-weight:bold}
+.nav-btn{color:#888}
+.grid-video{width:100%;height:180px;object-fit:cover;border-radius:12px}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 
-<!-- HEADER KAMA WA ZAMANI -->
-<div class="sticky top-0 bg-black/90 backdrop-blur p-4 flex justify-between items-center border-b border-zinc-800 z-20">
+<!-- HEADER -->
+<div class="sticky top-0 bg-black/90 p-4 flex justify-between items-center border-b border-zinc-800 z-20">
   <b class="text-2xl">Vibra 🔥</b>
   <div class="flex items-center gap-2">
     <img src="https://i.pravatar.cc/100?img=12" class="w-9 h-9 rounded-full">
@@ -27,30 +31,69 @@ body{font-family:system-ui;background:#000;color:#fff;overflow:hidden}
   </div>
 </div>
 
-<!-- TABS KAMA TIKTOK -->
-<div class="flex justify-center gap-6 py-2 text-sm border-b border-zinc-800 bg-black z-10 relative">
-  <b>Kwa Ajili Yako</b><span class="text-zinc-500">| Wanaonifuata</span>
+<!-- PAGE: NYUMBANI - TIKTOK FEED -->
+<div id="page-home">
+  <div class="flex justify-center gap-6 py-2 text-sm border-b border-zinc-800 bg-black">
+    <b>Kwa Ajili Yako</b><span class="text-zinc-500">| Wanaonifuata</span>
+  </div>
+  <div class="video-feed" id="feed"></div>
 </div>
 
-<!-- FEED YA TIKTOK - VIDEO KUBWA KUBWA -->
-<div class="video-feed" id="feed"></div>
+<!-- PAGE: GUNDUA -->
+<div id="page-discover" class="hidden p-4 pb-24">
+  <h2 class="text-xl font-bold">Gundua 🔍</h2>
+  <input placeholder="Tafuta watu, video..." class="w-full bg-zinc-900 p-3 rounded-xl mt-3 outline-none">
+  <div class="flex gap-2 mt-3 flex-wrap"><span class="bg-zinc-800 px-3 py-1 rounded-full text-xs">#vibra</span><span class="bg-zinc-800 px-3 py-1 rounded-full text-xs">#tanzania</span><span class="bg-zinc-800 px-3 py-1 rounded-full text-xs">#music</span><span class="bg-zinc-800 px-3 py-1 rounded-full text-xs">#dance</span></div>
+  <div class="grid grid-cols-2 gap-2 mt-4" id="discoverGrid"></div>
+</div>
 
-<!-- BOTTOM NAV KAMA YA ZAMANI -->
-<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-black border-t border-zinc-800 flex justify-around py-3 text-xs z-20">
-  <button>🏠<br>Nyumbani</button>
-  <button>🔍<br>Gundua</button>
-  <button class="bg-white text-black w-11 h-11 rounded-full text-xl -mt-5 flex items-center justify-center">+</button>
-  <button>💬<br>Chats</button>
-  <button>👤<br>Wasifu</button>
+<!-- PAGE: POST -->
+<div id="page-upload" class="hidden p-4 pb-24">
+  <h2 class="text-xl font-bold">Post Mpya ✍️</h2>
+  <textarea id="postText" rows="4" placeholder="Andika chochote..." class="w-full bg-zinc-900 p-3 rounded-xl mt-4 outline-none"></textarea>
+  <button onclick="addPost()" class="bg-white text-black font-bold w-full py-3 rounded-full mt-3">Chapisha</button>
+  <p class="text-zinc-500 text-xs text-center mt-3">Hakuna login. Post kama Guest.</p>
+</div>
+
+<!-- PAGE: CHATS -->
+<div id="page-chats" class="hidden p-4 pb-24">
+  <h2 class="text-xl font-bold">Chats 💬</h2>
+  <div id="chatList" class="mt-4"></div>
+  <div class="flex gap-2 mt-4"><input id="chatInput" placeholder="Andika ujumbe..." class="flex-1 bg-zinc-900 p-3 rounded-xl outline-none"><button onclick="sendChat()" class="bg-white text-black px-4 rounded-xl font-bold">Tuma</button></div>
+</div>
+
+<!-- PAGE: WASIFU - SASA INAFANYA KAZI -->
+<div id="page-profile" class="hidden p-4 pb-24 text-center">
+  <img src="https://i.pravatar.cc/150?img=12" class="w-24 h-24 rounded-full mx-auto">
+  <h2 class="text-xl font-bold mt-2">Mr Vibra</h2>
+  <p class="text-zinc-500">@mrvibra</p>
+  <p class="mt-2 text-sm">Karibu Vibra! 🔥</p>
+  <div class="flex justify-center gap-8 mt-4">
+    <div><b>189</b><br><span class="text-xs text-zinc-500">Wanaofuatwa</span></div>
+    <div><b>1240</b><br><span class="text-xs text-zinc-500">Wanaonifuata</span></div>
+    <div><b>129</b><br><span class="text-xs text-zinc-500">Likes</span></div>
+  </div>
+  <button class="bg-white text-black font-bold w-full py-3 rounded-full mt-4">Badilisha Wasifu</button>
+  <h3 class="text-left font-bold mt-6">Video Zangu</h3>
+  <div class="grid grid-cols-2 gap-2 mt-3" id="profileGrid"></div>
+</div>
+
+<!-- BOTTOM NAV - SASA ZINAFANYA KAZI -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-black border-t border-zinc-800 flex justify-around py-3 text-xs z-30">
+  <button onclick="showPage('home')" id="nav-home" class="nav-btn active">🏠<br>Nyumbani</button>
+  <button onclick="showPage('discover')" id="nav-discover" class="nav-btn">🔍<br>Gundua</button>
+  <button onclick="showPage('upload')" class="bg-white text-black w-11 h-11 rounded-full text-xl -mt-5 flex items-center justify-center">+</button>
+  <button onclick="showPage('chats')" id="nav-chats" class="nav-btn">💬<br>Chats</button>
+  <button onclick="showPage('profile')" id="nav-profile" class="nav-btn">👤<br>Wasifu</button>
 </div>
 
 <script>
 let posts = [
   {name:"Mr Vibra", username:"@mrvibra", pic:"https://i.pravatar.cc/100?img=12", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=1", text:"Jalibu Vibra 🔥 #vibra #tanzania", likes:1240, comments:129, shares:45},
   {name:"Neema", username:"@neema", pic:"https://i.pravatar.cc/100?img=47", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=2", text:"Siku nzuri Dar es Salaam ☀️", likes:890, comments:67, shares:23},
-  {name:"Doski", username:"@doski", pic:"https://i.pravatar.cc/100?img=33", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=3", text:"New vibe 🔥", likes:2100, comments:210, shares:98},
-  {name:"Hamadi", username:"@hamadi", pic:"https://i.pravatar.cc/100?img=32", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=4", text:"Vibra imezinduliwa rasmi! Mko tayari?", likes:89, comments:12, shares:5}
+  {name:"Doski", username:"@doski", pic:"https://i.pravatar.cc/100?img=33", video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", poster:"https://picsum.photos/480/800?random=3", text:"New vibe 🔥", likes:2100, comments:210, shares:98}
 ];
+let chats = [{name:"Neema",msg:"Mambo! Uko wapi?",time:"10:20"},{name:"Doski",msg:"Vibra iko moto 🔥",time:"09:15"}];
 let liked = {};
 function render(){
   document.getElementById('feed').innerHTML = posts.map((p,i)=>`
@@ -69,10 +112,21 @@ function render(){
       </div>
     </div>
   `).join('');
+  document.getElementById('discoverGrid').innerHTML = posts.map(p=>`<video src="${p.video}" poster="${p.poster}" class="grid-video" preload="metadata"></video>`).join('');
+  document.getElementById('profileGrid').innerHTML = posts.map(p=>`<video src="${p.video}" poster="${p.poster}" class="grid-video" preload="metadata"></video>`).join('');
+  document.getElementById('chatList').innerHTML = chats.map(c=>`<div class="border-b border-zinc-800 py-3 text-left"><b>${c.name}</b><div class="text-zinc-400 text-sm">${c.msg}</div><small class="text-zinc-600">${c.time}</small></div>`).join('');
 }
-function likePost(i){
-  if(liked[i]){ posts[i].likes--; liked[i]=false; } else { posts[i].likes++; liked[i]=true; }
-  render();
+function likePost(i){ if(liked[i]){posts[i].likes--;liked[i]=false;}else{posts[i].likes++;liked[i]=true;} render(); }
+function addPost(){ let t=document.getElementById('postText').value; if(!t.trim())return; posts.unshift({name:"Mr Vibra",username:"@mrvibra",pic:"https://i.pravatar.cc/100?img=12",video:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",poster:"https://picsum.photos/480/800?random=99",text:t,likes:0,comments:0,shares:0}); document.getElementById('postText').value=""; render(); showPage('home'); alert("Umechapisha! ✅"); }
+function sendChat(){ let v=document.getElementById('chatInput').value; if(!v.trim())return; chats.push({name:"Mimi",msg:v,time:"Sasa"}); document.getElementById('chatInput').value=""; render(); }
+function showPage(p){
+  ['home','discover','upload','chats','profile'].forEach(x=>{
+    document.getElementById('page-'+x).classList.add('hidden');
+    let nav=document.getElementById('nav-'+x); if(nav) nav.classList.remove('active');
+  });
+  document.getElementById('page-'+p).classList.remove('hidden');
+  let nav=document.getElementById('nav-'+p); if(nav) nav.classList.add('active');
+  window.scrollTo(0,0);
 }
 render();
 </script>
