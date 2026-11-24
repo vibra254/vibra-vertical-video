@@ -3,97 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vibra</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>Vibra 🔥</title>
 <style>
-body{font-family:system-ui;background:#000;color:#fff}
-.post{border-bottom:1px solid #222;padding:14px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f5f5f5}
+.app{max-width:480px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:80px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:10}
+.guest{background:#000;color:#fff;padding:5px 12px;border-radius:20px;font-size:12px}
+.tabs{padding:12px 16px;border-bottom:1px solid #eee}
+.card{border-bottom:1px solid #eee;padding-bottom:12px}
+.postTop{display:flex;gap:10px;padding:12px}
+.avatar{width:44px;height:44px;border-radius:50%;object-fit:cover}
+video{width:100%;max-height:420px;background:#000;display:block}
+.actions{display:flex;gap:18px;padding:10px 12px}
+.actions button{border:none;background:none;font-size:16px;cursor:pointer}
+.page{padding:16px}
+input,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;outline:none;margin-top:8px}
+.btn{background:#000;color:#fff;border:none;padding:13px 20px;border-radius:12px;cursor:pointer;font-weight:bold;width:100%;margin-top:12px}
+.tag{background:#f0f0f0;padding:7px 13px;border-radius:20px;font-size:13px;display:inline-block;margin:4px 4px 0 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.grid video{height:170px;object-fit:cover;border-radius:12px}
+.chatRow{padding:12px 0;border-bottom:1px solid #eee}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;justify-content:space-around;align-items:center;background:#fff;border-top:1px solid #eee;padding:8px 0;z-index:20}
+.nav button{border:none;background:none;font-size:12px;cursor:pointer;line-height:1.2}
+.plus{background:#000!important;color:#fff!important;width:46px;height:46px;border-radius:50%;font-size:26px!important}
+.profile{text-align:center}
+.profile img{width:92px;height:92px;border-radius:50%;object-fit:cover}
+.stats{display:flex;justify-content:center;gap:26px;margin-top:12px}
+.hidden{display:none}
 </style>
 </head>
 <body>
+<div class="app">
+  <div class="header"><h2>Vibra 🔥</h2><span class="guest">Guest</span></div>
 
-<div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-  <h1 class="text-6xl font-black mb-2">Vibra</h1>
-  <p class="text-zinc-400 mb-8">Mahali pa vibes. Post, like, comment, follow.</p>
-  <div id="g_id_onload"
-    data-client_id="424385936523-kqum9vko0ckjr6fc7qbbcdd6loe9jffr.apps.googleusercontent.com"
-    data-callback="onGoogleLogin"
-    data-auto_prompt="false">
+  <!-- HOME -->
+  <div id="homePage">
+    <div class="tabs"><b>Kwa Ajili Yako</b> <span style="color:#888">| Wanaonifuata</span></div>
+    <div id="feed"></div>
   </div>
-  <div class="g_id_signin" data-type="standard" data-theme="filled_white" data-size="large" data-text="continue_with" data-shape="pill" data-width="320"></div>
-  <p class="text-xs text-zinc-500 mt-6">Kwa kuingia unakubali masharti ya Vibra</p>
-</div>
 
-<div id="app" class="hidden max-w-[600px] mx-auto min-h-screen border-x border-zinc-800">
-  <div class="sticky top-0 bg-black/80 backdrop-blur p-4 flex justify-between items-center border-b border-zinc-800 z-10">
-    <b class="text-2xl">Vibra</b>
-    <div class="flex items-center gap-2">
-      <img id="userPic" class="w-9 h-9 rounded-full">
-      <b id="userName" class="text-sm"></b>
-      <button onclick="logout()" class="text-xs bg-zinc-800 px-3 py-1.5 rounded-full">Toka</button>
+  <!-- GUNDUA -->
+  <div id="discoverPage" class="page hidden">
+    <h3>Gundua 🔍</h3>
+    <input placeholder="Tafuta watu, video...">
+    <div style="margin-top:10px"><span class="tag">#vibra</span><span class="tag">#tanzania</span><span class="tag">#music</span><span class="tag">#dance</span><span class="tag">#comedy</span></div>
+    <div class="grid" id="discoverGrid"></div>
+  </div>
+
+  <!-- POST -->
+  <div id="uploadPage" class="page hidden">
+    <h3>Post Mpya ✍️</h3>
+    <textarea id="postText" rows="4" placeholder="Andika chochote..."></textarea>
+    <button class="btn" onclick="addPost()">Chapisha</button>
+    <p style="color:#888;font-size:13px;margin-top:10px;text-align:center">Hakuna login inahitajika. Post kama Guest.</p>
+  </div>
+
+  <!-- CHATS -->
+  <div id="chatsPage" class="page hidden">
+    <h3>Chats 💬</h3>
+    <div id="chatList"></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <input id="chatInput" placeholder="Andika ujumbe..." style="margin:0">
+      <button class="btn" onclick="sendChat()" style="width:80px;margin:0">Tuma</button>
     </div>
   </div>
 
-  <div class="p-4 border-b border-zinc-800">
-    <textarea id="postInput" placeholder="Nini kinaendelea?" class="w-full bg-transparent outline-none text-lg resize-none" rows="2"></textarea>
-    <button onclick="addPost()" class="bg-white text-black font-bold px-5 py-2 rounded-full float-right">Post</button>
-    <div class="clear-both"></div>
+  <!-- PROFILE -->
+  <div id="profilePage" class="page hidden">
+    <div class="profile">
+      <img src="https://i.pravatar.cc/150?img=12">
+      <h3 style="margin-top:8px">Mr Vibra</h3>
+      <p style="color:#888">@mrvibra</p>
+      <p style="margin-top:8px">Karibu Vibra! 🔥</p>
+      <div class="stats">
+        <div><b>189</b><br><small>Wanaofuatwa</small></div>
+        <div><b>1240</b><br><small>Wanaonifuata</small></div>
+        <div><b>129</b><br><small>Likes</small></div>
+      </div>
+      <button class="btn">Badilisha Wasifu</button>
+      <h4 style="text-align:left;margin-top:22px">Video Zangu</h4>
+      <div class="grid" id="profileGrid"></div>
+    </div>
   </div>
 
-  <div id="feed"></div>
+  <!-- NAV - HAKUNA LOGIN, HAKUNA VIBRA AI -->
+  <div class="nav">
+    <button onclick="showPage('home')">🏠<br>Nyumbani</button>
+    <button onclick="showPage('discover')">🔍<br>Gundua</button>
+    <button class="plus" onclick="showPage('upload')">+</button>
+    <button onclick="showPage('chats')">💬<br>Chats</button>
+    <button onclick="showPage('profile')">👤<br>Wasifu</button>
+  </div>
 </div>
 
 <script>
-let user = JSON.parse(localStorage.getItem('vibra_user') || 'null');
-let posts = JSON.parse(localStorage.getItem('vibra_posts') || '[]');
-if(posts.length===0){
-  posts=[
-    {name:'Vibra Official', pic:'https://i.pravatar.cc/100?img=12', text:'Karibu Vibra! Post kitu cha kwanza hapa 🔥', likes:124, time:'Sasa'},
-    {name:'Hamadi', pic:'https://i.pravatar.cc/100?img=32', text:'Vibra imezinduliwa rasmi! Mko tayari?', likes:89, time:'Dakika 2'}
-  ];
-}
-function onGoogleLogin(res){
-  const payload = JSON.parse(atob(res.credential.split('.')[1]));
-  user = {name: payload.name, pic: payload.picture, email: payload.email};
-  localStorage.setItem('vibra_user', JSON.stringify(user));
-  showApp();
-}
-function showApp(){
-  if(!user) return;
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
-  document.getElementById('userName').innerText = user.name;
-  document.getElementById('userPic').src = user.pic;
-  render();
-}
-function logout(){ localStorage.removeItem('vibra_user'); location.reload(); }
-function addPost(){
-  const t = document.getElementById('postInput').value.trim();
-  if(!t) return;
-  posts.unshift({name:user.name, pic:user.pic, text:t, likes:0, time:'Sasa'});
-  localStorage.setItem('vibra_posts', JSON.stringify(posts));
-  document.getElementById('postInput').value='';
-  render();
-}
-function like(i){
-  posts[i].likes++;
-  localStorage.setItem('vibra_posts', JSON.stringify(posts));
-  render();
-}
+let posts = [
+  {id:1,user:"Mr Vibra",username:"@mrvibra",avatar:"https://i.pravatar.cc/150?img=12",video:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",caption:"Jalibu Vibra 🔥 #vibra #tanzania",likes:129,comments:12,shares:5,time:"2h"},
+  {id:2,user:"Neema",username:"@neema",avatar:"https://i.pravatar.cc/150?img=47",video:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",caption:"Siku nzuri Dar es Salaam ☀️",likes:89,comments:8,shares:3,time:"5h"},
+  {id:3,user:"Doski",username:"@doski",avatar:"https://i.pravatar.cc/150?img=33",video:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",caption:"New vibe 🔥",likes:210,comments:22,shares:10,time:"1d"}
+];
+let chats = [
+  {name:"Neema",msg:"Mambo! Uko wapi?",time:"10:20"},
+  {name:"Doski",msg:"Vibra iko moto 🔥",time:"09:15"}
+];
+let liked = {};
+
 function render(){
-  document.getElementById('feed').innerHTML = posts.map((p,i)=>`
-    <div class="post flex gap-3">
-      <img src="${p.pic}" class="w-11 h-11 rounded-full">
-      <div class="flex-1">
-        <b>${p.name}</b> <span class="text-zinc-500 text-xs">• ${p.time}</span>
-        <p class="mt-1">${p.text}</p>
-        <button onclick="like(${i})" class="mt-2 text-sm text-zinc-400">❤️ ${p.likes} Like</button>
+  document.getElementById('feed').innerHTML = posts.map(p=>`
+    <div class="card">
+      <div class="postTop"><img src="${p.avatar}" class="avatar"><div><b>${p.user}</b> <span style="color:#888">${p.username} • ${p.time}</span><div>${p.caption}</div></div></div>
+      <video src="${p.video}" controls></video>
+      <div class="actions">
+        <button onclick="likePost(${p.id})">${liked[p.id]?'❤️':'🤍'} ${p.likes}</button>
+        <button>💬 ${p.comments}</button>
+        <button>↗️ ${p.shares}</button>
+        <button>🔖</button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
+  document.getElementById('discoverGrid').innerHTML = posts.map(p=>`<video src="${p.video}"></video>`).join('');
+  document.getElementById('profileGrid').innerHTML = posts.map(p=>`<video src="${p.video}"></video>`).join('');
+  document.getElementById('chatList').innerHTML = chats.map(c=>`<div class="chatRow"><b>${c.name}</b><div style="color:#555">${c.msg}</div><small style="color:#888">${c.time}</small></div>`).join('');
 }
-if(user) showApp();
+function likePost(id){
+  let p = posts.find(x=>x.id===id);
+  if(liked[id]){ p.likes--; liked[id]=false; } else { p.likes++; liked[id]=true; }
+  render();
+}
+function addPost(){
+  let t = document.getElementById('postText').value;
+  if(!t.trim()) return;
+  posts.unshift({id:Date.now(),user:"Mr Vibra",username:"@mrvibra",avatar:"https://i.pravatar.cc/150?img=12",video:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",caption:t,likes:0,comments:0,shares:0,time:"Sasa"});
+  document.getElementById('postText').value="";
+  render(); showPage('home'); alert("Umechapisha! ✅");
+}
+function sendChat(){
+  let v = document.getElementById('chatInput').value;
+  if(!v.trim()) return;
+  chats.push({name:"Mimi",msg:v,time:"Sasa"});
+  document.getElementById('chatInput').value=""; render();
+}
+function showPage(p){
+  ['home','discover','upload','chats','profile'].forEach(x=>{
+    document.getElementById(x+'Page').classList.add('hidden');
+  });
+  document.getElementById(p+'Page').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+render();
 </script>
 </body>
 </html>
