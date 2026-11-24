@@ -9,7 +9,6 @@
 <style>
 body{font-family:system-ui;background:#000;color:#fff}
 .post{border-bottom:1px solid #222;padding:14px}
-.btn{ background:#fff;color:#000;padding:10px 18px;border-radius:999px;font-weight:700;width:100%}
 </style>
 </head>
 <body>
@@ -18,7 +17,7 @@ body{font-family:system-ui;background:#000;color:#fff}
   <h1 class="text-6xl font-black mb-2">Vibra</h1>
   <p class="text-zinc-400 mb-8">Mahali pa vibes. Post, like, comment, follow.</p>
   <div id="g_id_onload"
-    data-client_id="424385936523-kbs9i915j8ooki54pn72qgtvq7e12mpa.apps.googleusercontent.com"
+    data-client_id="424385936523-kqum9vko0ckjr6fc7qbbcdd6loe9jffr.apps.googleusercontent.com"
     data-callback="onGoogleLogin"
     data-auto_prompt="false">
   </div>
@@ -54,7 +53,6 @@ if(posts.length===0){
     {name:'Hamadi', pic:'https://i.pravatar.cc/100?img=32', text:'Vibra imezinduliwa rasmi! Mko tayari?', likes:89, time:'Dakika 2'}
   ];
 }
-
 function onGoogleLogin(res){
   const payload = JSON.parse(atob(res.credential.split('.')[1]));
   user = {name: payload.name, pic: payload.picture, email: payload.email};
