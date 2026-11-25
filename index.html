@@ -179,6 +179,14 @@ var userName = localStorage.getItem('vibra_name') || '';
 var userPic = localStorage.getItem('vibra_pic') || 'https://i.pravatar.cc/200?img=12';
 var userBio = localStorage.getItem('vibra_bio') || '';
 var posts = JSON.parse(localStorage.getItem('vibra_posts')||'[]');
+if(posts.length===0){
+  posts = [
+    {id:'demo1', name:'Hamadoski', pic:'https://i.pravatar.cc/200?img=12', text:'Karibu Vibra! 🔥 Hii ni video ya kwanza - post yako itaonekana hapa milele ♾️ #VibraDance #FYP', cat:'Entertainment', video:'https://cdn.coverr.co/videos/coverr-dancing-in-the-street-1564/1080p.mp4', likes:124, comments:[{name:'Vibra',text:'Karibu sana! 🔥'}], time:Date.now(), forever:true},
+    {id:'demo2', name:'Vibra Official', pic:'https://i.pravatar.cc/200?img=5', text:'Squirrel anapanda mnazi kama Pro 😂🐿️ #Squirrel #Nature #FYP', cat:'Entertainment', video:'https://cdn.coverr.co/videos/coverr-a-squirrel-eating-a-nut-1572/1080p.mp4', likes:89, comments:[], time:Date.now(), forever:true},
+    {id:'demo3', name:'Hamadoski', pic:'https://i.pravatar.cc/200?img=12', text:'Asili ni tamu sana, hakuna kuigiza! 🌴 #NatureLover #Tanzania', cat:'Entertainment', image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', likes:210, comments:[], time:Date.now(), forever:true}
+  ];
+  localStorage.setItem('vibra_posts', JSON.stringify(posts));
+}
 var followingList = JSON.parse(localStorage.getItem('vibra_following')||'[]');
 var followersCount = parseInt(localStorage.getItem('vibra_followers')||'0');
 var likedList = JSON.parse(localStorage.getItem('vibra_liked')||'[]');
