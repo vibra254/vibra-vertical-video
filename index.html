@@ -189,7 +189,14 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 const db = getFirestore(app);
-const GEMINI_KEY = "WEKA_KEY_YAKO_HAPA";
+const GEMINI_KEY = "const firebaseConfig = {
+  apiKey: "AIzaSyBAsF_SALFEiraimj1Qg10AiOI8gpixheU",
+  authDomain: "vibra-44dce.firebaseapp.com",
+  projectId: "vibra-44dce",
+  storageBucket: "vibra-44dce.firebasestorage.app",
+  messagingSenderId: "424385936523",
+  appId: "1:424385936523:web:54c1b5fff7381519e8288e"
+};
 let userName = localStorage.getItem('vibra_name') || '';
 let userPic = localStorage.getItem('vibra_pic') || 'https://i.pravatar.cc/200?img=12';
 let userBio = localStorage.getItem('vibra_bio') || '';
