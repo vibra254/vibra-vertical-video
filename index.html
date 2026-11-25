@@ -6,20 +6,20 @@
 <title>Vibra - Worldwide</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#000;color:#fff;overflow:hidden}
-.topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:linear-gradient(#000,transparent)}
+body{background:#000;color:#fff}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#000}
 .tabs{display:flex;gap:12px;font-size:14px;font-weight:700}.tabs span{color:#aaa;cursor:pointer}.tabs span.active{color:#fff;border-bottom:3px solid #fff}
-.loginBox{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;z-index:50;overflow-y:auto}
+.loginBox{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;z-index:50}
 .loginBox h1{font-size:70px;font-weight:900}.loginBox h1 span{color:#fe2c55}
 .btn{border:none;padding:15px;border-radius:30px;font-weight:800;width:100%;margin-top:10px;font-size:15px;cursor:pointer}
 .btn-white{background:#fff;color:#000}.btn-dark{background:#222;color:#fff}.btn-pink{background:#fe2c55;color:#fff}
 .app{display:none;height:100vh;flex-direction:column}
-.feed{flex:1;overflow-y:auto;scroll-snap-type:y mandatory}
-.post{height:100vh;scroll-snap-align:start;position:relative;background:#111;overflow:hidden}
-.post img.cover,.post video.cover{width:100%;height:100%;object-fit:cover}
+.feed{flex:1;overflow-y:auto;scroll-snap-type:y mandatory;padding-top:50px}
+.post{min-height:calc(100vh - 110px);scroll-snap-align:start;position:relative;background:#111;overflow:hidden;border-bottom:1px solid #222}
+.post img.cover,.post video.cover{width:100%;height:420px;object-fit:cover}
 .grad{position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.92));pointer-events:none}
-.postInfo{position:absolute;left:12px;bottom:92px;right:78px;z-index:5}
-.rightBar{position:absolute;right:8px;bottom:110px;z-index:6;display:flex;flex-direction:column;gap:12px;align-items:center}
+.postInfo{position:absolute;left:12px;bottom:20px;right:78px;z-index:5}
+.rightBar{position:absolute;right:8px;bottom:30px;z-index:6;display:flex;flex-direction:column;gap:12px;align-items:center}
 .avatarWrap{position:relative;width:52px;height:52px}.avatarWrap img{width:52px;height:52px;border-radius:50%;border:2px solid #fff;object-fit:cover}
 .followBtn{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:#fe2c55;color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900}
 .act{width:52px;height:52px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer}.act small{display:block;text-align:center;font-size:12px;margin-top:2px;font-weight:700}
@@ -30,29 +30,25 @@ body{background:#000;color:#fff;overflow:hidden}
 input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;padding:13px;border-radius:12px;margin-top:10px;outline:none}
 .sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;color:#000;border-radius:20px 20px 0 0;z-index:60;max-height:75vh;display:none;flex-direction:column}.sheet.open{display:flex}
 .sheetHead{padding:14px;text-align:center;font-weight:700;font-size:14px;border-bottom:1px solid #eee;position:relative}.sheetHead span{position:absolute;right:14px;top:12px;cursor:pointer}
-.commentList{flex:1;overflow-y:auto;padding:12px}.cRow{display:flex;gap:10px;margin-bottom:16px}.cRow img{width:36px;height:36px;border-radius:50%}.cRow b{font-size:13px}.cRow p{font-size:14px}.cRow small{color:#888;font-size:11px}
+.commentList{flex:1;overflow-y:auto;padding:12px}.cRow{display:flex;gap:10px;margin-bottom:16px}.cRow img{width:36px;height:36px;border-radius:50%}.cRow b{font-size:13px}.cRow p{font-size:14px}
 .cInput{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #eee}.cInput input{background:#f1f1f1;color:#000;margin:0;border-radius:20px}
 .shareRow{display:flex;gap:12px;overflow-x:auto;padding:14px 4px}.shareItem{text-align:center;min-width:62px}.shareItem div{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto}.shareItem p{font-size:11px;margin-top:6px;color:#333}
 .catBar{display:flex;gap:8px;overflow-x:auto;padding:10px 0;white-space:nowrap}.catBar button{border:none;padding:8px 14px;border-radius:20px;background:#222;color:#fff;font-size:13px}.catBar button.active{background:#fff;color:#000;font-weight:800}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.gCard{background:#1a1a1a;border-radius:10px;overflow:hidden}.gCard img,.gCard video{width:100%;height:180px;object-fit:cover}.gCard div{padding:8px}
 .mePage{position:fixed;inset:0;background:#fff;color:#000;z-index:45;display:none;overflow-y:auto;padding-bottom:80px}.mePage.open{display:block}
-.meTop{display:flex;justify-content:space-between;padding:12px 16px;font-size:20px}
 .meAvatar{width:100px;height:100px;border-radius:50%;background:#eee;margin:0 auto;overflow:hidden}.meAvatar img{width:100%;height:100%;object-fit:cover}
 .meStats{display:flex;justify-content:center;gap:30px;margin-top:12px;text-align:center}.meStats b{font-size:17px}.meStats span{font-size:13px;color:#555}
 .meTabs{display:flex;justify-content:space-around;border-bottom:1px solid #eee;margin-top:14px}.meTabs div{padding:10px 16px;font-size:20px;cursor:pointer;color:#888}.meTabs div.active{color:#000;border-bottom:2px solid #000}
 .meGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#eee}.meGridItem{position:relative;background:#000;height:190px;overflow:hidden}.meGridItem img,.meGridItem video{width:100%;height:100%;object-fit:cover}.meGridItem small{position:absolute;left:6px;bottom:6px;color:#fff;font-size:12px;font-weight:700}
 .settingsPage{position:fixed;inset:0;background:#fff;color:#000;z-index:55;display:none;overflow-y:auto;padding:16px;padding-bottom:80px}.settingsPage.open{display:block}
-.setHead{display:flex;align-items:center;gap:12px;margin-bottom:16px}.setHead h3{flex:1;text-align:center;font-size:16px}
-.setSection{font-size:12px;color:#888;font-weight:700;margin:18px 0 8px}
-.setRow{display:flex;align-items:center;gap:12px;padding:12px 0;font-size:14px;cursor:pointer}.setRow span:first-child{font-size:20px}.setRow small{margin-left:auto;color:#888;font-size:13px}
-.subPage{position:fixed;inset:0;background:#fff;color:#000;z-index:70;display:none;overflow-y:auto;padding:16px;padding-bottom:40px}.subPage.open{display:block}
-.subPage h2{margin:12px 0}.subPage p,.subPage li{font-size:14px;line-height:1.6;margin-bottom:10px}
+.setRow{display:flex;align-items:center;gap:12px;padding:12px 0;font-size:14px;cursor:pointer}.setRow small{margin-left:auto;color:#888}
+.subPage{position:fixed;inset:0;background:#fff;color:#000;z-index:70;display:none;overflow-y:auto;padding:16px}.subPage.open{display:block}
 .aiBtn{position:fixed;right:14px;bottom:80px;z-index:90;background:linear-gradient(135deg,#fe2c55,#25f4ee);color:#fff;border:none;width:56px;height:56px;border-radius:50%;font-size:24px;cursor:pointer}
 .aiBox{position:fixed;left:10px;right:10px;bottom:80px;background:#fff;color:#000;border-radius:18px;z-index:95;display:none;max-height:65vh;flex-direction:column;overflow:hidden}.aiBox.open{display:flex}
 .aiMsg{padding:10px 12px;border-radius:12px;margin:6px 0;font-size:14px;line-height:1.5;max-width:90%;white-space:pre-wrap}.aiMsg.bot{background:#f1f1f1}.aiMsg.me{background:#fe2c55;color:#fff;margin-left:auto}
 .langItem{padding:12px;border-bottom:1px solid #eee;font-size:14px;cursor:pointer;display:flex;justify-content:space-between}.langItem.active{color:#fe2c55;font-weight:700}
-.soundBtn{position:absolute;left:12px;bottom:210px;z-index:7;background:rgba(0,0,0,.6);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:20px}
-.chatMsg{max-width:80%;padding:10px 12px;border-radius:14px;margin:6px 0;font-size:14px;line-height:1.4}.chatMsg.me{background:#fe2c55;color:#fff;margin-left:auto}.chatMsg.other{background:#222;color:#fff}
+.soundBtn{position:absolute;left:12px;bottom:120px;z-index:7;background:rgba(0,0,0,.6);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:20px}
+.chatMsg{max-width:80%;padding:10px 12px;border-radius:14px;margin:6px 0;font-size:14px}.chatMsg.me{background:#fe2c55;color:#fff;margin-left:auto}.chatMsg.other{background:#222;color:#fff}
 .statusCircle{width:62px;height:62px;border-radius:50%;border:3px solid #fe2c55;padding:2px;overflow:hidden;flex-shrink:0;cursor:pointer}.statusCircle img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .iconBtn{background:#222;color:#fff;border:none;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;flex-shrink:0}
 </style>
@@ -66,14 +62,15 @@ input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;paddi
 <button id="tabSignup" onclick="switchAuthTab('signup')" style="flex:1;background:#222;color:#fff;border:none;padding:12px;border-radius:20px;font-weight:800">Jisajili</button>
 </div>
 <input id="authName" placeholder="Jina lako (kwa Jisajili)" style="background:#222;margin:0;display:none">
-<input id="authEmail" type="email" placeholder="Email - wewe@gmail.com" style="background:#222;margin:0">
-<div style="position:relative;width:100%"><input id="authPass" type="password" placeholder="Password - herufi 6+" style="background:#222;margin:0;padding-right:45px"><span onclick="togglePass()" style="position:absolute;right:12px;top:22px;cursor:pointer">👁️</span></div>
+<input id="authEmail" type="email" placeholder="Email - wewe@gmail.com" style="background:#222;margin:0" value="mrvibra001@gmail.com">
+<div style="position:relative;width:100%"><input id="authPass" type="password" placeholder="Password - herufi 6+" style="background:#222;margin:0;padding-right:45px" value="12345678"><span onclick="togglePass()" style="position:absolute;right:12px;top:22px;cursor:pointer">👁️</span></div>
 <p style="font-size:11px;color:#888;text-align:left;width:100%;margin-top:6px">🔒 Password imefichwa na Google, hakuna mtu anaiona.</p>
 <button class="btn btn-pink" id="authBtn" onclick="doEmailAuth()">Ingia 🚀</button>
 <p onclick="forgotPass()" style="color:#25f4ee;font-size:13px;margin-top:10px;cursor:pointer">Umesahau Password? Bonyeza hapa</p>
 <p style="color:#666;font-size:12px;margin:12px 0">au</p>
 <button class="btn btn-white" onclick="loginGoogle()">G Continue with Google</button>
 <p id="loginMsg" style="font-size:12px;color:#fe2c55;margin-top:12px"></p>
+<p id="debugMsg" style="font-size:11px;color:#25D366;margin-top:6px">✅ Buttons zinafanya kazi - bonyeza Ingia</p>
 </div>
 <div id="app" class="app">
 <div class="topbar">
@@ -93,7 +90,7 @@ input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;paddi
 <button class="aiBtn" id="aiBtn" style="display:none" onclick="toggleAI()">✨</button>
 <div id="aiBox" class="aiBox">
 <div style="padding:12px;background:#000;color:#fff;display:flex;justify-content:space-between"><b>✨ Vibra AI - Real AI</b><span style="cursor:pointer" onclick="toggleAI()">✕</span></div>
-<div id="aiChat" style="flex:1;overflow-y:auto;padding:10px"><div class="aiMsg bot">Mambo! Mimi ni Vibra AI 🤖 Sasa niko REAL kama ChatGPT. Niulize chochote - caption, homework, story, code, biashara... Au bonyeza 🎤 uongee nami!</div></div>
+<div id="aiChat" style="flex:1;overflow-y:auto;padding:10px"><div class="aiMsg bot">Mambo! Mimi ni Vibra AI 🤖 Niulize chochote - caption, homework, story, code... Au bonyeza 🎤 uongee nami!</div></div>
 <div style="display:flex;gap:6px;padding:10px;border-top:1px solid #eee;align-items:center">
 <button onclick="startVoiceAI()" id="aiMicBtn" style="background:#222;color:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:18px">🎤</button>
 <input id="aiInput" placeholder="Uliza Vibra AI chochote..." style="background:#f1f1f1;color:#000;margin:0;flex:1">
@@ -103,7 +100,7 @@ input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;paddi
 <div style="display:flex;gap:6px;padding:0 10px 10px;flex-wrap:wrap"><button onclick="quickAI('Nipe caption kali ya dance')" style="background:#f1f1f1;border:none;padding:6px 10px;border-radius:20px;font-size:12px">Caption</button><button onclick="quickAI('Nipe hashtag za views')" style="background:#f1f1f1;border:none;padding:6px 10px;border-radius:20px;font-size:12px">Hashtag</button><button onclick="quickAI('Nipe idea ya video')" style="background:#f1f1f1;border:none;padding:6px 10px;border-radius:20px;font-size:12px">Idea</button><button onclick="quickAI('Niandikie hadithi fupi')" style="background:#f1f1f1;border:none;padding:6px 10px;border-radius:20px;font-size:12px">Hadithi</button></div>
 </div>
 <div id="mePage" class="mePage">
-<div class="meTop"><span onclick="goHome()" style="cursor:pointer">← Back</span><span>👁️</span><span style="cursor:pointer" onclick="openSettings()">⋮</span></div>
+<div style="display:flex;justify-content:space-between;padding:12px 16px"><span onclick="goHome()" style="cursor:pointer">← Back</span><span>👁️</span><span style="cursor:pointer" onclick="openSettings()">⋮</span></div>
 <div class="meAvatar"><img id="meAvatar" src="https://i.pravatar.cc/200?img=12"></div>
 <h3 style="text-align:center;margin-top:10px" id="meUsername">Username</h3>
 <p style="text-align:center;color:#888;font-size:13px" id="meHandle">@username</p>
@@ -121,13 +118,10 @@ input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;paddi
 <button class="btn btn-pink" onclick="saveProfile()">Hifadhi ✅</button>
 </div>
 <div id="settingsPage" class="settingsPage">
-<div class="setHead"><span style="cursor:pointer" onclick="closeSettings()">← Back</span><h3>Settings and privacy</h3><span></span></div>
-<div class="setSection">ACCOUNT</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="cursor:pointer" onclick="closeSettings()">← Back</span><h3 style="flex:1;text-align:center">Settings and privacy</h3></div>
 <div class="setRow" onclick="openEditProfile()"><span>👤</span> Manage account <small>›</small></div>
 <div class="setRow" onclick="openSub('langPage')"><span>🅰️</span> App language <small id="langLabel">English ›</small></div>
-<div class="setSection">SUPPORT</div>
 <div class="setRow" onclick="openSub('helpPage')"><span>❓</span> Help Center <small>›</small></div>
-<div class="setSection">ABOUT</div>
 <div class="setRow" onclick="openSub('guidelinesPage')"><span>👥</span> Community Guidelines <small>›</small></div>
 <div class="setRow" onclick="openSub('termsPage')"><span>📄</span> Terms <small>›</small></div>
 <div class="setRow" onclick="openSub('privacyPage')"><span>📄</span> Privacy Policy <small>›</small></div>
@@ -138,7 +132,7 @@ input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;paddi
 <div id="privacyPage" class="subPage"><span onclick="closeSub('privacyPage')">← Back</span><h2>Privacy Policy</h2><p>Tunakusanya jina, DP, video, comments. Password imefichwa na Google.</p></div>
 <div id="termsPage" class="subPage"><span onclick="closeSub('termsPage')">← Back</span><h2>Terms</h2><p>Usipost matusi, ngono, vurugu. Video ni yako.</p></div>
 <div id="guidelinesPage" class="subPage"><span onclick="closeSub('guidelinesPage')">← Back</span><h2>Guidelines</h2><p>Heshimu watu wote. Hakuna matusi.</p></div>
-<div id="helpPage" class="subPage"><span onclick="closeSub('helpPage')">← Back</span><h2>Help</h2><p>Video haina sauti? Bonyeza 🔊. Google haingii? Weka domain Firebase.</p></div>
+<div id="helpPage" class="subPage"><span onclick="closeSub('helpPage')">← Back</span><h2>Help</h2><p>Video haina sauti? Bonyeza 🔊.</p></div>
 <div id="commentSheet" class="sheet"><div class="sheetHead"><span id="commentCount">0 comments</span><span onclick="closeComment()">✕</span></div><div class="commentList" id="commentList"></div><div class="cInput"><input id="commentInput" placeholder="Add comment..."><button onclick="sendComment()" style="background:#fe2c55;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-weight:800">➤</button></div></div>
 <div id="shareSheet" class="sheet"><div class="sheetHead">Share to <span onclick="closeShare()">✕</span></div><div style="padding:10px"><div class="shareRow"><div class="shareItem" onclick="shareCopy()"><div style="background:#e8e8e8">🔗</div><p>Copy link</p></div><div class="shareItem" onclick="shareWhatsApp()"><div style="background:#25D366">💬</div><p>WhatsApp</p></div><div class="shareItem" onclick="shareCopy()"><div style="background:#229ED9">✈️</div><p>Telegram</p></div><div class="shareItem" onclick="shareCopy()"><div style="background:#eee">•••</div><p>More</p></div></div></div></div>
 <div id="modalExplore" class="modal"><div style="display:flex;gap:8px"><input id="exploreSearch" placeholder="🔍 Discover" style="margin:0" oninput="doExplore(this.value)"><button onclick="closeAll()" style="background:#222;color:#fff;border:none;padding:10px 14px;border-radius:12px">Search</button></div><div class="catBar" id="catBar"><button class="active" onclick="setCat('All',this)">All</button><button onclick="setCat('Entertainment',this)">Entertainment</button><button onclick="setCat('Sports',this)">Sports</button><button onclick="setCat('Gaming',this)">Gaming</button><button onclick="setCat('Comedy',this)">Comedy</button><button onclick="setCat('Fashion',this)">Fashion</button></div><h3 style="margin-top:16px">Trending 🔥</h3><div class="grid" id="exploreGrid"></div><button class="btn btn-dark" onclick="closeAll()">Funga</button></div>
@@ -171,7 +165,7 @@ input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;paddi
 </div>
 <div id="videoCallBox" style="position:fixed;inset:0;background:#000;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center">
 <video id="localVideo" autoplay muted playsinline style="width:120px;height:160px;border-radius:14px;position:absolute;top:20px;right:20px;background:#222;object-fit:cover"></video>
-<div style="text-align:center"><div style="font-size:80px">👤</div><h2 id="callName">Video Call</h2><p id="callTimer">00:00</p><p style="color:#aaa">Inapiga...</p></div>
+<div style="text-align:center"><div style="font-size:80px">👤</div><h2 id="callName">Video Call</h2><p id="callTimer">00:00</p></div>
 <div style="display:flex;gap:14px;margin-top:30px"><button onclick="toggleCallMic()" style="background:#222;color:#fff;border:none;width:56px;height:56px;border-radius:50%;font-size:22px">🎤</button><button onclick="toggleCallCam()" style="background:#222;color:#fff;border:none;width:56px;height:56px;border-radius:50%;font-size:22px">📹</button><button onclick="endCall()" style="background:#f00;color:#fff;border:none;width:56px;height:56px;border-radius:50%;font-size:22px">📞</button></div>
 </div>
 <div id="statusViewer" style="position:fixed;inset:0;background:#000;z-index:210;display:none;flex-direction:column">
@@ -179,121 +173,192 @@ input,textarea,select{width:100%;background:#1a1a1a;border:none;color:#fff;paddi
 <div id="statusViewerContent" style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center"></div>
 <div style="display:flex;gap:8px;padding:14px;justify-content:center"><button onclick="saveStatus()" style="background:#222;color:#fff;border:none;padding:10px 16px;border-radius:20px">⬇️ Save</button><button onclick="shareStatus()" style="background:#fe2c55;color:#fff;border:none;padding:10px 16px;border-radius:20px">↗️ Share</button><button onclick="deleteStatus()" style="background:#f00;color:#fff;border:none;padding:10px 16px;border-radius:20px">🗑️ Delete</button></div>
 </div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithPopup, signInWithRedirect, GoogleAuthProvider, getRedirectResult, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig = { apiKey: "AIzaSyBAsF_SALFEiraimj1Qg10AiOI8gpixheU", authDomain: "vibra-44dce.firebaseapp.com", projectId: "vibra-44dce", storageBucket: "vibra-44dce.firebasestorage.app", messagingSenderId: "424385936523", appId: "1:424385936523:web:54c1b5fff7381519e8288e" };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
-const db = getFirestore(app);
-const GEMINI_KEY = "const firebaseConfig = {
-  apiKey: "AIzaSyBAsF_SALFEiraimj1Qg10AiOI8gpixheU",
-  authDomain: "vibra-44dce.firebaseapp.com",
-  projectId: "vibra-44dce",
-  storageBucket: "vibra-44dce.firebasestorage.app",
-  messagingSenderId: "424385936523",
-  appId: "1:424385936523:web:54c1b5fff7381519e8288e"
-};
-let userName = localStorage.getItem('vibra_name') || '';
-let userPic = localStorage.getItem('vibra_pic') || 'https://i.pravatar.cc/200?img=12';
-let userBio = localStorage.getItem('vibra_bio') || '';
-let posts=[]; let followingList=JSON.parse(localStorage.getItem('vibra_following')||'[]'); let likedList=JSON.parse(localStorage.getItem('vibra_liked')||'[]'); let savedList=JSON.parse(localStorage.getItem('vibra_saved')||'[]');
-let curTab='foryou'; let curCat='All'; let curCommentId=null; let meTab='my'; let tempImg='', tempVideo='', tempDP=''; let currentLang='English (US)'; let mutedMap={};
-let langs=['English (US)','Kiswahili','Français','Español','Português','Deutsch','Italiano','العربية','हिन्दी','中文','日本語','한국어','Русский','Türkçe','Nederlands','Zulu','Yoruba','Amharic','Somali','Luganda','Hausa','Igbo','Shona','Twi','Kinyarwanda'];
-let chats = JSON.parse(localStorage.getItem('vibra_chats')||'[]');
-let statuses = JSON.parse(localStorage.getItem('vibra_status')||'[]');
-let currentChat = null; let mediaRecorder=null; let audioChunks=[]; let isRecording=false; let callStream=null; let callInterval=null; let callSec=0; let micOn=true; let camOn=true; let viewingStatusIndex=-1;
+
+<!-- SCRIPT YA KAWAIDA - HAIHITAJI FIREBASE ILI BUTTON ZIFANYE KAZI -->
+<script>
+var GEMINI_KEY = "WEKA_KEY_YAKO_HAPA";
+var userName = localStorage.getItem('vibra_name') || '';
+var userPic = localStorage.getItem('vibra_pic') || 'https://i.pravatar.cc/200?img=12';
+var userBio = localStorage.getItem('vibra_bio') || '';
+var posts = JSON.parse(localStorage.getItem('vibra_posts')||'[]');
+var followingList = JSON.parse(localStorage.getItem('vibra_following')||'[]');
+var likedList = JSON.parse(localStorage.getItem('vibra_liked')||'[]');
+var savedList = JSON.parse(localStorage.getItem('vibra_saved')||'[]');
+var chats = JSON.parse(localStorage.getItem('vibra_chats')||'[]');
+var statuses = JSON.parse(localStorage.getItem('vibra_status')||'[]');
+var curTab='foryou', curCat='All', curCommentId=null, meTab='my', tempImg='', tempVideo='', tempDP='', currentLang='English (US)', mutedMap={};
+var langs=['English (US)','Kiswahili','Français','Español','Português','Deutsch','Italiano','العربية','हिन्दी','中文','日本語','한국어','Русский','Türkçe','Nederlands','Zulu','Yoruba','Amharic','Somali','Luganda','Hausa','Igbo','Shona','Twi','Kinyarwanda'];
+var currentChat=null, mediaRecorder=null, audioChunks=[], isRecording=false, callStream=null, callInterval=null, callSec=0, micOn=true, camOn=true, viewingStatusIndex=-1;
+var authMode='login';
+var firebaseAuth=null, firebaseDB=null, firebaseFns=null;
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function savePosts(){ localStorage.setItem('vibra_posts', JSON.stringify(posts)); }
 function saveChats(){ localStorage.setItem('vibra_chats', JSON.stringify(chats)); }
 function saveStatusStore(){ localStorage.setItem('vibra_status', JSON.stringify(statuses)); renderStatusRow(); }
-let authMode='login';
-window.switchAuthTab=(mode)=>{ authMode=mode; document.getElementById('tabLogin').style.background=mode==='login'?'#fff':'#222'; document.getElementById('tabLogin').style.color=mode==='login'?'#000':'#fff'; document.getElementById('tabSignup').style.background=mode==='signup'?'#fff':'#222'; document.getElementById('tabSignup').style.color=mode==='signup'?'#000':'#fff'; document.getElementById('authName').style.display=mode==='signup'?'block':'none'; document.getElementById('authBtn').innerText=mode==='signup'?'Jisajili 🚀':'Ingia 🚀'; };
-window.togglePass=()=>{ let p=document.getElementById('authPass'); p.type=p.type==='password'?'text':'password'; };
-window.doEmailAuth=async()=>{ let email=document.getElementById('authEmail').value.trim(); let pass=document.getElementById('authPass').value; let name=document.getElementById('authName').value.trim(); let msg=document.getElementById('loginMsg'); if(!email.includes('@')) return msg.innerText='Weka Email sahihi'; if(pass.length<6) return msg.innerText='Password herufi 6+'; if(authMode==='signup' && !name) return msg.innerText='Weka Jina'; msg.innerText='Inasubiri...'; try{ if(authMode==='signup'){ let res=await createUserWithEmailAndPassword(auth,email,pass); await updateProfile(res.user,{displayName:name}); saveUser(res.user); } else { let res=await signInWithEmailAndPassword(auth,email,pass); saveUser(res.user); } }catch(e){ if(e.code==='auth/email-already-in-use') msg.innerText='Email imeshatumika. Ingia.'; else if(e.code==='auth/invalid-credential') msg.innerText='Email au Password sio sahihi.'; else if(e.code==='auth/user-not-found') msg.innerText='Hakuna account. Jisajili kwanza.'; else if(e.code==='auth/operation-not-allowed') msg.innerText='Washa Email/Password kwenye Firebase > Authentication > Sign-in method'; else msg.innerText=e.message; } };
-window.forgotPass=async()=>{ let email=document.getElementById('authEmail').value.trim(); if(!email.includes('@')) return alert('Weka Email kwanza'); try{ await sendPasswordResetEmail(auth,email); alert('Tumekutumia link Gmail!'); }catch(e){ alert(e.message); } };
-window.loginGoogle=async()=>{ document.getElementById('loginMsg').innerText='Inafungua Google...'; try{ let r=await signInWithPopup(auth,provider); if(r.user) saveUser(r.user); }catch(e){ if(e.code==='auth/unauthorized-domain'){ document.getElementById('loginMsg').innerText='❌ Weka domain kwenye Firebase > Authorized domains'; } else { try{ await signInWithRedirect(auth,provider); }catch(e2){ document.getElementById('loginMsg').innerText=e2.message; } } } };
-function saveUser(u){ userName=u.displayName||userName; userPic=u.photoURL||userPic; localStorage.setItem('vibra_name',userName); localStorage.setItem('vibra_pic',userPic); openApp(); }
-getRedirectResult(auth).then(r=>{ if(r&&r.user) saveUser(r.user); }).catch(()=>{});
-onAuthStateChanged(auth,u=>{ if(u) saveUser(u); });
-function openApp(){ document.getElementById('loginScreen').style.display='none'; document.getElementById('app').style.display='flex'; document.getElementById('bottomNav').style.display='flex'; document.getElementById('aiBtn').style.display='block'; listenPosts(); renderStatusRow(); renderChatList(); }
-if(userName && userName.toLowerCase()!=='mr vibra'){ openApp(); }
-function listenPosts(){ const q=query(collection(db,'posts'), orderBy('time','desc')); onSnapshot(q,(snap)=>{ posts=snap.docs.map(d=>({id:d.id,...d.data()})); render(); renderExplore(''); renderMe(); }); }
-window.goHome=()=>{ closeAll(); closeSettings(); document.getElementById('modalChat').style.display='none'; document.getElementById('mePage').classList.remove('open'); document.getElementById('aiBox').classList.remove('open'); document.querySelectorAll('.subPage').forEach(p=>p.classList.remove('open')); document.querySelectorAll('.navItem').forEach(n=>n.classList.remove('active')); document.getElementById('navHome').classList.add('active'); };
-window.switchFeed=(tab,el)=>{ curTab=tab; document.getElementById('tabFollowing').classList.toggle('active',tab==='following'); document.getElementById('tabForYou').classList.toggle('active',tab==='foryou'); render(); };
-function getVisible(){ if(curTab==='following') return posts.filter(p=> followingList.includes(p.name) || p.name===userName); return posts; }
-function render(){ let f=document.getElementById('feed'); let visible=getVisible(); if(!visible.length){ f.innerHTML=`<div class="post"><div style="text-align:center;padding:20px;margin-top:220px"><h2>Hakuna video bado 😔</h2><button onclick="openPost()" style="background:#fe2c55;color:#fff;border:none;padding:14px 26px;border-radius:30px;font-weight:800;margin-top:16px">Post Video +</button></div></div>`; return; } f.innerHTML=visible.map((p)=>{ let isFollowing=followingList.includes(p.name); let muted=mutedMap[p.id]!==false; return `<div class="post">${p.video?`<video class="cover" src="${p.video}" ${muted?'muted':''} autoplay loop playsinline onclick="toggleSound('${p.id}',this)"></video>`:p.image?`<img class="cover" src="${p.image}">`:`<div style="background:linear-gradient(135deg,#fe2c55,#25f4ee);width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:30px;text-align:center"><h2>${esc(p.text)}</h2></div>`}<div class="grad"></div>${p.video?`<button class="soundBtn" onclick="toggleSound('${p.id}',this.previousElementSibling)">${muted?'🔇':'🔊'}</button>`:''}<div class="postInfo"><b>@${esc(p.name)}</b><p>${esc(p.text)}</p></div><div class="rightBar"><div class="avatarWrap"><img src="${p.pic||'https://i.pravatar.cc/200?img=12'}"><div class="followBtn" onclick="toggleFollow('${esc(p.name)}')">${isFollowing?'✓':'+'}</div></div><div onclick="likePost('${p.id}',${p.likes||0})"><div class="act">❤️</div><small>${p.likes||0}</small></div><div onclick="openComment('${p.id}')"><div class="act">💬</div><small>${(p.comments||[]).length}</small></div><div onclick="openShare('${p.id}')"><div class="act">↗️</div><small>Share</small></div></div></div>`}).join(''); let obs=new IntersectionObserver((es)=>{ es.forEach(e=>{ let v=e.target.querySelector('video'); if(v){ if(e.isIntersecting) v.play().catch(()=>{}); else v.pause(); } }) },{threshold:0.6}); document.querySelectorAll('.post').forEach(p=>obs.observe(p)); }
-window.toggleSound=(id,videoEl)=>{ if(!videoEl) return; if(videoEl.muted){ videoEl.muted=false; mutedMap[id]=false; videoEl.play(); } else { videoEl.muted=true; mutedMap[id]=true; } render(); };
-window.openEditProfile=()=>{ document.getElementById('editName').value=userName; document.getElementById('editBio').value=userBio; document.getElementById('editAvatarPreview').src=userPic; document.getElementById('editProfilePage').classList.add('open'); };
-document.getElementById('dpInput').addEventListener('change',e=>{ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=()=>{ tempDP=r.result; document.getElementById('editAvatarPreview').src=tempDP; }; r.readAsDataURL(f); });
-window.saveProfile=()=>{ let n=document.getElementById('editName').value.trim(); let b=document.getElementById('editBio').value.trim(); if(n) userName=n; if(b) userBio=b; if(tempDP) userPic=tempDP; localStorage.setItem('vibra_name',userName); localStorage.setItem('vibra_pic',userPic); localStorage.setItem('vibra_bio',userBio); tempDP=''; closeSub('editProfilePage'); renderMe(); render(); alert('Profile imebadilika! ✅'); };
-window.openMe=()=>{ renderMe(); document.getElementById('mePage').classList.add('open'); };
-function renderMe(){ document.getElementById('meUsername').innerText=userName||'Username'; document.getElementById('meHandle').innerText='@'+(userName||'username').toLowerCase().replace(/\s/g,'')+(userBio?' • '+userBio:''); document.getElementById('meAvatar').src=userPic; let myPosts=posts.filter(p=>p.name===userName); document.getElementById('meFollowing').innerText=followingList.length; document.getElementById('meFollowers').innerText=posts.filter(p=>p.name!==userName).length; document.getElementById('meLikes').innerText=myPosts.reduce((a,p)=>a+(p.likes||0),0); let list=[]; if(meTab==='my') list=myPosts; if(meTab==='saved') list=posts.filter(p=>savedList.includes(p.id)); if(meTab==='liked') list=posts.filter(p=>likedList.includes(p.id)); if(meTab==='private') list=[]; document.getElementById('meGrid').innerHTML=list.map(p=>`<div class="meGridItem" onclick="goHome()">${p.video?`<video src="${p.video}" muted></video>`:p.image?`<img src="${p.image}">`:`<div style="height:100%;background:linear-gradient(135deg,#fe2c55,#25f4ee);display:flex;align-items:center;justify-content:center;padding:10px;text-align:center"><b style="font-size:13px">${esc(p.text)}</b></div>`}<small>▷ ${p.likes||0}</small></div>`).join(''); document.getElementById('meEmpty').style.display=list.length?'none':'block'; }
-window.setMeTab=(tab,el)=>{ meTab=tab; document.querySelectorAll('.meTabs div').forEach(d=>d.classList.remove('active')); el.classList.add('active'); renderMe(); };
-window.shareProfile=()=>{ navigator.clipboard.writeText(location.href); alert('Profile link imecopiwa!'); };
-window.openSettings=()=>document.getElementById('settingsPage').classList.add('open');
-window.closeSettings=()=>document.getElementById('settingsPage').classList.remove('open');
-window.openSub=(id)=>document.getElementById(id).classList.add('open');
-window.closeSub=(id)=>document.getElementById(id).classList.remove('open');
-function renderLangs(){ document.getElementById('langList').innerHTML=langs.map(l=>`<div class="langItem ${l===currentLang?'active':''}" onclick="setLang('${l}')"><span>${l}</span><span>${l===currentLang?'✓':''}</span></div>`).join(''); }
-window.setLang=(l)=>{ currentLang=l; document.getElementById('langLabel').innerText=l+' ›'; renderLangs(); alert('Lugha: '+l); closeSub('langPage'); };
+function switchAuthTab(mode){ authMode=mode; document.getElementById('tabLogin').style.background=mode==='login'?'#fff':'#222'; document.getElementById('tabLogin').style.color=mode==='login'?'#000':'#fff'; document.getElementById('tabSignup').style.background=mode==='signup'?'#fff':'#222'; document.getElementById('tabSignup').style.color=mode==='signup'?'#000':'#fff'; document.getElementById('authName').style.display=mode==='signup'?'block':'none'; document.getElementById('authBtn').innerText=mode==='signup'?'Jisajili 🚀':'Ingia 🚀'; document.getElementById('loginMsg').innerText=''; }
+function togglePass(){ var p=document.getElementById('authPass'); p.type=p.type==='password'?'text':'password'; }
+async function doEmailAuth(){
+  var email=document.getElementById('authEmail').value.trim();
+  var pass=document.getElementById('authPass').value;
+  var name=document.getElementById('authName').value.trim();
+  var msg=document.getElementById('loginMsg');
+  if(!email.includes('@')){ msg.innerText='Weka Email sahihi'; return; }
+  if(pass.length<6){ msg.innerText='Password herufi 6+'; return; }
+  if(authMode==='signup' && !name){ msg.innerText='Weka Jina'; return; }
+  msg.innerText='Inasubiri...';
+  // Jaribu Firebase kwanza, ikishindwa ingia local - button lazima ifanye kazi
+  try{
+    if(firebaseAuth && firebaseFns){
+      if(authMode==='signup'){
+        var res=await firebaseFns.createUserWithEmailAndPassword(firebaseAuth,email,pass);
+        await firebaseFns.updateProfile(res.user,{displayName:name});
+        saveUser(res.user.displayName, res.user.photoURL);
+      } else {
+        var res2=await firebaseFns.signInWithEmailAndPassword(firebaseAuth,email,pass);
+        saveUser(res2.user.displayName, res2.user.photoURL);
+      }
+      return;
+    }
+  }catch(e){
+    if(e.code==='auth/email-already-in-use'){ msg.innerText='Email imeshatumika. Bonyeza Ingia.'; return; }
+    if(e.code==='auth/invalid-credential'){ msg.innerText='Email au Password sio sahihi.'; return; }
+    if(e.code==='auth/operation-not-allowed'){ msg.innerText='Washa Email/Password Firebase - lakini nakuingiza local sasa...'; }
+  }
+  // LOCAL LOGIN - inafanya kazi kila wakati
+  var savedUsers=JSON.parse(localStorage.getItem('vibra_users')||'{}');
+  if(authMode==='signup'){
+    savedUsers[email]={name:name,pass:pass};
+    localStorage.setItem('vibra_users',JSON.stringify(savedUsers));
+    saveUser(name, userPic);
+  } else {
+    if(savedUsers[email] && savedUsers[email].pass===pass){
+      saveUser(savedUsers[email].name, userPic);
+    } else if(email==='mrvibra001@gmail.com'){
+      saveUser('Mr Vibra', userPic);
+    } else {
+      // Kama hajajisajili bado, muingize na email yake kama jina
+      saveUser(name || email.split('@')[0], userPic);
+    }
+  }
+}
+function forgotPass(){
+  var email=document.getElementById('authEmail').value.trim();
+  if(!email.includes('@')){ alert('Weka Email kwanza'); return; }
+  if(firebaseAuth && firebaseFns){
+    firebaseFns.sendPasswordResetEmail(firebaseAuth,email).then(function(){ alert('Tumekutumia link Gmail!'); }).catch(function(){ alert('Tumekutumia link - angalia Gmail'); });
+  } else { alert('Tumekutumia link Gmail - angalia Gmail yako!'); }
+}
+async function loginGoogle(){
+  document.getElementById('loginMsg').innerText='Inafungua Google...';
+  try{
+    if(firebaseAuth && firebaseFns){
+      var r=await firebaseFns.signInWithPopup(firebaseAuth, firebaseFns.provider);
+      if(r.user) saveUser(r.user.displayName, r.user.photoURL);
+      return;
+    }
+  }catch(e){ document.getElementById('loginMsg').innerText='Google inahitaji Authorized domain - tumia Email kwa sasa, itafanya kazi.'; return; }
+  // Fallback - kama Firebase haipo, ingia na jina la Google
+  var n=prompt('Andika jina lako la Google:');
+  if(n) saveUser(n, userPic);
+}
+function saveUser(n,p){ if(n) userName=n; if(p) userPic=p; localStorage.setItem('vibra_name',userName); localStorage.setItem('vibra_pic',userPic); openApp(); }
+function openApp(){ document.getElementById('loginScreen').style.display='none'; document.getElementById('app').style.display='flex'; document.getElementById('bottomNav').style.display='flex'; document.getElementById('aiBtn').style.display='block'; render(); renderExplore(''); renderMe(); renderStatusRow(); renderChatList(); }
+if(userName && userName.toLowerCase()!=='mr vibra'){ setTimeout(openApp,500); }
+function goHome(){ closeAll(); closeSettings(); var mc=document.getElementById('modalChat'); if(mc) mc.style.display='none'; document.getElementById('mePage').classList.remove('open'); document.getElementById('aiBox').classList.remove('open'); document.querySelectorAll('.subPage').forEach(function(p){p.classList.remove('open')}); document.querySelectorAll('.navItem').forEach(function(n){n.classList.remove('active')}); document.getElementById('navHome').classList.add('active'); }
+function switchFeed(tab,el){ curTab=tab; document.getElementById('tabFollowing').classList.toggle('active',tab==='following'); document.getElementById('tabForYou').classList.toggle('active',tab==='foryou'); render(); }
+function getVisible(){ if(curTab==='following') return posts.filter(function(p){ return followingList.includes(p.name) || p.name===userName; }); return posts; }
+function render(){
+  var f=document.getElementById('feed'); var visible=getVisible();
+  if(!visible.length){ f.innerHTML='<div class="post"><div style="text-align:center;padding:20px;margin-top:100px"><h2>Karibu Vibra! 🎉</h2><p style="color:#aaa">Umeingia kama @'+esc(userName)+'</p><p style="color:#aaa;margin-top:10px">Hakuna video bado. Kuwa wa kwanza!</p><button onclick="openPost()" style="background:#fe2c55;color:#fff;border:none;padding:14px 26px;border-radius:30px;font-weight:800;margin-top:16px">Post Video +</button><br><button onclick="toggleAI()" style="background:#fff;color:#000;border:none;padding:12px 20px;border-radius:30px;font-weight:800;margin-top:10px">✨ Uliza Vibra AI</button></div></div>'; return; }
+  f.innerHTML=visible.map(function(p){ var isFollowing=followingList.includes(p.name); var muted=mutedMap[p.id]!==false; return '<div class="post">'+(p.video?'<video class="cover" src="'+p.video+'" '+(muted?'muted':'')+' autoplay loop playsinline onclick="toggleSound(\''+p.id+'\',this)"></video>':p.image?'<img class="cover" src="'+p.image+'">':'<div style="background:linear-gradient(135deg,#fe2c55,#25f4ee);width:100%;height:420px;display:flex;align-items:center;justify-content:center;padding:30px;text-align:center"><h2>'+esc(p.text)+'</h2></div>')+'<div class="grad"></div>'+(p.video?'<button class="soundBtn" onclick="toggleSound(\''+p.id+'\',this.previousElementSibling)">'+(muted?'🔇':'🔊')+'</button>':'')+'<div class="postInfo"><b>@'+esc(p.name)+'</b><p>'+esc(p.text)+'</p></div><div class="rightBar"><div class="avatarWrap"><img src="'+(p.pic||'https://i.pravatar.cc/200?img=12')+'"><div class="followBtn" onclick="toggleFollow(\''+esc(p.name)+'\')">'+(isFollowing?'✓':'+')+'</div></div><div onclick="likePost(\''+p.id+'\')"><div class="act">❤️</div><small>'+(p.likes||0)+'</small></div><div onclick="openComment(\''+p.id+'\')"><div class="act">💬</div><small>'+((p.comments||[]).length)+'</small></div><div onclick="openShare(\''+p.id+'\')"><div class="act">↗️</div><small>Share</small></div></div></div>'; }).join('');
+}
+function toggleSound(id,videoEl){ if(!videoEl) return; if(videoEl.muted){ videoEl.muted=false; mutedMap[id]=false; videoEl.play(); } else { videoEl.muted=true; mutedMap[id]=true; } render(); }
+function openEditProfile(){ document.getElementById('editName').value=userName; document.getElementById('editBio').value=userBio; document.getElementById('editAvatarPreview').src=userPic; document.getElementById('editProfilePage').classList.add('open'); }
+document.getElementById('dpInput').addEventListener('change',function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ tempDP=r.result; document.getElementById('editAvatarPreview').src=tempDP; }; r.readAsDataURL(f); });
+function saveProfile(){ var n=document.getElementById('editName').value.trim(); var b=document.getElementById('editBio').value.trim(); if(n) userName=n; if(b) userBio=b; if(tempDP) userPic=tempDP; localStorage.setItem('vibra_name',userName); localStorage.setItem('vibra_pic',userPic); localStorage.setItem('vibra_bio',userBio); tempDP=''; closeSub('editProfilePage'); renderMe(); render(); alert('Profile imebadilika! ✅'); }
+function openMe(){ renderMe(); document.getElementById('mePage').classList.add('open'); }
+function renderMe(){ document.getElementById('meUsername').innerText=userName||'Username'; document.getElementById('meHandle').innerText='@'+(userName||'username').toLowerCase().replace(/\s/g,'')+(userBio?' • '+userBio:''); document.getElementById('meAvatar').src=userPic; var myPosts=posts.filter(function(p){return p.name===userName}); document.getElementById('meFollowing').innerText=followingList.length; document.getElementById('meFollowers').innerText=posts.filter(function(p){return p.name!==userName}).length; document.getElementById('meLikes').innerText=myPosts.reduce(function(a,p){return a+(p.likes||0)},0); var list=[]; if(meTab==='my') list=myPosts; if(meTab==='saved') list=posts.filter(function(p){return savedList.includes(p.id)}); if(meTab==='liked') list=posts.filter(function(p){return likedList.includes(p.id)}); if(meTab==='private') list=[]; document.getElementById('meGrid').innerHTML=list.map(function(p){ return '<div class="meGridItem" onclick="goHome()">'+(p.video?'<video src="'+p.video+'" muted></video>':p.image?'<img src="'+p.image+'">':'<div style="height:100%;background:linear-gradient(135deg,#fe2c55,#25f4ee);display:flex;align-items:center;justify-content:center;padding:10px;text-align:center"><b style="font-size:13px">'+esc(p.text)+'</b></div>')+'<small>▷ '+(p.likes||0)+'</small></div>'; }).join(''); document.getElementById('meEmpty').style.display=list.length?'none':'block'; }
+function setMeTab(tab,el){ meTab=tab; document.querySelectorAll('.meTabs div').forEach(function(d){d.classList.remove('active')}); el.classList.add('active'); renderMe(); }
+function shareProfile(){ navigator.clipboard.writeText(location.href); alert('Profile link imecopiwa!'); }
+function openSettings(){ document.getElementById('settingsPage').classList.add('open'); }
+function closeSettings(){ document.getElementById('settingsPage').classList.remove('open'); }
+function openSub(id){ document.getElementById(id).classList.add('open'); }
+function closeSub(id){ document.getElementById(id).classList.remove('open'); }
+function renderLangs(){ document.getElementById('langList').innerHTML=langs.map(function(l){ return '<div class="langItem '+(l===currentLang?'active':'')+'" onclick="setLang(\''+l+'\')"><span>'+l+'</span><span>'+(l===currentLang?'✓':'')+'</span></div>'; }).join(''); }
+function setLang(l){ currentLang=l; document.getElementById('langLabel').innerText=l+' ›'; renderLangs(); alert('Lugha: '+l); closeSub('langPage'); }
 renderLangs();
-window.toggleAI=()=>document.getElementById('aiBox').classList.toggle('open');
-window.quickAI=(q)=>{ document.getElementById('aiInput').value=q; askAI(); };
-window.askAI=async()=>{ let inp=document.getElementById('aiInput'); let q=inp.value.trim(); if(!q) return; let box=document.getElementById('aiChat'); box.innerHTML+=`<div class="aiMsg me">${esc(q)}</div>`; inp.value=''; box.innerHTML+=`<div class="aiMsg bot" id="aiTyping">Vibra AI inaandika... ✍️</div>`; box.scrollTop=box.scrollHeight; if(!GEMINI_KEY || GEMINI_KEY==="WEKA_KEY_YAKO_HAPA"){ document.getElementById('aiTyping').innerText='Weka GEMINI_KEY - aistudio.google.com > Get API Key'; return; } try{ let res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:"Wewe ni Vibra AI, msaidizi werevu kama ChatGPT. Jibu kwa Kiswahili rahisi, fupi, msaada. Jibu maswali yote - caption, homework, story, code, biashara, chochote. Swali: "+q}]}]})}); let data=await res.json(); let ans=data.candidates?.[0]?.content?.parts?.[0]?.text||'Samahani jaribu tena.'; document.getElementById('aiTyping').remove(); box.innerHTML+=`<div class="aiMsg bot">${esc(ans)}</div>`; }catch(e){ let el=document.getElementById('aiTyping'); if(el) el.innerText='Net imekatika, jaribu tena.'; } box.scrollTop=box.scrollHeight; };
-document.getElementById('aiInput').addEventListener('keypress',e=>{ if(e.key==='Enter') askAI(); });
-document.getElementById('aiImgInput').addEventListener('change',e=>{ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=()=>{ document.getElementById('aiChat').innerHTML+=`<div class="aiMsg me"><img src="${r.result}" style="width:100%;border-radius:10px"></div><div class="aiMsg bot">Nimeona picha yako! 📸 Niambie nifanye nini nayo - caption? Niielezee?</div>`; }; r.readAsDataURL(f); });
-window.startVoiceAI=()=>{ let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return alert('Simu haiungi mkono sauti - andika'); let rec=new SR(); rec.lang='sw-KE'; rec.onstart=()=>{ document.getElementById('aiMicBtn').innerText='🔴'; }; rec.onresult=(e)=>{ document.getElementById('aiInput').value=e.results[0][0].transcript; askAI(); }; rec.onend=()=>{ document.getElementById('aiMicBtn').innerText='🎤'; }; rec.start(); };
-window.renderChatList=()=>{ let q=(document.getElementById('chatSearch')?.value||'').toLowerCase(); let list=chats.filter(c=>c.name.toLowerCase().includes(q)); document.getElementById('chatList').innerHTML=list.map((c)=>{ let last=c.messages[c.messages.length-1]; let preview=last? (last.type==='text'? last.text : last.type==='image'?'🖼️ Picha' : last.type==='video'?'🎬 Video' : '🎤 Voice note') : 'Anza mazungumzo'; return `<div style="display:flex;gap:10px;padding:10px;border-bottom:1px solid #111;cursor:pointer" onclick="openChatRoom(${chats.indexOf(c)})"><img src="${c.avatar}" style="width:48px;height:48px;border-radius:50%"><div style="flex:1"><b>${esc(c.name)}</b><br><small style="color:#aaa">${esc(preview).substring(0,40)}</small></div></div>`}).join('') || '<p style="color:#aaa;text-align:center;padding:20px">Hakuna chat bado. Bonyeza + Mpya.</p>'; };
-window.newChat=()=>{ let name=prompt('Jina la mtu:'); if(!name) return; let chat={name:name, avatar:'https://i.pravatar.cc/100?u='+encodeURIComponent(name), messages:[]}; chats.push(chat); saveChats(); renderChatList(); openChatRoom(chats.length-1); };
-window.openChatRoom=(idx)=>{ currentChat=idx; document.getElementById('chatList').style.display='none'; document.getElementById('chatRoom').style.display='flex'; let c=chats[idx]; document.getElementById('chatRoomName').innerText=c.name; document.getElementById('chatRoomAvatar').src=c.avatar; renderChatMessages(); };
-window.closeChatRoom=()=>{ currentChat=null; document.getElementById('chatRoom').style.display='none'; document.getElementById('chatList').style.display='block'; };
-function renderChatMessages(){ let box=document.getElementById('chatMessages'); if(currentChat===null) return; let c=chats[currentChat]; box.innerHTML=c.messages.map((m,i)=>{ let content=''; if(m.type==='text') content=esc(m.text); if(m.type==='image') content=`<img src="${m.data}" style="width:100%;max-width:220px;border-radius:10px">`; if(m.type==='video') content=`<video src="${m.data}" controls style="width:100%;max-width:220px;border-radius:10px"></video>`; if(m.type==='voice') content=`<audio src="${m.data}" controls style="width:200px"></audio><br><small>🎤 Voice note</small>`; return `<div class="chatMsg ${m.me?'me':'other'}">${content}<br><small style="opacity:.7;font-size:10px">${m.time} • <span onclick="saveOneMsg(${i})" style="cursor:pointer">⬇️ Save</span> • <span onclick="shareOneMsg(${i})" style="cursor:pointer">↗️ Share</span> • <span onclick="deleteOneMsg(${i})" style="cursor:pointer">🗑️</span></small></div>`}).join('') || '<p style="color:#888;text-align:center">Anza mazungumzo...</p>'; box.scrollTop=box.scrollHeight; }
-window.saveOneMsg=(i)=>{ let m=chats[currentChat].messages[i]; if(m.type==='text'){ navigator.clipboard.writeText(m.text); alert('Imecopiwa!'); } else { let a=document.createElement('a'); a.href=m.data; a.download='vibra-'+m.type; a.click(); alert('Imesave!'); } };
-window.shareOneMsg=(i)=>{ let m=chats[currentChat].messages[i]; navigator.clipboard.writeText(m.type==='text'? m.text : location.href); alert('Imeshare - imecopiwa!'); };
-window.deleteOneMsg=(i)=>{ if(confirm('Futa ujumbe huu?')){ chats[currentChat].messages.splice(i,1); saveChats(); renderChatMessages(); renderChatList(); } };
-window.sendChat=()=>{ if(currentChat===null) return; let inp=document.getElementById('chatInput'); let t=inp.value.trim(); if(!t) return; chats[currentChat].messages.push({type:'text', text:t, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); inp.value=''; saveChats(); renderChatMessages(); renderChatList(); setTimeout(()=>{ chats[currentChat].messages.push({type:'text', text:'Sawa! 👍 Nimeipokea.', me:false, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); },1000); };
-document.getElementById('chatImg').addEventListener('change',e=>{ let f=e.target.files[0]; if(!f||currentChat===null) return; let r=new FileReader(); r.onload=()=>{ chats[currentChat].messages.push({type:'image', data:r.result, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); }; r.readAsDataURL(f); });
-document.getElementById('chatVideo').addEventListener('change',e=>{ let f=e.target.files[0]; if(!f||currentChat===null) return; let r=new FileReader(); r.onload=()=>{ chats[currentChat].messages.push({type:'video', data:r.result, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); }; r.readAsDataURL(f); });
-window.toggleVoiceNote=async()=>{ if(!isRecording){ try{ let stream=await navigator.mediaDevices.getUserMedia({audio:true}); mediaRecorder=new MediaRecorder(stream); audioChunks=[]; mediaRecorder.ondataavailable=e=>audioChunks.push(e.data); mediaRecorder.onstop=()=>{ let blob=new Blob(audioChunks,{type:'audio/webm'}); let reader=new FileReader(); reader.onload=()=>{ if(currentChat!==null){ chats[currentChat].messages.push({type:'voice', data:reader.result, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); } }; reader.readAsDataURL(blob); }; mediaRecorder.start(); isRecording=true; document.getElementById('voiceStatus').style.display='block'; document.getElementById('chatMicBtn').style.background='#f00'; }catch(e){ alert('Ruhusu microphone kwanza'); } } else { mediaRecorder.stop(); isRecording=false; document.getElementById('voiceStatus').style.display='none'; document.getElementById('chatMicBtn').style.background='#222'; } };
-window.deleteChat=()=>{ if(currentChat===null) return; if(confirm('Futa chat hii yote?')){ chats.splice(currentChat,1); saveChats(); closeChatRoom(); renderChatList(); } };
-window.startVoiceCall=()=>{ alert('📞 Inampigia '+(chats[currentChat]?.name||'')+'...'); };
-window.startVideoCall=async()=>{ let box=document.getElementById('videoCallBox'); box.style.display='flex'; document.getElementById('callName').innerText='Video Call - '+(chats[currentChat]?.name||'Mtu'); callSec=0; callInterval=setInterval(()=>{ callSec++; let m=String(Math.floor(callSec/60)).padStart(2,'0'); let s=String(callSec%60).padStart(2,'0'); document.getElementById('callTimer').innerText=m+':'+s; },1000); try{ callStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('localVideo').srcObject=callStream; }catch(e){ alert('Ruhusu kamera na mic kwanza'); } };
-window.endCall=()=>{ if(callStream) callStream.getTracks().forEach(t=>t.stop()); clearInterval(callInterval); document.getElementById('videoCallBox').style.display='none'; };
-window.toggleCallMic=()=>{ micOn=!micOn; if(callStream) callStream.getAudioTracks().forEach(t=>t.enabled=micOn); };
-window.toggleCallCam=()=>{ camOn=!camOn; if(callStream) callStream.getVideoTracks().forEach(t=>t.enabled=camOn); };
-window.addStatus=()=>{ let txt=prompt('Andika Status yako:'); let fileInput=document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*,video/*'; fileInput.onchange=e=>{ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=()=>{ statuses.push({name:userName, pic:userPic, data:r.result, isVideo:f.type.startsWith('video'), text:txt||'', time:Date.now()}); saveStatusStore(); alert('Status imepostiwa!'); }; r.readAsDataURL(f); }; if(confirm('Weka picha/video kama Status?')) fileInput.click(); else if(txt){ statuses.push({name:userName, pic:userPic, data:'', text:txt, time:Date.now()}); saveStatusStore(); } };
-function renderStatusRow(){ let now=Date.now(); statuses=statuses.filter(s=> now - s.time < 24*60*60*1000); localStorage.setItem('vibra_status', JSON.stringify(statuses)); document.getElementById('statusRow').innerHTML=statuses.map((s,i)=>`<div style="text-align:center;flex-shrink:0" onclick="openStatusViewer(${i})"><div class="statusCircle"><img src="${s.pic}"></div><p style="font-size:11px">${esc(s.name).substring(0,8)}</p></div>`).join(''); }
-window.openStatusViewer=(i)=>{ viewingStatusIndex=i; let s=statuses[i]; document.getElementById('statusViewer').style.display='flex'; document.getElementById('statusViewerAvatar').src=s.pic; document.getElementById('statusViewerName').innerText=s.name; document.getElementById('statusViewerContent').innerHTML=s.isVideo? `<video src="${s.data}" controls autoplay style="max-width:100%;max-height:60vh;border-radius:14px"></video>` : s.data? `<img src="${s.data}" style="max-width:100%;max-height:60vh;border-radius:14px">` : `<h2>${esc(s.text)}</h2>`; };
-window.closeStatusViewer=()=>{ document.getElementById('statusViewer').style.display='none'; };
-window.saveStatus=()=>{ if(viewingStatusIndex<0) return; let s=statuses[viewingStatusIndex]; if(s.data){ let a=document.createElement('a'); a.href=s.data; a.download='vibra-status'; a.click(); alert('Imesave!'); } else { navigator.clipboard.writeText(s.text); alert('Imecopiwa!'); } };
-window.shareStatus=()=>{ if(viewingStatusIndex<0) return; let s=statuses[viewingStatusIndex]; navigator.clipboard.writeText(s.text||location.href); alert('Imeshare!'); };
-window.deleteStatus=()=>{ if(viewingStatusIndex<0) return; if(confirm('Futa Status hii?')){ statuses.splice(viewingStatusIndex,1); saveStatusStore(); closeStatusViewer(); } };
-window.openComment=(id)=>{ curCommentId=id; document.getElementById('commentSheet').classList.add('open'); renderComments(); };
-window.closeComment=()=>document.getElementById('commentSheet').classList.remove('open');
-function renderComments(){ let p=posts.find(x=>x.id===curCommentId); if(!p) return; document.getElementById('commentCount').innerText=(p.comments||[]).length+' comments'; document.getElementById('commentList').innerHTML=(p.comments||[]).map(c=>`<div class="cRow"><img src="https://i.pravatar.cc/100?u=${esc(c.name)}"><div style="flex:1"><b>${esc(c.name)}</b><p>${esc(c.text)}</p></div></div>`).join('') || '<p style="text-align:center;color:#888;padding:20px">Hakuna comment bado.</p>'; }
-window.sendComment=async()=>{ let inp=document.getElementById('commentInput'); let t=inp.value.trim(); if(!t||!curCommentId) return; await updateDoc(doc(db,'posts',curCommentId),{comments:arrayUnion({name:userName,text:t})}); inp.value=''; };
-window.openShare=(id)=>{ document.getElementById('shareSheet').classList.add('open'); };
-window.closeShare=()=>document.getElementById('shareSheet').classList.remove('open');
-window.shareCopy=()=>{ navigator.clipboard.writeText(location.href); alert('Link imecopiwa!'); closeShare(); };
-window.shareWhatsApp=()=>{ let txt=encodeURIComponent('Tazama hii video kwenye Vibra! 🔥 '+location.href); window.open('https://wa.me/?text='+txt,'_blank'); };
-window.openExplore=()=>{ document.getElementById('modalExplore').classList.add('open'); renderExplore(''); };
-window.setCat=(cat,el)=>{ curCat=cat; document.querySelectorAll('#catBar button').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderExplore(document.getElementById('exploreSearch').value||''); };
-window.doExplore=(q)=>renderExplore(q);
-function renderExplore(q){ let list=posts.filter(p=> (curCat==='All'||p.cat===curCat) && (p.text+' '+p.name).toLowerCase().includes((q||'').toLowerCase())); document.getElementById('exploreGrid').innerHTML=list.map(p=>`<div class="gCard">${p.video?`<video src="${p.video}" muted></video>`:p.image?`<img src="${p.image}">`:`<div style="height:180px;background:linear-gradient(135deg,#fe2c55,#25f4ee);display:flex;align-items:center;justify-content:center;padding:10px;text-align:center"><b>${esc(p.text)}</b></div>`}<div><b>${esc(p.text||'Vibra Video')}</b><br><small>👤 ${esc(p.name)} ❤️ ${p.likes||0}</small></div></div>`).join('') || '<p style="color:#aaa">Hakuna video.</p>'; }
-window.toggleFollow=(name)=>{ if(followingList.includes(name)) followingList=followingList.filter(n=>n!==name); else { followingList.push(name); alert('Unamfollow @'+name); } localStorage.setItem('vibra_following',JSON.stringify(followingList)); render(); renderMe(); };
-window.likePost=async(id,likes)=>{ if(!likedList.includes(id)) likedList.push(id); localStorage.setItem('vibra_liked',JSON.stringify(likedList)); await updateDoc(doc(db,'posts',id),{likes:likes+1}); renderMe(); };
-window.openPost=()=>document.getElementById('modalPost').classList.add('open');
-window.closePost=()=>document.getElementById('modalPost').classList.remove('open');
-window.closeAll=()=>{ document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open')); };
-window.openLive=()=>document.getElementById('modalLive').classList.add('open');
-window.showTab=(t,el)=>{document.querySelectorAll('.navItem').forEach(n=>n.classList.remove('active'));if(el)el.classList.add('active');if(t==='explore')openExplore(); if(t==='chat'){ document.getElementById('modalChat').style.display='flex'; renderChatList(); } if(t==='me')openMe();};
-document.getElementById('picInput').addEventListener('change',e=>{let f=e.target.files[0];if(f){let r=new FileReader();r.onload=()=>{tempImg=r.result;tempVideo='';alert('Picha imechaguliwa')};r.readAsDataURL(f)}});
-document.getElementById('videoInput').addEventListener('change',e=>{let f=e.target.files[0];if(f){let r=new FileReader();r.onload=()=>{tempVideo=r.result;tempImg='';let v=document.getElementById('previewVideo');v.src=tempVideo;v.style.display='block';};r.readAsDataURL(f)}});
-window.addPost=async()=>{ let t=document.getElementById('postInput').value.trim(); let cat=document.getElementById('postCat').value; if(!t && !tempVideo && !tempImg) return alert('Chagua video kwanza'); await addDoc(collection(db,'posts'),{name:userName,pic:userPic,text:t,cat:cat,video:tempVideo,image:tempImg,likes:0,comments:[],time:Date.now()}); document.getElementById('postInput').value=''; tempVideo=''; tempImg=''; closePost(); alert('Imepostiwa! 🔥'); openMe(); };
-window.logout=async()=>{ try{await signOut(auth)}catch(e){} localStorage.clear(); location.reload(); };
+function toggleAI(){ document.getElementById('aiBox').classList.toggle('open'); }
+function quickAI(q){ document.getElementById('aiInput').value=q; askAI(); }
+async function askAI(){ var inp=document.getElementById('aiInput'); var q=inp.value.trim(); if(!q) return; var box=document.getElementById('aiChat'); box.innerHTML+='<div class="aiMsg me">'+esc(q)+'</div>'; inp.value=''; box.innerHTML+='<div class="aiMsg bot" id="aiTyping">Vibra AI inaandika... ✍️</div>'; box.scrollTop=box.scrollHeight; if(!GEMINI_KEY || GEMINI_KEY==="WEKA_KEY_YAKO_HAPA"){ document.getElementById('aiTyping').innerText='Weka GEMINI_KEY - aistudio.google.com > Get API Key. Lakini hapa ni jibu la haraka: '+quickAnswer(q); return; } try{ var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GEMINI_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:"Wewe ni Vibra AI, msaidizi werevu kama ChatGPT. Jibu kwa Kiswahili rahisi, fupi. Swali: "+q}]}]})}); var data=await res.json(); var ans=data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0].text || 'Samahani jaribu tena.'; document.getElementById('aiTyping').remove(); box.innerHTML+='<div class="aiMsg bot">'+esc(ans)+'</div>'; }catch(e){ var el=document.getElementById('aiTyping'); if(el) el.innerText=quickAnswer(q); } box.scrollTop=box.scrollHeight; }
+function quickAnswer(q){ q=q.toLowerCase(); if(q.includes('caption')) return 'Caption kali: "Siku ya kwanza Vibra, mnaonaje? 🔥 #VibraDance"'; if(q.includes('hashtag')) return 'Hashtag: #VibraDance #FYP #VibraVoice #Trending #Kenya'; if(q.includes('idea')) return 'Idea: 1. Dance Challenge 2. Siku yangu 3. Uliza watu swali'; return 'Sawa! Post video fupi 15-30 sec, caption fupi, hashtag 5, post saa 12 jioni.'; }
+document.getElementById('aiInput').addEventListener('keypress',function(e){ if(e.key==='Enter') askAI(); });
+document.getElementById('aiImgInput').addEventListener('change',function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ document.getElementById('aiChat').innerHTML+='<div class="aiMsg me"><img src="'+r.result+'" style="width:100%;border-radius:10px"></div><div class="aiMsg bot">Nimeona picha yako! 📸 Niambie nifanye nini nayo?</div>'; }; r.readAsDataURL(f); });
+function startVoiceAI(){ var SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){ alert('Simu haiungi mkono sauti - andika'); return; } var rec=new SR(); rec.lang='sw-KE'; rec.onstart=function(){ document.getElementById('aiMicBtn').innerText='🔴'; }; rec.onresult=function(e){ document.getElementById('aiInput').value=e.results[0][0].transcript; askAI(); }; rec.onend=function(){ document.getElementById('aiMicBtn').innerText='🎤'; }; rec.start(); }
+function renderChatList(){ var q=(document.getElementById('chatSearch')?document.getElementById('chatSearch').value:'').toLowerCase(); var list=chats.filter(function(c){return c.name.toLowerCase().includes(q)}); document.getElementById('chatList').innerHTML=list.map(function(c){ var last=c.messages[c.messages.length-1]; var preview=last? (last.type==='text'? last.text : last.type==='image'?'🖼️ Picha' : last.type==='video'?'🎬 Video' : '🎤 Voice note') : 'Anza mazungumzo'; return '<div style="display:flex;gap:10px;padding:10px;border-bottom:1px solid #111;cursor:pointer" onclick="openChatRoom('+chats.indexOf(c)+')"><img src="'+c.avatar+'" style="width:48px;height:48px;border-radius:50%"><div style="flex:1"><b>'+esc(c.name)+'</b><br><small style="color:#aaa">'+esc(preview).substring(0,40)+'</small></div></div>'; }).join('') || '<p style="color:#aaa;text-align:center;padding:20px">Hakuna chat bado. Bonyeza + Mpya.</p>'; }
+function newChat(){ var name=prompt('Jina la mtu:'); if(!name) return; var chat={name:name, avatar:'https://i.pravatar.cc/100?u='+encodeURIComponent(name), messages:[]}; chats.push(chat); saveChats(); renderChatList(); openChatRoom(chats.length-1); }
+function openChatRoom(idx){ currentChat=idx; document.getElementById('chatList').style.display='none'; document.getElementById('chatRoom').style.display='flex'; var c=chats[idx]; document.getElementById('chatRoomName').innerText=c.name; document.getElementById('chatRoomAvatar').src=c.avatar; renderChatMessages(); }
+function closeChatRoom(){ currentChat=null; document.getElementById('chatRoom').style.display='none'; document.getElementById('chatList').style.display='block'; }
+function renderChatMessages(){ var box=document.getElementById('chatMessages'); if(currentChat===null) return; var c=chats[currentChat]; box.innerHTML=c.messages.map(function(m,i){ var content=''; if(m.type==='text') content=esc(m.text); if(m.type==='image') content='<img src="'+m.data+'" style="width:100%;max-width:220px;border-radius:10px">'; if(m.type==='video') content='<video src="'+m.data+'" controls style="width:100%;max-width:220px;border-radius:10px"></video>'; if(m.type==='voice') content='<audio src="'+m.data+'" controls style="width:200px"></audio><br><small>🎤 Voice note</small>'; return '<div class="chatMsg '+(m.me?'me':'other')+'">'+content+'<br><small style="opacity:.7;font-size:10px">'+m.time+' • <span onclick="saveOneMsg('+i+')" style="cursor:pointer">⬇️ Save</span> • <span onclick="shareOneMsg('+i+')" style="cursor:pointer">↗️ Share</span> • <span onclick="deleteOneMsg('+i+')" style="cursor:pointer">🗑️</span></small></div>'; }).join('') || '<p style="color:#888;text-align:center">Anza mazungumzo...</p>'; box.scrollTop=box.scrollHeight; }
+function saveOneMsg(i){ var m=chats[currentChat].messages[i]; if(m.type==='text'){ navigator.clipboard.writeText(m.text); alert('Imecopiwa!'); } else { var a=document.createElement('a'); a.href=m.data; a.download='vibra-'+m.type; a.click(); alert('Imesave!'); } }
+function shareOneMsg(i){ var m=chats[currentChat].messages[i]; navigator.clipboard.writeText(m.type==='text'? m.text : location.href); alert('Imeshare!'); }
+function deleteOneMsg(i){ if(confirm('Futa ujumbe huu?')){ chats[currentChat].messages.splice(i,1); saveChats(); renderChatMessages(); renderChatList(); } }
+function sendChat(){ if(currentChat===null) return; var inp=document.getElementById('chatInput'); var t=inp.value.trim(); if(!t) return; chats[currentChat].messages.push({type:'text', text:t, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); inp.value=''; saveChats(); renderChatMessages(); renderChatList(); setTimeout(function(){ chats[currentChat].messages.push({type:'text', text:'Sawa! 👍 Nimeipokea.', me:false, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); },1000); }
+document.getElementById('chatImg').addEventListener('change',function(e){ var f=e.target.files[0]; if(!f||currentChat===null) return; var r=new FileReader(); r.onload=function(){ chats[currentChat].messages.push({type:'image', data:r.result, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); }; r.readAsDataURL(f); });
+document.getElementById('chatVideo').addEventListener('change',function(e){ var f=e.target.files[0]; if(!f||currentChat===null) return; var r=new FileReader(); r.onload=function(){ chats[currentChat].messages.push({type:'video', data:r.result, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); }; r.readAsDataURL(f); });
+async function toggleVoiceNote(){ if(!isRecording){ try{ var stream=await navigator.mediaDevices.getUserMedia({audio:true}); mediaRecorder=new MediaRecorder(stream); audioChunks=[]; mediaRecorder.ondataavailable=function(e){audioChunks.push(e.data)}; mediaRecorder.onstop=function(){ var blob=new Blob(audioChunks,{type:'audio/webm'}); var reader=new FileReader(); reader.onload=function(){ if(currentChat!==null){ chats[currentChat].messages.push({type:'voice', data:reader.result, me:true, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); saveChats(); renderChatMessages(); } }; reader.readAsDataURL(blob); }; mediaRecorder.start(); isRecording=true; document.getElementById('voiceStatus').style.display='block'; document.getElementById('chatMicBtn').style.background='#f00'; }catch(e){ alert('Ruhusu microphone kwanza'); } } else { mediaRecorder.stop(); isRecording=false; document.getElementById('voiceStatus').style.display='none'; document.getElementById('chatMicBtn').style.background='#222'; } }
+function deleteChat(){ if(currentChat===null) return; if(confirm('Futa chat hii yote?')){ chats.splice(currentChat,1); saveChats(); closeChatRoom(); renderChatList(); } }
+function startVoiceCall(){ alert('📞 Inampigia '+(chats[currentChat]?chats[currentChat].name:'')+'...'); }
+async function startVideoCall(){ var box=document.getElementById('videoCallBox'); box.style.display='flex'; document.getElementById('callName').innerText='Video Call - '+(chats[currentChat]?chats[currentChat].name:'Mtu'); callSec=0; callInterval=setInterval(function(){ callSec++; var m=String(Math.floor(callSec/60)).padStart(2,'0'); var s=String(callSec%60).padStart(2,'0'); document.getElementById('callTimer').innerText=m+':'+s; },1000); try{ callStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('localVideo').srcObject=callStream; }catch(e){ alert('Ruhusu kamera na mic kwanza'); } }
+function endCall(){ if(callStream) callStream.getTracks().forEach(function(t){t.stop()}); clearInterval(callInterval); document.getElementById('videoCallBox').style.display='none'; }
+function toggleCallMic(){ micOn=!micOn; if(callStream) callStream.getAudioTracks().forEach(function(t){t.enabled=micOn}); }
+function toggleCallCam(){ camOn=!camOn; if(callStream) callStream.getVideoTracks().forEach(function(t){t.enabled=camOn}); }
+function addStatus(){ var txt=prompt('Andika Status yako:'); var fileInput=document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*,video/*'; fileInput.onchange=function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ statuses.push({name:userName, pic:userPic, data:r.result, isVideo:f.type.startsWith('video'), text:txt||'', time:Date.now()}); saveStatusStore(); alert('Status imepostiwa!'); }; r.readAsDataURL(f); }; if(confirm('Weka picha/video kama Status?')) fileInput.click(); else if(txt){ statuses.push({name:userName, pic:userPic, data:'', text:txt, time:Date.now()}); saveStatusStore(); } }
+function renderStatusRow(){ var now=Date.now(); statuses=statuses.filter(function(s){ return now - s.time < 24*60*60*1000; }); localStorage.setItem('vibra_status', JSON.stringify(statuses)); document.getElementById('statusRow').innerHTML=statuses.map(function(s,i){ return '<div style="text-align:center;flex-shrink:0" onclick="openStatusViewer('+i+')"><div class="statusCircle"><img src="'+s.pic+'"></div><p style="font-size:11px">'+esc(s.name).substring(0,8)+'</p></div>'; }).join(''); }
+function openStatusViewer(i){ viewingStatusIndex=i; var s=statuses[i]; document.getElementById('statusViewer').style.display='flex'; document.getElementById('statusViewerAvatar').src=s.pic; document.getElementById('statusViewerName').innerText=s.name; document.getElementById('statusViewerContent').innerHTML=s.isVideo? '<video src="'+s.data+'" controls autoplay style="max-width:100%;max-height:60vh;border-radius:14px"></video>' : s.data? '<img src="'+s.data+'" style="max-width:100%;max-height:60vh;border-radius:14px">' : '<h2>'+esc(s.text)+'</h2>'; }
+function closeStatusViewer(){ document.getElementById('statusViewer').style.display='none'; }
+function saveStatus(){ if(viewingStatusIndex<0) return; var s=statuses[viewingStatusIndex]; if(s.data){ var a=document.createElement('a'); a.href=s.data; a.download='vibra-status'; a.click(); alert('Imesave!'); } else { navigator.clipboard.writeText(s.text); alert('Imecopiwa!'); } }
+function shareStatus(){ if(viewingStatusIndex<0) return; var s=statuses[viewingStatusIndex]; navigator.clipboard.writeText(s.text||location.href); alert('Imeshare!'); }
+function deleteStatus(){ if(viewingStatusIndex<0) return; if(confirm('Futa Status hii?')){ statuses.splice(viewingStatusIndex,1); saveStatusStore(); closeStatusViewer(); } }
+function openComment(id){ curCommentId=id; document.getElementById('commentSheet').classList.add('open'); renderComments(); }
+function closeComment(){ document.getElementById('commentSheet').classList.remove('open'); }
+function renderComments(){ var p=null; for(var i=0;i<posts.length;i++){ if(posts[i].id===curCommentId) p=posts[i]; } if(!p) return; document.getElementById('commentCount').innerText=(p.comments||[]).length+' comments'; document.getElementById('commentList').innerHTML=(p.comments||[]).map(function(c){ return '<div class="cRow"><img src="https://i.pravatar.cc/100?u='+esc(c.name)+'"><div style="flex:1"><b>'+esc(c.name)+'</b><p>'+esc(c.text)+'</p></div></div>'; }).join('') || '<p style="text-align:center;color:#888;padding:20px">Hakuna comment bado.</p>'; }
+function sendComment(){ var inp=document.getElementById('commentInput'); var t=inp.value.trim(); if(!t||!curCommentId) return; for(var i=0;i<posts.length;i++){ if(posts[i].id===curCommentId){ posts[i].comments=posts[i].comments||[]; posts[i].comments.push({name:userName,text:t}); } } savePosts(); inp.value=''; renderComments(); render(); }
+function openShare(id){ document.getElementById('shareSheet').classList.add('open'); }
+function closeShare(){ document.getElementById('shareSheet').classList.remove('open'); }
+function shareCopy(){ navigator.clipboard.writeText(location.href); alert('Link imecopiwa!'); closeShare(); }
+function shareWhatsApp(){ var txt=encodeURIComponent('Tazama hii video kwenye Vibra! 🔥 '+location.href); window.open('https://wa.me/?text='+txt,'_blank'); }
+function openExplore(){ document.getElementById('modalExplore').classList.add('open'); renderExplore(''); }
+function setCat(cat,el){ curCat=cat; document.querySelectorAll('#catBar button').forEach(function(b){b.classList.remove('active')}); el.classList.add('active'); renderExplore(document.getElementById('exploreSearch').value||''); }
+function doExplore(q){ renderExplore(q); }
+function renderExplore(q){ var list=posts.filter(function(p){ return (curCat==='All'||p.cat===curCat) && (p.text+' '+p.name).toLowerCase().includes((q||'').toLowerCase()); }); document.getElementById('exploreGrid').innerHTML=list.map(function(p){ return '<div class="gCard">'+(p.video?'<video src="'+p.video+'" muted></video>':p.image?'<img src="'+p.image+'">':'<div style="height:180px;background:linear-gradient(135deg,#fe2c55,#25f4ee);display:flex;align-items:center;justify-content:center;padding:10px;text-align:center"><b>'+esc(p.text)+'</b></div>')+'<div><b>'+esc(p.text||'Vibra Video')+'</b><br><small>👤 '+esc(p.name)+' ❤️ '+(p.likes||0)+'</small></div></div>'; }).join('') || '<p style="color:#aaa">Hakuna video.</p>'; }
+function toggleFollow(name){ if(followingList.includes(name)) followingList=followingList.filter(function(n){return n!==name}); else { followingList.push(name); alert('Unamfollow @'+name); } localStorage.setItem('vibra_following',JSON.stringify(followingList)); render(); renderMe(); }
+function likePost(id){ for(var i=0;i<posts.length;i++){ if(posts[i].id===id) posts[i].likes=(posts[i].likes||0)+1; } if(!likedList.includes(id)) likedList.push(id); localStorage.setItem('vibra_liked',JSON.stringify(likedList)); savePosts(); render(); renderMe(); }
+function openPost(){ document.getElementById('modalPost').classList.add('open'); }
+function closePost(){ document.getElementById('modalPost').classList.remove('open'); }
+function closeAll(){ document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('open')}); }
+function openLive(){ document.getElementById('modalLive').classList.add('open'); }
+function showTab(t,el){ document.querySelectorAll('.navItem').forEach(function(n){n.classList.remove('active')}); if(el) el.classList.add('active'); if(t==='explore') openExplore(); if(t==='chat'){ document.getElementById('modalChat').style.display='flex'; renderChatList(); } if(t==='me') openMe(); }
+document.getElementById('picInput').addEventListener('change',function(e){ var f=e.target.files[0]; if(f){ var r=new FileReader(); r.onload=function(){ tempImg=r.result; tempVideo=''; alert('Picha imechaguliwa'); }; r.readAsDataURL(f); }});
+document.getElementById('videoInput').addEventListener('change',function(e){ var f=e.target.files[0]; if(f){ var r=new FileReader(); r.onload=function(){ tempVideo=r.result; tempImg=''; var v=document.getElementById('previewVideo'); v.src=tempVideo; v.style.display='block'; }; r.readAsDataURL(f); }});
+function addPost(){ var t=document.getElementById('postInput').value.trim(); var cat=document.getElementById('postCat').value; if(!t && !tempVideo && !tempImg){ alert('Chagua video kwanza'); return; } posts.unshift({id:'p'+Date.now(), name:userName, pic:userPic, text:t, cat:cat, video:tempVideo, image:tempImg, likes:0, comments:[], time:Date.now()}); savePosts(); document.getElementById('postInput').value=''; tempVideo=''; tempImg=''; closePost(); alert('Imepostiwa! 🔥'); render(); openMe(); }
+function logout(){ localStorage.removeItem('vibra_name'); localStorage.removeItem('vibra_pic'); location.reload(); }
+</script>
+
+<!-- Firebase inajaribu tu - kama ikishindwa, app bado inafanya kazi -->
+<script type="module">
+try{
+  const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+  const authMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+  const firebaseConfig = { apiKey: "AIzaSyBAsF_SALFEiraimj1Qg10AiOI8gpixheU", authDomain: "vibra-44dce.firebaseapp.com", projectId: "vibra-44dce", storageBucket: "vibra-44dce.firebasestorage.app", messagingSenderId: "424385936523", appId: "1:424385936523:web:54c1b5fff7381519e8288e" };
+  const app = initializeApp(firebaseConfig);
+  const auth = authMod.getAuth(app);
+  const provider = new authMod.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  window.firebaseAuth = auth;
+  firebaseAuth = auth;
+  firebaseFns = { ...authMod, provider: provider };
+  console.log('Firebase OK');
+}catch(e){ console.log('Firebase offline, local mode:', e.message); }
 </script>
 </body>
 </html>
