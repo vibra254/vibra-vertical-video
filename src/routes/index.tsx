@@ -363,6 +363,37 @@ const changePhoto = (event: ChangeEvent<HTMLInputElement>) => {
     </div>
   )
 
+// Firebase login gate: do not expose creator actions before authentication.
+if (!authReady) {
+  return <div style={{minHeight:'100vh',display:'grid',placeItems:'center',background:'#080D18',color:'#00DDF5',fontFamily:'sans-serif'}}><div style={{textAlign:'center'}}><h1>VIBRA WORLDWIDE</h1><p>Inaunganisha akaunti...</p></div></div>
+}
+if (!userId) {
+  return (
+    <div style={{minHeight:'100vh',background:'#080D18',color:'#fff',fontFamily:'sans-serif',display:'flex',justifyContent:'center',alignItems:'center',padding:20}}>
+      <div style={{width:'100%',maxWidth:420,background:'#101B2B',border:'1px solid #123B55',borderRadius:22,padding:24,boxSizing:'border-box'}}>
+        <div style={{textAlign:'center',marginBottom:24}}>
+          <div style={{fontSize:38,fontWeight:900,color:'#00DDF5',letterSpacing:2}}>VIBRA</div>
+          <div style={{fontSize:13,color:'#B9C9D8'}}>WORLDWIDE • CREATE • CONNECT</div>
+          <h2 style={{marginBottom:4}}>{authMode==='login'?'Karibu tena':'Jiunge na VIBRA'}</h2>
+          <p style={{color:'#9FB2C5',fontSize:13}}>{authMode==='login'?'Ingia kwenye akaunti yako':'Fungua akaunti yako ya VIBRA'}</p>
+        </div>
+        <label style={{display:'block',fontSize:13,marginBottom:6}}>Email</label>
+        <input type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" style={{width:'100%',boxSizing:'border-box',padding:14,marginBottom:14,borderRadius:10,border:'1px solid #29435B',background:'#081321',color:'#fff'}} />
+        <label style={{display:'block',fontSize:13,marginBottom:6}}>Password</label>
+        <div style={{display:'flex',gap:8}}>
+          <input type={showPassword?'text':'password'} autoComplete={authMode==='login'?'current-password':'new-password'} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Angalau herufi 6" style={{flex:1,minWidth:0,boxSizing:'border-box',padding:14,marginBottom:14,borderRadius:10,border:'1px solid #29435B',background:'#081321',color:'#fff'}} />
+          <button type="button" onClick={()=>setShowPassword(v=>!v)} style={{height:46,padding:'0 12px',borderRadius:10,border:'1px solid #29435B',background:'#142033',color:'#00DDF5'}}>{showPassword?'Ficha':'Onyesha'}</button>
+        </div>
+        {authError && <div role="alert" style={{background:'#3B1720',color:'#FFB8C2',padding:10,borderRadius:9,fontSize:13,marginBottom:12,overflowWrap:'anywhere'}}>{authError}</div>}
+        <button type="button" disabled={authBusy} onClick={()=>void submitAuth()} style={{width:'100%',padding:14,border:0,borderRadius:12,background:'#00DDF5',color:'#001018',fontWeight:900,fontSize:16,opacity:authBusy?.6:1}}>{authBusy?'Tafadhali subiri...':authMode==='login'?'INGIA':'FUNGUA AKAUNTI'}</button>
+        <button type="button" disabled={authBusy} onClick={()=>void loginGoogle()} style={{width:'100%',padding:13,marginTop:10,border:'1px solid #426078',borderRadius:12,background:'#142033',color:'#fff',fontWeight:700}}>Endelea na Google</button>
+        <button type="button" onClick={()=>{setAuthMode(authMode==='login'?'signup':'login');setAuthError('')}} style={{width:'100%',padding:12,marginTop:12,border:0,background:'transparent',color:'#00DDF5'}}>{authMode==='login'?'Huna akaunti? Jisajili':'Una akaunti tayari? Ingia'}</button>
+        <button type="button" onClick={toggleLanguage} style={{display:'block',margin:'8px auto 0',border:0,background:'transparent',color:'#9FB2C5'}}>{language==='sw'?'Switch to English':'Badili Kiswahili'}</button>
+      </div>
+    </div>
+  )
+}
+
 // VIBRA AI
 if (page === 'ai') {
   return (
