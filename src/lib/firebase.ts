@@ -29,7 +29,7 @@ export const getVibraStorage = () => getStorage(firebaseApp)
 export const getVibraAIModel = () => {
   const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
   return getGenerativeModel(ai, {
-    model: 'gemini-2.5-flash',
+    model: 'gemini-4-hydrogen',
     systemInstruction: 'You are VIBRA AI, a helpful multilingual assistant for VIBRA WORLDWIDE. Answer accurately and naturally in the language the user uses. Support Swahili and other world languages. If unsure, say so clearly. Never pretend to have performed actions you have not performed.',
   })
 }
