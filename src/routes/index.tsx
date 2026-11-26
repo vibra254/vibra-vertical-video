@@ -1,6 +1,10 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth'
+import { addDoc, collection, doc, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore'
+import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
+import { getVibraAuth, getVibraDb, getVibraStorage, vibraGoogleProvider } from '../lib/firebase'
 import {
   Home, Search, Plus, Inbox, User, Heart,
   MessageCircle, Share2, Volume2, VolumeX, Bot, Sparkles
@@ -59,8 +63,8 @@ function VibraApp() {
   const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; text: string}[]>([])
   const [aiInput, setAiInput] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
-  const [userId, setUserId] = useState('demo-guest')
-  const [authReady, setAuthReady] = useState(true)
+  const [userId, setUserId] = useState('')
+  const [authReady, setAuthReady] = useState(false)
   const [authError, setAuthError] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -127,31 +131,42 @@ const sendAiMessage = async () => {
  setAiMessages(p=>[...p,{role:'user',text:q}]);setAiInput('');setAiLoading(true)
  window.setTimeout(()=>{setAiMessages(p=>[...p,{role:'assistant',text:'Karibu VIBRA WORLDWIDE! Hii ni demo ya VIBRA AI.'}]);setAiLoading(false)},450)
 }
-useEffect(()=>{setAuthReady(true)},[])
+useEffect(() => onAuthStateChanged(getVibraAuth(), user => { setUserId(user?.uid || ''); setUserName(user?.displayName || user?.email?.split('@')[0] || 'VIBRA Creator'); setAuthReady(true) }), [])
 const submitAuth=async()=>{
- if(!email.trim()||!password){alert(language==='sw'?'Weka email na password.':'Enter email and password.');return}
- if(password.length<4){alert(language==='sw'?'Password iwe na angalau herufi/namba 4.':'Password must be at least 4 characters.');return}
- setAuthBusy(true);const id='demo-'+email.trim().toLowerCase()
- try{localStorage.setItem('vibra_demo_user',id);localStorage.setItem('vibra_demo_email',email.trim())}catch{}
- setUserId(id);setAuthError('');setAuthBusy(false)
+ if(!email.trim()||!password){setAuthError(language==='sw'?'Weka email na password.':'Enter email and password.');return}
+ if(password.length<6){setAuthError(language==='sw'?'Password iwe na angalau herufi 6.':'Password must be at least 6 characters.');return}
+ setAuthBusy(true);setAuthError('')
+ try {
+   const auth=getVibraAuth()
+   if(authMode==='signup'){
+     const credential=await createUserWithEmailAndPassword(auth,email.trim(),password)
+     await updateProfile(credential.user,{displayName:email.trim().split('@')[0]})
+     await setDoc(doc(getVibraDb(),'users',credential.user.uid),{uid:credential.user.uid,email:credential.user.email,displayName:credential.user.displayName,createdAt:serverTimestamp()},{merge:true})
+   } else {
+     await signInWithEmailAndPassword(auth,email.trim(),password)
+   }
+ } catch(error){setAuthError(error instanceof Error?error.message:'Authentication failed.')}
+ finally{setAuthBusy(false)}
 }
-const loginGoogle=async()=>{try{localStorage.setItem('vibra_demo_user','demo-guest')}catch{}setUserId('demo-guest');setAuthError('')}
+const loginGoogle=async()=>{
+ setAuthBusy(true);setAuthError('')
+ try{await signInWithPopup(getVibraAuth(),vibraGoogleProvider)}
+ catch(error){setAuthError(error instanceof Error?error.message:'Google sign-in failed.')}
+ finally{setAuthBusy(false)}
+}
 // Demo video feed.
 const loadVideos=async()=>{
  setLoadingVideos(true)
- const demoVideos: Video[] = [
- {id:'demo-flower',user_id:'creator-1',video_url:'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',caption:'Karibu VIBRA WORLDWIDE 🌍✨ #VIBRA #Kenya',username:'VIBRA WORLDWIDE',avatar:null,country:'Kenya',created_at:new Date().toISOString()},
- {id:'demo-bunny',user_id:'creator-2',video_url:'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',caption:'Furahia video fupi hapa VIBRA! 🎬',username:'VIBRA Creator',avatar:null,country:'Worldwide',created_at:new Date().toISOString()},
- {id:'demo-elephant',user_id:'creator-3',video_url:'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',caption:'Create • Watch • Share ❤️',username:'VIBRA Studio',avatar:null,country:'Worldwide',created_at:new Date().toISOString()}
- ]
- let localVideos: Video[] = []
- try { localVideos = await readLocalVideos() } catch {}
- setVideos([...localVideos,...demoVideos])
- setServerLikes({'demo-flower':128,'demo-bunny':86,'demo-elephant':54})
- setCommentCounts({'demo-flower':12,'demo-bunny':8,'demo-elephant':5})
- setLoadingVideos(false)
+ try {
+   const snap=await getDocs(query(collection(getVibraDb(),'videos'),orderBy('created_at','desc')))
+   const rows=snap.docs.map(item=>({id:item.id,...item.data()} as Video))
+   setVideos(rows)
+   setServerLikes(Object.fromEntries(rows.map(v=>[v.id,Number((v as any).likes||0)])))
+   setCommentCounts(Object.fromEntries(rows.map(v=>[v.id,Number((v as any).comments_count||0)])))
+ } catch(error){setAuthError(error instanceof Error?error.message:'Could not load videos.');setVideos([])}
+ finally{setLoadingVideos(false)}
 }
-useEffect(()=>{if(userId)loadVideos()},[userId])
+useEffect(()=>{if(userId)loadVideos();else setVideos([])},[userId])
 
   // Demo likes na comments zinatunzwa ndani ya app.
 const loadServerLikes=async()=>{}
@@ -230,9 +245,18 @@ useEffect(()=>{try{setLikedIds(JSON.parse(localStorage.getItem('vibra_demo_likes
   }
 
 const toggleLike=async(id:string)=>{
- const was=likedIds.includes(id);const next=was?likedIds.filter(x=>x!==id):[...likedIds,id]
- setLikedIds(next);setServerLikes(p=>({...p,[id]:Math.max(0,(p[id]||0)+(was?-1:1))}))
- try{localStorage.setItem('vibra_demo_likes',JSON.stringify(next))}catch{}
+ if(!userId){setAuthError('Sign in to like videos.');return}
+ const was=likedIds.includes(id)
+ const next=was?likedIds.filter(x=>x!==id):[...likedIds,id]
+ setWorkingLikeIds(p=>[...p,id])
+ try{
+   const likeRef=doc(getVibraDb(),'videos',id,'likes',userId)
+   if(was){await import('firebase/firestore').then(m=>m.deleteDoc(likeRef))}
+   else{await setDoc(likeRef,{userId,createdAt:serverTimestamp()})}
+   await updateDoc(doc(getVibraDb(),'videos',id),{likes:increment(was?-1:1)})
+   setLikedIds(next);setServerLikes(p=>({...p,[id]:Math.max(0,(p[id]||0)+(was?-1:1))}))
+ }catch(error){setAuthError(error instanceof Error?error.message:'Like failed.')}
+ finally{setWorkingLikeIds(p=>p.filter(x=>x!==id))}
 }
 const openComments = (id: string) => {
     setActiveVideo(id)
@@ -241,27 +265,33 @@ const openComments = (id: string) => {
   }
 
 const addComment=async()=>{
- if(!activeVideo||!commentText.trim())return
- const entry: Comment={video_id:activeVideo,username:userHandle,text:commentText.trim(),created_at:new Date().toISOString()}
- setSendingComment(true);setComments(p=>{const next=[...p,entry];try{localStorage.setItem('vibra_comments_'+activeVideo,JSON.stringify(next))}catch{}return next})
- setCommentCounts(p=>({...p,[activeVideo]:(p[activeVideo]||0)+1}));setCommentText('');setSendingComment(false)
+ if(!activeVideo||!commentText.trim()||!userId)return
+ setSendingComment(true)
+ try{
+   const entry={video_id:activeVideo,user_id:userId,username:userHandle,text:commentText.trim(),created_at:new Date().toISOString()}
+   await addDoc(collection(getVibraDb(),'videos',activeVideo,'comments'),{...entry,createdAt:serverTimestamp()})
+   setComments(p=>[...p,{...entry}]);setCommentCounts(p=>({...p,[activeVideo]:(p[activeVideo]||0)+1}));setCommentText('')
+ }catch(error){setAuthError(error instanceof Error?error.message:'Comment failed.')}
+ finally{setSendingComment(false)}
 }
 // Upload video ya demo kwenye simu hii pekee.
 const uploadVideo=async(event:ChangeEvent<HTMLInputElement>)=>{
  const file=event.target.files?.[0];if(!file)return
+ if(!userId){setAuthError('Sign in before uploading.');event.target.value='';return}
  if(!file.type.startsWith('video/')){alert('Chagua faili la video.');return}
- if(file.size>50*1024*1024){alert('Video izidi 50 MB.');return}
+ if(file.size>100*1024*1024){alert('Video maximum ni 100 MB.');return}
  setUploading(true)
- const item: Video = {id:'local-'+Date.now(),user_id:userId,caption:window.prompt(language==='sw'?'Andika maelezo ya video:':'Add a video caption:') || 'Video yangu ya VIBRA',username:userHandle,avatar:dp||null,country:'Kenya',created_at:new Date().toISOString()}
- try {
-   await saveLocalVideo({...item,file})
-   setVideos(p=>[{...item,video_url:URL.createObjectURL(file)},...p]);setPage('home')
-   alert(language==='sw'?'Video imehifadhiwa kwenye kifaa hiki.':'Video saved on this device.')
- } catch {
-   setVideos(p=>[{...item,video_url:URL.createObjectURL(file)},...p])
-   alert(language==='sw'?'Video imeongezwa hadi app ifungwe. Nafasi ya kuhifadhi haipatikani.':'Video added for this session. Device storage is unavailable.')
- }
- setUploading(false);event.target.value=''
+ try{
+   const caption=window.prompt(language==='sw'?'Andika maelezo ya video:':'Add a video caption:')||''
+   const path='videos/'+userId+'/'+crypto.randomUUID()
+   const objectRef=storageRef(getVibraStorage(),path)
+   await uploadBytes(objectRef,file,{contentType:file.type})
+   const videoUrl=await getDownloadURL(objectRef)
+   const item={user_id:userId,video_url:videoUrl,storage_path:path,caption,username:userName||userHandle,avatar:dp||null,country:'Kenya',created_at:new Date().toISOString(),likes:0,comments_count:0}
+   const saved=await addDoc(collection(getVibraDb(),'videos'),{...item,created_at:serverTimestamp()})
+   setVideos(p=>[{...item,id:saved.id},...p]);setPage('home')
+ }catch(error){setAuthError(error instanceof Error?error.message:'Upload failed. Check Firebase Storage setup and rules.')}
+ finally{setUploading(false);event.target.value=''}
 }
 const changePhoto = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
