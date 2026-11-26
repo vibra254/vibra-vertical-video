@@ -1,8 +1,8 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth'
-import { addDoc, collection, doc, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore'
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile, signOut } from 'firebase/auth'
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
 import { getVibraAuth, getVibraDb, getVibraStorage, vibraGoogleProvider } from '../lib/firebase'
 import {
@@ -25,7 +25,7 @@ type Video = {
 }
 
 type Comment = {
-  id?: number
+  id?: string
   video_id: string
   username: string
   text: string
@@ -79,6 +79,7 @@ function VibraApp() {
   const [serverLikes, setServerLikes] = useState<Record<string, number>>({})
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
   const [followedIds, setFollowedIds] = useState<string[]>([])
+  const [followerCount, setFollowerCount] = useState(0)
   const [savedIds, setSavedIds] = useState<string[]>([])
   const [dp, setDp] = useState('')
   const [userName, setUserName] = useState('Mr vibra')
@@ -120,16 +121,30 @@ function VibraApp() {
     setLanguage(next)
     try { localStorage.setItem('vibra_language', next) } catch {}
   }
-  const toggleFollow = (creatorId: string) => {
-    const next = followedIds.includes(creatorId) ? followedIds.filter(id=>id!==creatorId) : [...followedIds,creatorId]
-    setFollowedIds(next)
-    try { localStorage.setItem('vibra_following',JSON.stringify(next)) } catch {}
+  const toggleFollow = async (creatorId: string) => {
+    if (!creatorId || creatorId === userId) return
+    const wasFollowing = followedIds.includes(creatorId)
+    const followingRef = doc(getVibraDb(), 'users', userId, 'following', creatorId)
+    try {
+      if (wasFollowing) {
+        await deleteDoc(followingRef)
+        await setDoc(doc(getVibraDb(), 'users', creatorId), { followersCount: increment(-1) }, { merge: true })
+        setFollowedIds(ids => ids.filter(id => id !== creatorId))
+      } else {
+        await setDoc(followingRef, { userId, creatorId, createdAt: serverTimestamp() })
+        await setDoc(doc(getVibraDb(), 'users', creatorId), { followersCount: increment(1) }, { merge: true })
+        setFollowedIds(ids => [...ids, creatorId])
+      }
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : 'Follow action failed.')
+    }
   }
   
 const sendAiMessage = async () => {
  const q=aiInput.trim(); if(!q||aiLoading)return
  setAiMessages(p=>[...p,{role:'user',text:q}]);setAiInput('');setAiLoading(true)
- window.setTimeout(()=>{setAiMessages(p=>[...p,{role:'assistant',text:'Karibu VIBRA WORLDWIDE! Hii ni demo ya VIBRA AI.'}]);setAiLoading(false)},450)
+ setAiMessages(p=>[...p,{role:'assistant',text:'VIBRA AI bado haijaunganishwa na huduma ya AI. Tafadhali jaribu tena baada ya kuwekwa API ya AI.'}])
+ setAiLoading(false)
 }
 useEffect(() => onAuthStateChanged(getVibraAuth(), user => { setUserId(user?.uid || ''); setUserName(user?.displayName || user?.email?.split('@')[0] || 'VIBRA Creator'); setAuthReady(true) }), [])
 const submitAuth=async()=>{
@@ -166,12 +181,50 @@ const loadVideos=async()=>{
  } catch(error){setAuthError(error instanceof Error?error.message:'Could not load videos.');setVideos([])}
  finally{setLoadingVideos(false)}
 }
-useEffect(()=>{if(userId)loadVideos();else setVideos([])},[userId])
+useEffect(() => {
+ if (!userId) { setVideos([]); return }
+ void loadVideos()
+ void (async () => {
+   try {
+     const follows = await getDocs(collection(getVibraDb(), 'users', userId, 'following'))
+     setFollowedIds(follows.docs.map(item => item.id))
+     const profile = await getDoc(doc(getVibraDb(), 'users', userId))
+     if (profile.exists()) {
+       const data = profile.data()
+       if (typeof data.displayName === 'string') setUserName(data.displayName)
+       if (typeof data.photoURL === 'string') setDp(data.photoURL)
+       setFollowerCount(Number(data.followersCount || 0))
+     }
+   } catch (error) { setAuthError(error instanceof Error ? error.message : 'Could not load your profile.') }
+ })()
+},[userId])
 
   // Demo likes na comments zinatunzwa ndani ya app.
-const loadServerLikes=async()=>{}
-const loadServerComments=async(clipKey:string)=>{try{setComments(JSON.parse(localStorage.getItem('vibra_comments_'+clipKey)||'[]'))}catch{setComments([])}setLoadingComments(false)}
-useEffect(()=>{try{setLikedIds(JSON.parse(localStorage.getItem('vibra_demo_likes')||'[]'))}catch{setLikedIds([])}},[userId])
+const loadServerLikes = async (rows: Video[]) => {
+  try {
+    const results = await Promise.all(rows.map(async video => {
+      const [like, count] = await Promise.all([
+        getDoc(doc(getVibraDb(), 'videos', video.id, 'likes', userId)),
+        getDoc(doc(getVibraDb(), 'videos', video.id)),
+      ])
+      return { id: video.id, liked: like.exists(), count: Number(count.data()?.likes || 0) }
+    }))
+    setLikedIds(results.filter(item => item.liked).map(item => item.id))
+    setServerLikes(Object.fromEntries(results.map(item => [item.id, item.count])))
+  } catch (error) { setAuthError(error instanceof Error ? error.message : 'Could not load likes.') }
+}
+const loadServerComments = async (clipKey: string) => {
+  setLoadingComments(true)
+  try {
+    const snap = await getDocs(query(collection(getVibraDb(), 'videos', clipKey, 'comments'), orderBy('createdAt', 'asc')))
+    setComments(snap.docs.map(item => {
+      const data = item.data()
+      return { id: item.id, video_id: clipKey, username: data.username || 'VIBRA Creator', text: data.text || '', created_at: data.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString() }
+    }))
+  } catch (error) { setAuthError(error instanceof Error ? error.message : 'Could not load comments.'); setComments([]) }
+  finally { setLoadingComments(false) }
+}
+useEffect(() => { if (userId && videos.length) void loadServerLikes(videos) }, [userId, videos])
 
   useEffect(() => {
     if (activeVideo) loadServerComments(activeVideo)
@@ -261,7 +314,7 @@ const toggleLike=async(id:string)=>{
 const openComments = (id: string) => {
     setActiveVideo(id)
     setCommentText('')
-    try { setComments(JSON.parse(localStorage.getItem('vibra_comments_'+id)||'[]')) } catch { setComments([]) }
+    void loadServerComments(id)
   }
 
 const addComment=async()=>{
@@ -293,23 +346,22 @@ const uploadVideo=async(event:ChangeEvent<HTMLInputElement>)=>{
  }catch(error){setAuthError(error instanceof Error?error.message:'Upload failed. Check Firebase Storage setup and rules.')}
  finally{setUploading(false);event.target.value=''}
 }
-const changePhoto = (event: ChangeEvent<HTMLInputElement>) => {
+const changePhoto = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
-
-    if (file.size > 3 * 1024 * 1024) {
-      alert('Picha iwe chini ya 3 MB.')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = () => {
-      const url = reader.result as string
+    if (file.size > 5 * 1024 * 1024) { alert('Picha iwe chini ya 5 MB.'); return }
+    if (!file.type.startsWith('image/')) { alert('Chagua picha sahihi.'); return }
+    try {
+      const path = 'profiles/' + userId + '/avatar-' + Date.now()
+      const objectRef = storageRef(getVibraStorage(), path)
+      await uploadBytes(objectRef, file, { contentType: file.type })
+      const url = await getDownloadURL(objectRef)
+      await updateProfile(getVibraAuth().currentUser!, { photoURL: url })
+      await setDoc(doc(getVibraDb(), 'users', userId), { photoURL: url, avatar: url }, { merge: true })
       setDp(url)
-      localStorage.setItem('vibra_dp', url)
-      alert('Picha imebadilika!')
-    }
-    reader.readAsDataURL(file)
+      alert('Picha ya wasifu imehifadhiwa.')
+    } catch (error) { setAuthError(error instanceof Error ? error.message : 'Profile photo upload failed.') }
+    finally { event.target.value = '' }
   }
 
   const shareVideo = async (video: Video) => {
@@ -504,6 +556,7 @@ if (page === 'ai') {
         <input ref={imageRef} type="file" accept="image/*" onChange={changePhoto} style={{ display: 'none' }} />
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <button onClick={()=>setPage('home')} style={{background:'transparent',color:'#fff',border:0,fontSize:24}}>←</button>
+          <button onClick={()=>void signOut(getVibraAuth())} style={{background:'#142033',color:'#FFB8C2',border:'1px solid #56313B',borderRadius:18,padding:'7px 12px'}}>Toka</button>
           <b>{userHandle}</b>
           <button onClick={toggleLanguage} style={{background:'#142033',color:'#00DDF5',border:'1px solid #00DDF5',borderRadius:18,padding:'7px 12px'}}>{language==='sw'?'EN':'SW'}</button>
         </div>
@@ -529,13 +582,13 @@ if (page === 'ai') {
           }}>Remove DP</button>
         </div>
 
-        <input aria-label="Profile name" value={userName} onChange={e=>setUserName(e.target.value)} onBlur={()=>{try{localStorage.setItem('vibra_name',userName)}catch{}}} style={{display:'block',margin:'18px auto 5px',textAlign:'center',fontSize:23,fontWeight:800,color:'#fff',background:'transparent',border:0,borderBottom:'1px solid #00DDF5',width:'80%'}} />
-        <p style={{ textAlign: 'center', color: '#aaa' }}>{userHandle} • Kenya</p>
+        <input aria-label="Profile name" value={userName} onChange={e=>setUserName(e.target.value)} onBlur={()=>{void (async()=>{try{await updateProfile(getVibraAuth().currentUser!,{displayName:userName.trim()});await setDoc(doc(getVibraDb(),'users',userId),{displayName:userName.trim()},{merge:true})}catch(error){setAuthError(error instanceof Error?error.message:'Could not save profile name.')}})()}} style={{display:'block',margin:'18px auto 5px',textAlign:'center',fontSize:23,fontWeight:800,color:'#fff',background:'transparent',border:0,borderBottom:'1px solid #00DDF5',width:'80%'}} />
+        <p style={{ textAlign: 'center', color: '#aaa' }}>{getVibraAuth().currentUser?.email || userHandle} • Kenya</p>
         <p style={{ textAlign: 'center' }}>🔥 VIBRA Creator 🌍</p>
 
         <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center', margin: '25px 0' }}>
           <div><b>{followedIds.length}</b><br/><small>{language==='sw'?'Unafuata':'Following'}</small></div>
-          <div><b>0</b><br/><small>{language==='sw'?'Wanaokufuata':'Followers'}</small></div>
+          <div><b>{followerCount}</b><br/><small>{language==='sw'?'Wanaokufuata':'Followers'}</small></div>
           <div><b>{likedIds.length}</b><br/><small>Likes</small></div>
         </div>
 
