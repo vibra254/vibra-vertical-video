@@ -80,6 +80,8 @@ function VibraApp() {
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
   const [followedIds, setFollowedIds] = useState<string[]>([])
   const [followerCount, setFollowerCount] = useState(0)
+  const [notifications, setNotifications] = useState<{id:string;type:string;actorName:string;videoId?:string;createdAt?:any}[]>([])
+  const [loadingNotifications, setLoadingNotifications] = useState(false)
   const [savedIds, setSavedIds] = useState<string[]>([])
   const [dp, setDp] = useState('')
   const [userName, setUserName] = useState('Mr vibra')
@@ -133,6 +135,7 @@ function VibraApp() {
       } else {
         await setDoc(followingRef, { userId, creatorId, createdAt: serverTimestamp() })
         await setDoc(doc(getVibraDb(), 'users', creatorId), { followersCount: increment(1) }, { merge: true })
+        await addDoc(collection(getVibraDb(), 'users', creatorId, 'notifications'), { type: 'follow', actorId: userId, actorName: userName, createdAt: serverTimestamp() })
         setFollowedIds(ids => [...ids, creatorId])
       }
     } catch (error) {
@@ -333,6 +336,11 @@ const toggleLike=async(id:string)=>{
    if(was){await import('firebase/firestore').then(m=>m.deleteDoc(likeRef))}
    else{await setDoc(likeRef,{userId,createdAt:serverTimestamp()})}
    await updateDoc(doc(getVibraDb(),'videos',id),{likes:increment(was?-1:1)})
+   if (!was) {
+     const videoSnap = await getDoc(doc(getVibraDb(), 'videos', id))
+     const ownerId = videoSnap.data()?.user_id
+     if (ownerId && ownerId !== userId) await addDoc(collection(getVibraDb(), 'users', ownerId, 'notifications'), { type: 'like', actorId: userId, actorName: userName, videoId: id, createdAt: serverTimestamp() })
+   }
    setLikedIds(next);setServerLikes(p=>({...p,[id]:Math.max(0,(p[id]||0)+(was?-1:1))}))
  }catch(error){setAuthError(error instanceof Error?error.message:'Like failed.')}
  finally{setWorkingLikeIds(p=>p.filter(x=>x!==id))}
@@ -349,6 +357,9 @@ const addComment=async()=>{
  try{
    const entry={video_id:activeVideo,user_id:userId,username:userHandle,text:commentText.trim(),created_at:new Date().toISOString()}
    await addDoc(collection(getVibraDb(),'videos',activeVideo,'comments'),{...entry,createdAt:serverTimestamp()})
+   const videoSnap = await getDoc(doc(getVibraDb(), 'videos', activeVideo))
+   const ownerId = videoSnap.data()?.user_id
+   if (ownerId && ownerId !== userId) await addDoc(collection(getVibraDb(), 'users', ownerId, 'notifications'), { type: 'comment', actorId: userId, actorName: userName, videoId: activeVideo, comment: entry.text, createdAt: serverTimestamp() })
    setComments(p=>[...p,{...entry}]);setCommentCounts(p=>({...p,[activeVideo]:(p[activeVideo]||0)+1}));setCommentText('')
  }catch(error){setAuthError(error instanceof Error?error.message:'Comment failed.')}
  finally{setSendingComment(false)}
@@ -704,11 +715,23 @@ if (page === 'ai') {
 
   // INBOX
   if (page === 'inbox') {
+    if (!loadingNotifications && notifications.length === 0) {
+      setLoadingNotifications(true)
+      void getDocs(query(collection(getVibraDb(), 'users', userId, 'notifications'), orderBy('createdAt', 'desc')))
+        .then(snap => setNotifications(snap.docs.map(item => ({ id: item.id, ...item.data() } as any))))
+        .catch(error => setAuthError(error instanceof Error ? error.message : 'Could not load notifications.'))
+        .finally(() => setLoadingNotifications(false))
+    }
     return (
-      <div style={{ background: '#000', minHeight: '100vh', color: '#fff', fontFamily: 'sans-serif', padding: '16px 16px 100px', maxWidth: 500, margin: '0 auto' }}>
-        <h2>📥 {language==='sw'?'Ujumbe':'Inbox'}</h2>
-        <p style={{ color: '#aaa' }}>Karibu VIBRA WORLDWIDE!</p>
-        <div style={{ background: '#151515', padding: 15, borderRadius: 12 }}>❤️ Likes na comments zako zitaonekana hapa.</div>
+      <div style={{ background: '#080D18', minHeight: '100vh', color: '#fff', fontFamily: 'sans-serif', padding: '16px 16px 100px', maxWidth: 500, margin: '0 auto' }}>
+        <h2>📥 {language==='sw'?'Arifa':'Notifications'}</h2>
+        {loadingNotifications ? <p style={{color:'#9FB2C5'}}>Inapakia arifa...</p> : notifications.length === 0 ? <div style={{background:'#142033',padding:16,borderRadius:12,color:'#9FB2C5'}}>Bado huna arifa. Likes, comments na followers zitaonekana hapa.</div> : notifications.map(item => (
+          <div key={item.id} style={{background:'#142033',padding:14,borderRadius:12,marginBottom:9}}>
+            <b>{item.actorName || 'VIBRA user'}</b> {item.type === 'like' ? 'ame-like video yako ❤️' : item.type === 'comment' ? 'amecomment video yako 💬' : 'ameanza kukufuata ➕'}
+            {item.comment && <p style={{marginBottom:0,color:'#C6D5E2'}}>{item.comment}</p>}
+            {item.createdAt?.toDate && <small style={{color:'#8FA4B8'}}>{item.createdAt.toDate().toLocaleString()}</small>}
+          </div>
+        ))}
         {bottomNav}
       </div>
     )
