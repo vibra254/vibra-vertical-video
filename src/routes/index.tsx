@@ -199,6 +199,15 @@ const loadVideos=async()=>{
  finally{setLoadingVideos(false)}
 }
 useEffect(() => {
+ if (page !== 'inbox' || !userId) return
+ setLoadingNotifications(true)
+ void getDocs(query(collection(getVibraDb(), 'users', userId, 'notifications'), orderBy('createdAt', 'desc')))
+   .then(snap => setNotifications(snap.docs.map(item => ({ id: item.id, ...item.data() } as any))))
+   .catch(error => setAuthError(error instanceof Error ? error.message : 'Could not load notifications.'))
+   .finally(() => setLoadingNotifications(false))
+}, [page, userId])
+
+useEffect(() => {
  if (!userId) { setVideos([]); return }
  void loadVideos()
  void (async () => {
@@ -715,13 +724,6 @@ if (page === 'ai') {
 
   // INBOX
   if (page === 'inbox') {
-    if (!loadingNotifications && notifications.length === 0) {
-      setLoadingNotifications(true)
-      void getDocs(query(collection(getVibraDb(), 'users', userId, 'notifications'), orderBy('createdAt', 'desc')))
-        .then(snap => setNotifications(snap.docs.map(item => ({ id: item.id, ...item.data() } as any))))
-        .catch(error => setAuthError(error instanceof Error ? error.message : 'Could not load notifications.'))
-        .finally(() => setLoadingNotifications(false))
-    }
     return (
       <div style={{ background: '#080D18', minHeight: '100vh', color: '#fff', fontFamily: 'sans-serif', padding: '16px 16px 100px', maxWidth: 500, margin: '0 auto' }}>
         <h2>📥 {language==='sw'?'Arifa':'Notifications'}</h2>
