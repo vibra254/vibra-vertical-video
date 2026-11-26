@@ -1,63 +1,45 @@
-# VIBRA WORLDWIDE — staged release readiness
+# VIBRA WORLDWIDE — Firebase release readiness
 
-## Verified inspection
+## Current implementation on this branch
 
-The existing app is React 19 with TanStack Start/Router and Vite. It is a hosted web app with a PWA manifest, not a verified native Android release. Keep its existing feed and visual design.
+- Firebase Authentication is used for email/password and Google sign-in.
+- Firestore is used by the feed and social actions for video metadata, likes, comments, follows, saved videos and notifications.
+- Firebase Storage is used by the video and profile-photo upload flows.
+- VIBRA AI calls Gemini through Firebase AI Logic; the Firebase project owner must enable the service in the Firebase Console.
+- GitHub Actions runs the production build. A passing build confirms compilation only; it does not prove Firebase permissions, account flows, media playback or real-device behavior.
+- The project is currently a hosted web/PWA app. No signed Android App Bundle or Play Store release is included.
+- Supabase is not the selected backend and must not be reintroduced.
 
-The existing external account service responds using its browser-safe publishable key. Current hosted settings allow email login/signup and enable automatic email confirmation. Successful account login/logout and recovery were not exercised with a real account during this inspection. Account data is not yet the identity layer for clips or social activity.
+## Required Firebase Console setup
 
-Clips remain in IndexedDB; profile/activity metadata remains in localStorage. No shared video queries or cloud-upload calls exist in the reviewed feed. All 20 existing regression tests passed. A 390×844 browser check uploaded a real WebM, verified muted autoplay and one-tap sound, found the seek control and rendered the sign-in screen without page errors. Actual seeking is covered by the existing regression test, not a drag in this inspection. These tests do not establish database security, cloud uploads, cross-account discovery, ads, payouts or Android readiness.
+For Firebase project `vibra-44dce`:
 
-Management access is not connected: the project database command returns no connected backend. There are no available external service connections or backend management credentials. Visitor bucket listing returns no visible buckets; private buckets and policies cannot be inferred from that. Repository remotes are internal Lovable hosts, not verification of external GitHub sync.
+1. Enable Email/Password and Google providers in Authentication.
+2. Create/verify the Firestore database in the intended production region.
+3. Enable Firebase Storage and confirm billing/quotas and supported upload limits.
+4. Enable Firebase AI Logic with the Gemini Developer API backend.
+5. Configure Firebase App Check for the production web app and enforce it after validating legitimate traffic.
+6. Deploy restrictive Firestore and Storage rules only after reviewing every client data path. Never use public read/write rules or allow clients to grant themselves admin privileges.
 
-## First required phone action
+The Firebase web config in the client is public app configuration, not an Admin SDK credential. Never put service-account JSON or private API credentials in the browser or repository.
 
-In this existing Lovable project, open **Project settings → General → External Supabase → Connect** and select the existing project `svrjacetnlwlwesferwz`. Do not create a replacement project or paste private keys into chat. Check **Project settings → Git** separately to confirm the intended GitHub repository and branch. Management access must be verified after connection before migrations are applied.
+## Blocking security and product work before public launch
 
-## Phase 1 — cloud videos and accounts
+- Review and deploy least-privilege Firestore and Storage rules. Current client operations must be tested against those rules using two separate accounts and an unauthenticated visitor.
+- Move sensitive counters, follower totals, moderation state, rewards and any financial records to trusted server-side logic. A client-side increment is not proof of a valid like, view or payout.
+- Test signup, login, Google sign-in, logout, password recovery, profile photo, video upload, public feed discovery, playback, likes, comments, follow/unfollow, saves and inbox on real Android devices.
+- Fix the current client-side assumptions and error handling found during these tests; do not count a successful deploy as a successful feature test.
+- Complete reporting, blocking, content moderation, copyright handling, privacy disclosures, support contact and account deletion before accepting public user-generated content.
+- Add reliable cursor pagination, upload retry/resume, file cleanup, abuse limits and operational monitoring.
+- LIVE broadcasting is not implemented as a global streaming service. A camera preview alone is not a live broadcast.
+- Internationalization is currently incomplete; a two-language toggle is not worldwide language coverage. Add proper translated strings and RTL support before claiming global language support.
+- Creator rewards, cash balances, M-Pesa withdrawals and international payouts are not active. Do not show demo coins as real money.
+- Ads are not approved or verified as revenue. Do not claim earnings or serve unapproved production ads.
 
-- Inspect/reuse current tables and policies before adding anything. Stable authenticated user IDs authorize cloud operations; mutable profile handles never authorize access.
-- Store file paths, creator ID, caption/title, creation date, visibility, deletion/moderation state and thumbnail metadata. Model likes, comments, follows and views as normalized records, not client-editable totals.
-- Every public table migration includes explicit grants, then RLS, then narrow policies. Owners read their hidden rows; visitors read only public, approved, nondeleted content. Owners alone edit/delete their uploads.
-- Use private video/thumbnail buckets with owner-prefixed object paths and policies tied to metadata visibility. Never treat an unguessable URL as privacy. Do not offer signed URLs with a lifetime that violates required private/deleted revocation; verify an appropriate revocable access strategy before implementation.
-- Stage upload privately; persist metadata; publish only after file and metadata succeed. Failed uploads must not show success; preserve recoverable drafts. Existing local clips remain intact and require explicit migration, not silent ownership reassignment.
-- Fetch public content with stable cursor pagination. Owner collections separately include drafts/private clips. Reuse the existing playback helper, active-video pause/mute policy and isolated seeking control.
-- Add real shared activity without labeling raw playback events as fraud-validated reward views. Define validation and qualification before reward credit.
-- Test two distinct authenticated accounts and an independent visitor browser: create/upload/read back, public discovery, playback, own edits/delete, forbidden other-user edits/delete, and private/draft/deleted denial. Exercise public-to-private and deletion transitions including previously acquired media access.
-- Verify signup/login/logout/recovery, owner-private profiles and account deletion; real accounts and access are prerequisites, not mocked verification.
+## Android / Google Play
 
-## Phase 2 — safe public content and advertising
+This branch does not produce a signed Android App Bundle. A future Android release needs a maintained native wrapper or app implementation, confirmed package ID, signing-key ownership, Play App Signing, current target SDK, least-privilege permissions, privacy policy, public account-deletion process, Data safety declarations and physical-device release tests. Never commit signing credentials or ask the owner to paste them into chat.
 
-Public UGC requires accepted terms/community rules, reporting, user blocking, moderation, copyright handling, privacy choices, operator support contact and account deletion. Add child-safety obligations appropriate to the audience and store category. Do not fabricate operator identity, support details or legal disclosures.
+## Release rule
 
-Assess an approved website advertising program for the web app. Native AdMob requires Android SDK integration through the eventual wrapper; it is not a website script. Keep ads separate from playback and seeking controls, avoid excessive interruptions, and label actual sponsored placements. Keep serving disabled until approval, consent, real configuration and tests exist. No fake placements, claimed revenue, live-ad test clicks or invented ad-unit IDs. Reporting records must distinguish ad configuration, delivery and provider-verified revenue.
-
-## Phase 3 — Creator Rewards
-
-The follower requirement is **100,000 unique real followers**, not sufficient by itself. Require configurable valid public views, eligible account, original content, guideline compliance, fraud checks and admin approval. Minimum views, payout threshold, rate, currency, eligible countries and revenue allocation are not supplied yet; leave them unset/disabled rather than invent values.
-
-Use separately protected role membership and server-verified admin actions. Creators cannot edit valid view counts, rates, approvals, balances or payout status. Record estimates separately from approved earnings and provider-confirmed paid earnings. Keep immutable audit/ledger history, review/reversal handling and idempotent payouts. No automatic payment on threshold attainment.
-
-Assess approved Safaricom B2C/Daraja or a verified legitimate disbursement provider for Kenya M-Pesa plus supported international methods. Business onboarding, secure credentials, verified recipient details, funded revenue, approval and provider reconciliation are prerequisites. Never ask for or store creators' M-Pesa PINs. Do not use a checkout payment integration as proof that creator disbursements are supported.
-
-## Phase 4 — Android and Google Play
-
-Evaluate Capacitor as a maintainable wrapper with native media/ads capabilities while retaining the hosted TanStack server. A wrapper alone does not prove Android compatibility. Validate local data retention across upgrades and web-to-app migration, browser codec restrictions, gallery/camera permissions, native sharing, deep links for recovery, phones/tablets and lifecycle pause/resume on real Android.
-
-Required before a production AAB: confirmed package ID and existing-listing identity, upload key/signing ownership, Play App Signing, current target SDK, Android build tooling, correct least-privilege permissions, and physical-device release tests. Keep signing credentials outside source and chat. Prepare icon/splash and real screenshots, privacy policy and public deletion request URL, truthful store description, Data safety, ads declaration, audience/content rating and moderation information.
-
-Play Console registration is normally **US$25 one-time** if no account exists. New personal accounts may require 12 opted-in testers for 14 continuous days before applying for production access; verify the actual account's requirements. Confirm target SDK at submission rather than hardcoding an outdated deadline. No signed AAB, store upload or Google approval has been verified.
-
-## Costs and source references
-
-Video storage/delivery, moderation, payouts and external build services may incur costs; obtain applicable limits and fees before activation. No purchases, live ad serving, payouts or publication are authorized by this readiness document.
-
-- Play requirements: https://developer.android.com/google/play/requirements/target-sdk
-- App bundles: https://developer.android.com/guide/app-bundle
-- App signing: https://developer.android.com/studio/publish/app-signing
-- Developer account/testing: https://support.google.com/googleplay/android-developer/answer/6112435 and https://support.google.com/googleplay/android-developer/answer/14151465
-- UGC policy: https://support.google.com/googleplay/android-developer/answer/9876937
-- Account deletion: https://support.google.com/googleplay/android-developer/answer/13327111
-- AdMob Android/consent: https://developers.google.com/admob/android/quick-start and https://developers.google.com/admob/android/privacy
-- Web advertising: https://support.google.com/adsense/answer/48182
-- Kenya payouts: https://developer.safaricom.co.ke/ and https://developers.intasend.com/docs/m-pesa-b2c
+Keep the pull request in Draft until Firebase Console configuration, security rules, build/tests and real-device feature tests are complete. Do not merge or describe VIBRA as production-ready solely because Vercel says Ready.
