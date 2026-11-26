@@ -85,7 +85,7 @@ function VibraApp() {
   const [savedIds, setSavedIds] = useState<string[]>([])
   const [dp, setDp] = useState('')
   const [userName, setUserName] = useState('Mr vibra')
-  const [userHandle] = useState('@hamadoski')
+  const userHandle = '@' + (userName.trim().replace(/\s+/g, '').toLowerCase() || 'creator')
   const [activeVideo, setActiveVideo] = useState<string | null>(null)
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
@@ -257,7 +257,7 @@ const loadServerComments = async (clipKey: string) => {
 useEffect(() => { if (userId && videos.length) void loadServerLikes(videos) }, [userId, videos])
 
   useEffect(() => {
-    if (activeVideo) loadServerComments(activeVideo)
+    if (activeVideo) void loadServerComments(activeVideo)
   }, [activeVideo])
 
   // Video inachezwa ikiwa imeonekana kwenye skrini.
@@ -357,7 +357,6 @@ const toggleLike=async(id:string)=>{
 const openComments = (id: string) => {
     setActiveVideo(id)
     setCommentText('')
-    void loadServerComments(id)
   }
 
 const addComment=async()=>{
@@ -366,6 +365,7 @@ const addComment=async()=>{
  try{
    const entry={video_id:activeVideo,user_id:userId,username:userHandle,text:commentText.trim(),created_at:new Date().toISOString()}
    await addDoc(collection(getVibraDb(),'videos',activeVideo,'comments'),{...entry,createdAt:serverTimestamp()})
+   await updateDoc(doc(getVibraDb(), 'videos', activeVideo), { comments_count: increment(1) })
    const videoSnap = await getDoc(doc(getVibraDb(), 'videos', activeVideo))
    const ownerId = videoSnap.data()?.user_id
    if (ownerId && ownerId !== userId) await addDoc(collection(getVibraDb(), 'users', ownerId, 'notifications'), { type: 'comment', actorId: userId, actorName: userName, videoId: activeVideo, comment: entry.text, createdAt: serverTimestamp() })
@@ -622,7 +622,7 @@ if (page === 'ai') {
             padding: '12px 25px', borderRadius: 25, fontWeight: 800,
           }}>{language==='sw'?'Badilisha Picha':'Change Profile Photo'}</button>
           <br/>
-          <button onClick={() => { setDp(''); localStorage.removeItem('vibra_dp') }} style={{
+          <button onClick={() => { void (async()=>{try{await updateProfile(getVibraAuth().currentUser!,{photoURL:null});await setDoc(doc(getVibraDb(),'users',userId),{photoURL:null,avatar:null},{merge:true});setDp('')}catch(error){setAuthError(error instanceof Error?error.message:'Could not remove profile photo.')}})() }} style={{
             background: 'transparent', color: '#aaa', border: '1px solid #444',
             padding: 9, borderRadius: 20, marginTop: 10,
           }}>Remove DP</button>
