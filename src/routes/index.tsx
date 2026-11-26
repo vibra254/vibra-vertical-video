@@ -200,8 +200,12 @@ useEffect(() => {
  void loadVideos()
  void (async () => {
    try {
-     const follows = await getDocs(collection(getVibraDb(), 'users', userId, 'following'))
+     const [follows, saved] = await Promise.all([
+       getDocs(collection(getVibraDb(), 'users', userId, 'following')),
+       getDocs(collection(getVibraDb(), 'users', userId, 'savedVideos')),
+     ])
      setFollowedIds(follows.docs.map(item => item.id))
+     setSavedIds(saved.docs.map(item => item.id))
      const profile = await getDoc(doc(getVibraDb(), 'users', userId))
      if (profile.exists()) {
        const data = profile.data()
@@ -292,12 +296,20 @@ useEffect(() => { if (userId && videos.length) void loadServerLikes(videos) }, [
     })
   }, [activeVideoId, page, videos, muted])
 
-  const toggleSave = (id: string) => {
-    setSavedIds(previous => {
-      const next = previous.includes(id) ? previous.filter(item => item !== id) : [...previous, id]
-      localStorage.setItem('vibra_saved', JSON.stringify(next))
-      return next
-    })
+  const toggleSave = async (id: string) => {
+    const wasSaved = savedIds.includes(id)
+    const savedRef = doc(getVibraDb(), 'users', userId, 'savedVideos', id)
+    try {
+      if (wasSaved) {
+        await deleteDoc(savedRef)
+        setSavedIds(ids => ids.filter(item => item !== id))
+      } else {
+        await setDoc(savedRef, { videoId: id, createdAt: serverTimestamp() })
+        setSavedIds(ids => [...ids, id])
+      }
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : 'Could not save video.')
+    }
   }
 
   const toggleSound = (id: string) => {
