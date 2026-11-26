@@ -2,6 +2,7 @@ import { getApp, getApps, initializeApp } from 'firebase/app'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
+import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
 
 // Firebase web configuration supplied by the VIBRA project owner.
 // These web-app identifiers are public client configuration, not admin credentials.
@@ -21,3 +22,14 @@ export const getVibraAuth = () => getAuth(firebaseApp)
 export const vibraGoogleProvider = new GoogleAuthProvider()
 export const getVibraDb = () => getFirestore(firebaseApp)
 export const getVibraStorage = () => getStorage(firebaseApp)
+
+
+// Firebase AI Logic uses the project's configured Gemini Developer API backend.
+// Enable Firebase AI Logic for project vibra-44dce in the Firebase Console before use.
+export const getVibraAIModel = () => {
+  const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
+  return getGenerativeModel(ai, {
+    model: 'gemini-2.5-flash',
+    systemInstruction: 'You are VIBRA AI, a helpful multilingual assistant for VIBRA WORLDWIDE. Answer accurately and naturally in the language the user uses. Support Swahili and other world languages. If unsure, say so clearly. Never pretend to have performed actions you have not performed.',
+  })
+}
