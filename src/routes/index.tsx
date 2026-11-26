@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile, signOut } from 'firebase/auth'
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
-import { getVibraAuth, getVibraDb, getVibraStorage, vibraGoogleProvider } from '../lib/firebase'
+import { getVibraAIModel, getVibraAuth, getVibraDb, getVibraStorage, vibraGoogleProvider } from '../lib/firebase'
 import {
   Home, Search, Plus, Inbox, User, Heart,
   MessageCircle, Share2, Volume2, VolumeX, Bot, Sparkles
@@ -141,10 +141,24 @@ function VibraApp() {
   }
   
 const sendAiMessage = async () => {
- const q=aiInput.trim(); if(!q||aiLoading)return
- setAiMessages(p=>[...p,{role:'user',text:q}]);setAiInput('');setAiLoading(true)
- setAiMessages(p=>[...p,{role:'assistant',text:'VIBRA AI bado haijaunganishwa na huduma ya AI. Tafadhali jaribu tena baada ya kuwekwa API ya AI.'}])
- setAiLoading(false)
+ const q = aiInput.trim()
+ if (!q || aiLoading) return
+ const previous = aiMessages.slice(-12).map(message => (message.role === 'user' ? 'User: ' : 'VIBRA AI: ') + message.text).join('\n')
+ setAiMessages(items => [...items, { role: 'user', text: q }])
+ setAiInput('')
+ setAiLoading(true)
+ try {
+   const model = getVibraAIModel()
+   const result = await model.generateContent(previous ? previous + '\nUser: ' + q + '\nVIBRA AI:' : q)
+   const answer = result.response.text().trim()
+   if (!answer) throw new Error('AI haikurudisha jibu. Jaribu tena.')
+   setAiMessages(items => [...items, { role: 'assistant', text: answer }])
+ } catch (error) {
+   const message = error instanceof Error ? error.message : 'VIBRA AI haijaweza kujibu.'
+   setAiMessages(items => [...items, { role: 'assistant', text: 'Samahani, VIBRA AI haijaweza kujibu sasa hivi. ' + message }])
+ } finally {
+   setAiLoading(false)
+ }
 }
 useEffect(() => onAuthStateChanged(getVibraAuth(), user => { setUserId(user?.uid || ''); setUserName(user?.displayName || user?.email?.split('@')[0] || 'VIBRA Creator'); setAuthReady(true) }), [])
 const submitAuth=async()=>{
