@@ -1,4 +1,4 @@
-name: VIBRA build check
+name: VIBRA Firebase build check
 
 on:
   pull_request:
