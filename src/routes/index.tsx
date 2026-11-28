@@ -1,7 +1,7 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile, signOut } from 'firebase/auth'
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile, signOut, sendPasswordResetEmail } from 'firebase/auth'
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
 import { getVibraAIModel, getVibraAuth, getVibraDb, getVibraStorage, vibraGoogleProvider } from '../lib/firebase'
@@ -164,6 +164,23 @@ const sendAiMessage = async () => {
  }
 }
 useEffect(() => onAuthStateChanged(getVibraAuth(), user => { setUserId(user?.uid || ''); setUserName(user?.displayName || user?.email?.split('@')[0] || 'VIBRA Creator'); setAuthReady(true) }), [])
+const friendlyAuthError = (error: unknown) => {
+ const code = (error as {code?: string})?.code || ''
+ if (code === 'auth/unauthorized-domain') return 'Domain hii haijaidhinishwa Firebase. Ongeza domain ya Vercel kwenye Authentication → Settings → Authorized domains.'
+ if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') return 'Email au password si sahihi, au akaunti haijasajiliwa. Chagua Jisajili kufungua akaunti.'
+ if (code === 'auth/email-already-in-use') return 'Email hii tayari ina akaunti. Rudi kwenye Ingia.'
+ if (code === 'auth/weak-password') return 'Password iwe na angalau herufi 6.'
+ if (code === 'auth/invalid-email') return 'Email uliyoandika si sahihi.'
+ if (code === 'auth/network-request-failed') return 'Mtandao umekatika. Angalia internet ujaribu tena.'
+ return error instanceof Error ? error.message : 'Kuna tatizo la kuingia. Jaribu tena.'
+}
+const resetPassword = async () => {
+ if (!email.trim()) { setAuthError('Andika email yako kwanza, kisha bonyeza sahau password.'); return }
+ setAuthBusy(true); setAuthError('')
+ try { await sendPasswordResetEmail(getVibraAuth(), email.trim()); setAuthError('Tumetuma link ya kubadilisha password kwenye email yako.') }
+ catch (error) { setAuthError(friendlyAuthError(error)) }
+ finally { setAuthBusy(false) }
+}
 const submitAuth=async()=>{
  if(!email.trim()||!password){setAuthError(language==='sw'?'Weka email na password.':'Enter email and password.');return}
  if(password.length<6){setAuthError(language==='sw'?'Password iwe na angalau herufi 6.':'Password must be at least 6 characters.');return}
@@ -177,13 +194,13 @@ const submitAuth=async()=>{
    } else {
      await signInWithEmailAndPassword(auth,email.trim(),password)
    }
- } catch(error){setAuthError(error instanceof Error?error.message:'Authentication failed.')}
+ } catch(error){setAuthError(friendlyAuthError(error))}
  finally{setAuthBusy(false)}
 }
 const loginGoogle=async()=>{
  setAuthBusy(true);setAuthError('')
  try{await signInWithPopup(getVibraAuth(),vibraGoogleProvider)}
- catch(error){setAuthError(error instanceof Error?error.message:'Google sign-in failed.')}
+ catch(error){setAuthError(friendlyAuthError(error))}
  finally{setAuthBusy(false)}
 }
 // Demo video feed.
@@ -485,6 +502,7 @@ if (!userId) {
         {authError && <div role="alert" style={{background:'#3B1720',color:'#FFB8C2',padding:10,borderRadius:9,fontSize:13,marginBottom:12,overflowWrap:'anywhere'}}>{authError}</div>}
         <button type="button" disabled={authBusy} onClick={()=>void submitAuth()} style={{width:'100%',padding:14,border:0,borderRadius:12,background:'#00DDF5',color:'#001018',fontWeight:900,fontSize:16,opacity:authBusy ? 0.6 : 1}}>{authBusy?'Tafadhali subiri...':authMode==='login'?'INGIA':'FUNGUA AKAUNTI'}</button>
         <button type="button" disabled={authBusy} onClick={()=>void loginGoogle()} style={{width:'100%',padding:13,marginTop:10,border:'1px solid #426078',borderRadius:12,background:'#142033',color:'#fff',fontWeight:700}}>Endelea na Google</button>
+        {authMode==='login' && <button type="button" disabled={authBusy} onClick={()=>void resetPassword()} style={{width:'100%',padding:9,marginTop:5,border:0,background:'transparent',color:'#9FB2C5'}}>Umesahau password? Tuma link ya reset</button>}
         <button type="button" onClick={()=>{setAuthMode(authMode==='login'?'signup':'login');setAuthError('')}} style={{width:'100%',padding:12,marginTop:12,border:0,background:'transparent',color:'#00DDF5'}}>{authMode==='login'?'Huna akaunti? Jisajili':'Una akaunti tayari? Ingia'}</button>
         <button type="button" onClick={toggleLanguage} style={{display:'block',margin:'8px auto 0',border:0,background:'transparent',color:'#9FB2C5'}}>{language==='sw'?'Switch to English':'Badili Kiswahili'}</button>
       </div>
